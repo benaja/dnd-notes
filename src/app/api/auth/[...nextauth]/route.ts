@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import { compare } from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
+import { env } from "~/env.mjs";
 
 const prisma = new PrismaClient();
 
@@ -15,8 +16,8 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -39,7 +40,11 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        if (!user || !(await compare(credentials.password, user.password))) {
+        if (
+          !user ||
+          !user.password ||
+          !(await compare(credentials.password, user.password))
+        ) {
           return null;
         }
 
