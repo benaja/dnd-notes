@@ -1,4 +1,4 @@
-import { LoginForm } from "./form";
+import { LoginForm } from "../../api/auth/signin/CredentialsForm";
 
 export default function LoginPage() {
   return (
