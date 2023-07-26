@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import TextInput from "~/components/fiels/TextInput";
 
 export default function CredentialsForm() {
   const router = useRouter();
@@ -50,26 +51,21 @@ export default function CredentialsForm() {
   return (
     <form onSubmit={onSubmit}>
       <div className="mb-6">
-        <label className="mb-2 block font-medium">Email address</label>
-        <input
-          required
+        <TextInput
           type="email"
           name="email"
           value={formValues.email}
           onChange={handleChange}
-          className="form-control m-0 block w-full rounded border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 text-sm font-normal text-gray-700 transition ease-in-out focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
+          label="Email address"
         />
       </div>
       <div className="mb-6">
-        <label className="mb-2 block font-medium">Password</label>
-        <input
-          required
+        <TextInput
           type="password"
           name="password"
           value={formValues.password}
           onChange={handleChange}
-          placeholder="Password"
-          className="form-control m-0 block w-full rounded border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 text-sm font-normal text-gray-700 transition ease-in-out focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none"
+          label="Password"
         />
       </div>
       {error && <p className="mb-6 text-red-600">{error}</p>}

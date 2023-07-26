@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
+import TextInput from "~/components/fiels/TextInput";
 
 export const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
@@ -9,13 +10,19 @@ export const RegisterForm = () => {
     name: "",
     email: "",
     password: "",
+    passwordConfirmation: "",
   });
   const [error, setError] = useState("");
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setFormValues({ name: "", email: "", password: "" });
+    setFormValues({
+      name: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+    });
 
     try {
       const res = await fetch("/api/register", {
@@ -44,45 +51,45 @@ export const RegisterForm = () => {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const input_style =
-    "form-control block w-full px-4 py-5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none";
-
   return (
     <form onSubmit={onSubmit}>
       {error && (
         <p className="mb-6 rounded bg-red-300 py-4 text-center">{error}</p>
       )}
       <div className="mb-6">
-        <input
-          required
-          type="name"
+        <TextInput
+          type="text"
           name="name"
           value={formValues.name}
           onChange={handleChange}
-          placeholder="Name"
-          className={`${input_style}`}
+          label="Name"
         />
       </div>
       <div className="mb-6">
-        <input
-          required
+        <TextInput
           type="email"
           name="email"
           value={formValues.email}
           onChange={handleChange}
-          placeholder="Email address"
-          className={`${input_style}`}
+          label="Email address"
         />
       </div>
       <div className="mb-6">
-        <input
-          required
+        <TextInput
           type="password"
           name="password"
           value={formValues.password}
           onChange={handleChange}
-          placeholder="Password"
-          className={`${input_style}`}
+          label="Password"
+        />
+      </div>
+      <div className="mb-6">
+        <TextInput
+          type="password"
+          name="passwordConfirmation"
+          value={formValues.passwordConfirmation}
+          onChange={handleChange}
+          label="Password Confirmation"
         />
       </div>
       <button

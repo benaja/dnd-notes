@@ -1,6 +1,7 @@
 import { getProviders, signIn } from "next-auth/react";
 import CredentialsForm from "./CredentialsForm";
 import ProviderButtons from "./ProviderButtons";
+import Link from "next/link";
 
 export default async function Signin() {
   const providers = await getProviders();
@@ -14,9 +15,12 @@ export default async function Signin() {
           </h1>
           <p className="mt-3">
             <span className="text-gray-400">Not yet registered?</span>
-            <a href="/auth/signup" className="ml-2 font-medium text-blue-500">
+            <Link
+              href="/api/auth/register"
+              className="ml-2 font-medium text-blue-500"
+            >
               Create an Account
-            </a>
+            </Link>
           </p>
         </div>
 

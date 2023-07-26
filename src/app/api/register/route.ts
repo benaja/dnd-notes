@@ -1,4 +1,4 @@
-import { prisma } from "~/lib/prisma";
+import prisma from "~/lib/prisma";
 import argon2 from "argon2";
 import { NextResponse } from "next/server";
 
