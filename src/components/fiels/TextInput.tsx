@@ -8,8 +8,6 @@ type InputProps = {
 export default function TextInput(props: InputProps & UseControllerProps) {
   const { field, fieldState } = useController(props);
 
-  console.log(fieldState);
-
   return (
     <>
       {props.label ?? <label>{props.label}</label>}

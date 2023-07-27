@@ -12,7 +12,6 @@ async function main() {
       password: await hash("password", 10),
     },
   });
-  console.log(user);
 }
 
 main()

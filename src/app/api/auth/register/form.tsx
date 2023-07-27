@@ -39,9 +39,7 @@ export const RegisterForm = () => {
     if (!res.ok) {
       const response = await res.json();
       if (response.status === "validation-error") {
-        console.log(response.issues);
         for (let error of response.issues) {
-          console.log(error.path[0]);
           formMethods.clearErrors();
           formMethods.setError(error.path[0], {
             type: "manual",
