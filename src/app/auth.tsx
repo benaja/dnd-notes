@@ -12,6 +12,8 @@ export function LogoutButton() {
 }
 
 export function FetchButton() {
+  const secretMessageQuery = trpc.example.getSecretMessage.useQuery();
+
   async function doFetch() {
     const res = fetch("http://localhost:3000/api/test", {
       next: {
@@ -19,10 +21,9 @@ export function FetchButton() {
       },
       credentials: "include",
     });
-
-    const message = await trpc.example.getSecretMessage.query();
-    console.log(message);
   }
+
+  console.log(secretMessageQuery.data);
 
   return <button onClick={() => doFetch()}>Fetch</button>;
 }

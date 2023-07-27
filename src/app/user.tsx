@@ -9,7 +9,7 @@ export default function User() {
     <div>
       <h1 className=" text-2xl">Clinet</h1>
 
-      <pre>{JSON.stringify(session)}</pre>
+      <p className="whitespace-break-spaces">{JSON.stringify(session)}</p>
     </div>
   );
 }
