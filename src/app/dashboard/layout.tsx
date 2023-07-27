@@ -81,20 +81,20 @@ export default function RootLayout({
                 <Icon className={classNames({ "text-gray-700": !isActive })}>
                   {item.icon}
                 </Icon>
-                <Transition in={expanded}>
-                  {/* {expanded && ( */}
-                  {(state: "entering" | "entered" | "exiting" | "exited") => (
+                <Transition in={expanded} timeout={0}>
+                  {(state: string) => (
                     <span
                       style={{
                         ...defaultStyle,
-                        ...transitionStyles[state],
+                        ...transitionStyles[
+                          state as keyof typeof transitionStyles
+                        ],
                       }}
                       className="text-gray-700"
                     >
                       {item.text}
                     </span>
                   )}
-                  {/* )} */}
                 </Transition>
               </Link>
             </li>

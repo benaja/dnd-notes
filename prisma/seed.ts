@@ -9,7 +9,7 @@ async function main() {
     data: {
       name: "Benaja",
       email: "benhu00@outlook.com",
-      password: await hash("password", 10),
+      password: await hash("123abc123", 10),
     },
   });
 }
