@@ -9,12 +9,13 @@ import TextInput from "~/components/fiels/TextInput";
 export default function CredentialsForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-  });
   const [error, setError] = useState("");
-  const formMethods = useForm();
+  const formMethods = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -33,7 +34,6 @@ export default function CredentialsForm() {
       setLoading(false);
 
       if (!res?.error) {
-        setFormValues({ email: "", password: "" });
         router.push(callbackUrl);
       } else {
         setError("Invalid email or password");

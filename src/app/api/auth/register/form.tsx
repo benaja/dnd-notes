@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import TextInput from "~/components/fiels/TextInput";
+import { trpc } from "~/lib/trpc-client";
 
 interface RegisterFormValues {
   name: string;
@@ -23,35 +24,56 @@ export const RegisterForm = () => {
       passwordConfirmation: "",
     },
   });
+  const registerMutation = trpc.user.register.useMutation();
+
+  if (registerMutation.error?.data?.zodError) {
+    const fieldErrors = registerMutation.error.data.zodError.fieldErrors;
+    formMethods.clearErrors();
+
+    for (let key of Object.keys(fieldErrors)) {
+      formMethods.setError(key as keyof RegisterFormValues, {
+        type: "manual",
+        message: fieldErrors[key]?.[0],
+      });
+    }
+
+    console.log(registerMutation.error.data.zodError.fieldErrors);
+  }
 
   const onSubmit = async (values: RegisterFormValues) => {
     setLoading(true);
 
-    const res = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      await registerMutation.mutateAsync(values);
+
+      signIn(undefined, { callbackUrl: "/" });
+    } catch (e) {}
 
     setLoading(false);
-    if (!res.ok) {
-      const response = await res.json();
-      if (response.status === "validation-error") {
-        for (let error of response.issues) {
-          formMethods.clearErrors();
-          formMethods.setError(error.path[0], {
-            type: "manual",
-            message: error.message,
-          });
-        }
-      }
-      // setError((await res.json()).message);
-      return;
-    }
 
-    signIn(undefined, { callbackUrl: "/" });
+    // const res = await fetch("/api/register", {
+    //   method: "POST",
+    //   body: JSON.stringify(values),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    // setLoading(false);
+    // if (!res.ok) {
+    //   const response = await res.json();
+    //   if (response.status === "validation-error") {
+    //     for (let error of response.issues) {
+    //       formMethods.clearErrors();
+    //       formMethods.setError(error.path[0], {
+    //         type: "manual",
+    //         message: error.message,
+    //       });
+    //     }
+    //   }
+    //   // setError((await res.json()).message);
+    //   return;
+    // }
   };
 
   return (
