@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
 import TextInput from "~/components/fiels/TextInput";
 
 export default function CredentialsForm() {
@@ -13,19 +14,19 @@ export default function CredentialsForm() {
     password: "",
   });
   const [error, setError] = useState("");
+  const formMethods = useForm();
 
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: any) => {
     try {
       setLoading(true);
 
       const res = await signIn("credentials", {
         redirect: false,
-        email: formValues.email,
-        password: formValues.password,
+        email: values.email,
+        password: values.password,
         callbackUrl,
       });
 
@@ -43,40 +44,25 @@ export default function CredentialsForm() {
     }
   };
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
   return (
-    <form onSubmit={onSubmit}>
-      <div className="mb-6">
-        <TextInput
-          type="email"
-          name="email"
-          value={formValues.email}
-          onChange={handleChange}
-          label="Email address"
-        />
-      </div>
-      <div className="mb-6">
-        <TextInput
-          type="password"
-          name="password"
-          value={formValues.password}
-          onChange={handleChange}
-          label="Password"
-        />
-      </div>
-      {error && <p className="mb-6 text-red-600">{error}</p>}
-      <button
-        type="submit"
-        style={{ backgroundColor: `${loading ? "#ccc" : "#3446eb"}` }}
-        className="inline-block w-full rounded bg-blue-600 px-7 py-4 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
-        disabled={loading}
-      >
-        {loading ? "loading..." : "Sign In"}
-      </button>
-    </form>
+    <FormProvider {...formMethods}>
+      <form onSubmit={formMethods.handleSubmit(onSubmit)}>
+        <div className="mb-6">
+          <TextInput type="email" name="email" label="Email address" />
+        </div>
+        <div className="mb-6">
+          <TextInput type="password" name="password" label="Password" />
+        </div>
+        {error && <p className="mb-6 text-red-600">{error}</p>}
+        <button
+          type="submit"
+          style={{ backgroundColor: `${loading ? "#ccc" : "#3446eb"}` }}
+          className="inline-block w-full rounded bg-blue-600 px-7 py-4 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
+          disabled={loading}
+        >
+          {loading ? "loading..." : "Sign In"}
+        </button>
+      </form>
+    </FormProvider>
   );
 }
