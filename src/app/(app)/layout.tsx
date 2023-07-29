@@ -111,7 +111,7 @@ export default function RootLayout({
             "hidden shrink-0 transition-all duration-500 sm:block"
           )}
         ></div>
-        <div className="overflow-x-hidden px-6 py-6 sm:px-10 sm:py-8">
+        <div className="grow overflow-x-hidden px-6 py-6 sm:px-10 sm:py-8">
           {children}
         </div>
       </div>

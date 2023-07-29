@@ -1,3 +1,4 @@
+import { campaignRouter } from "./routers/campaign";
 import { exampleRouter } from "~/server/routers/example";
 import { createTRPCRouter } from "~/server/trpc";
 import { userRouter } from "./routers/userRouter";
@@ -10,6 +11,7 @@ import { userRouter } from "./routers/userRouter";
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
   user: userRouter,
+  campaign: campaignRouter,
 });
 
 // export type definition of API
