@@ -7,6 +7,7 @@ import { NextAuthOptions } from "next-auth";
 import NextAuth, { getServerSession } from "next-auth/next";
 import { env } from "~/env.mjs";
 import { GetServerSidePropsContext } from "next";
+import { CustomSession } from "~/server/trpc";
 
 const prisma = new PrismaClient();
 

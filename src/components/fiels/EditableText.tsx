@@ -9,9 +9,11 @@ export default function EditableText(
     display,
     children,
     className,
+    onBlur,
   }: {
-    value: string;
+    value?: string | null;
     onInput?: (value: string) => void;
+    onBlur?: () => void;
     display?: React.ReactNode;
     children?: (props: {
       value: string;
@@ -46,7 +48,10 @@ export default function EditableText(
         className={classNames("-m-1 w-full bg-transparent p-1", className)}
         value={value}
         onInput={(e) => onInput && onInput(e.target.value)}
-        onBlur={() => setIsEditing(false)}
+        onBlur={() => {
+          setIsEditing(false);
+          onBlur && onBlur();
+        }}
       />
     );
   }

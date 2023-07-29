@@ -7,9 +7,10 @@
  * need to use are documented accordingly near the end.
  */
 
+import { User } from "@prisma/client";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
+import { ISODateString, type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "~/app/api/auth/[...nextauth]/route";
@@ -23,8 +24,12 @@ import prisma from "~/lib/prisma";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
+interface CustomSession extends Session {
+  user: User;
+}
+
 interface CreateContextOptions {
-  session: Session | null;
+  session: CustomSession | null;
 }
 
 /**
@@ -57,7 +62,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const session = await getServerAuthSession({ req, res });
 
   return createInnerTRPCContext({
-    session,
+    session: session as CustomSession | null,
   });
 };
 

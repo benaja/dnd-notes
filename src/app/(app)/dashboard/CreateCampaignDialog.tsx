@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 type CampaignFormValues = z.infer<typeof campaignSchema>;
 
 export default function CreateCampaignDialog() {
-  const createCampaignMutation = trpc.campaign.createCampaign.useMutation();
+  const createCampaignMutation = trpc.campaign.create.useMutation();
   const router = useRouter();
 
   const formMethods = useForm({
