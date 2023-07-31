@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import EditableText from "~/components/fiels/EditableText";
+import Editor from "~/components/fiels/Editor";
 import QuillInput from "~/components/fiels/RichtTextInput";
 import { trpc } from "~/lib/trpc-client";
 
@@ -61,8 +62,9 @@ export default function Campaign({
           onBlur={updateCampaign}
         />
       </div>
+      <Editor />
 
-      <QuillInput />
+      {/* <QuillInput /> */}
       {/* <RichtTextInput /> */}
     </div>
   );
