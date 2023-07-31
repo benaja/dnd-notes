@@ -34,21 +34,23 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String           @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?          @unique
-  password      String?          @db.Text
+  email         String?   @unique
+  password      String?   @db.Text
   emailVerified DateTime?
   image         String?
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  campaigns     CampaignOnUser[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts  Account[]
+  sessions  Session[]
+  campaigns CampaignOnUser[]
 }
 
 model VerificationToken {
@@ -60,12 +62,14 @@ model VerificationToken {
 }
 
 model Campaign {
-  id          String           @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
-  description String?          @db.Text
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  users       CampaignOnUser[]
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users    CampaignOnUser[]
+  sessions CampaignSessions[]
 }
 
 model CampaignOnUser {
@@ -80,4 +84,52 @@ model CampaignOnUser {
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@unique([userId, campaignId])
+}
+
+model CampaignSessions {
+  id          String   @id @default(cuid())
+  campaignId  String
+  date        DateTime
+  title       String
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaign  Campaign     @relation(fields: [campaignId], references: [id])
+  caracters Characters[]
+}
+
+model Characters {
+  id          String   @id @default(cuid())
+  campaignId  String
+  userId      String
+  name        String
+  description String?  @db.Text
+  type        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sessions CampaignSessions[]
+}
+
+model Inventory {
+  id          String  @id @default(cuid())
+  characterId String
+  description String? @db.Text
+
+  items Item[]
+}
+
+model Item {
+  id          String   @id @default(cuid())
+  inventoryId String
+  name        String
+  description String?  @db.Text
+  quantity    Int      @default(1)
+  value       Float?
+  weight      Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id])
 }
