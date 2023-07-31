@@ -21,6 +21,8 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import "./themes/styles.css";
+import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
+import { MentionNode } from "./nodes/MentionNode";
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -29,6 +31,7 @@ function Placeholder() {
 const editorConfig = {
   // The editor theme
   theme: ExampleTheme,
+  namespace: "example",
   // Handling of errors during update
   onError(error) {
     throw error;
@@ -46,6 +49,7 @@ const editorConfig = {
     TableRowNode,
     AutoLinkNode,
     LinkNode,
+    MentionNode,
   ],
 };
 
@@ -69,6 +73,7 @@ export default function Editor() {
           <AutoLinkPlugin />
           <ListMaxIndentLevelPlugin maxDepth={7} />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <AttachCharactersPlugin />
         </div>
       </div>
     </LexicalComposer>
