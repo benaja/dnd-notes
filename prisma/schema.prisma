@@ -68,8 +68,9 @@ model Campaign {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  users    CampaignOnUser[]
-  sessions CampaignSessions[]
+  users      CampaignOnUser[]
+  sessions   CampaignSessions[]
+  characters Character[]
 }
 
 model CampaignOnUser {
@@ -95,14 +96,13 @@ model CampaignSessions {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  campaign  Campaign     @relation(fields: [campaignId], references: [id])
-  caracters Characters[]
+  campaign  Campaign    @relation(fields: [campaignId], references: [id])
+  caracters Character[]
 }
 
-model Characters {
+model Character {
   id          String   @id @default(cuid())
   campaignId  String
-  userId      String
   name        String
   description String?  @db.Text
   type        String
@@ -110,6 +110,7 @@ model Characters {
   updatedAt   DateTime @updatedAt
 
   sessions CampaignSessions[]
+  campaign Campaign           @relation(fields: [campaignId], references: [id])
 }
 
 model Inventory {

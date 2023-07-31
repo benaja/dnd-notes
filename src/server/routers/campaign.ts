@@ -10,6 +10,9 @@ export const campaignRouter = createTRPCRouter({
         where: {
           id: input,
         },
+        include: {
+          characters: true
+        },
       });
 
       return campaign;

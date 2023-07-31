@@ -42,17 +42,19 @@ export default function EditableText(
 
   if (isEditing) {
     return (
-      <input
-        ref={input}
-        type="text"
-        className={classNames("-m-1 w-full bg-transparent p-1", className)}
-        value={value}
-        onInput={(e) => onInput && onInput(e.target.value)}
-        onBlur={() => {
-          setIsEditing(false);
-          onBlur && onBlur();
-        }}
-      />
+      <div className={className}>
+        <input
+          ref={input}
+          type="text"
+          className={classNames("-m-1 w-full bg-transparent p-1")}
+          value={value}
+          onInput={(e) => onInput && onInput(e.target.value)}
+          onBlur={() => {
+            setIsEditing(false);
+            onBlur && onBlur();
+          }}
+        />
+      </div>
     );
   }
 

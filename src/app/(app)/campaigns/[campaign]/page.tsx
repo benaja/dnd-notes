@@ -5,6 +5,7 @@ import EditableText from "~/components/fiels/EditableText";
 import Editor from "~/components/fiels/Editor";
 import QuillInput from "~/components/fiels/RichtTextInput";
 import { trpc } from "~/lib/trpc-client";
+import ListCharacters from "./ListCharacters";
 
 export default function Campaign({
   params,
@@ -55,14 +56,21 @@ export default function Campaign({
           return <h1 {...props}>{value}</h1>;
         }}
       </EditableText>
-      <div className="my-4">
-        <EditableText
-          value={campaign.description}
-          onInput={(value) => editCampaign("description", value)}
-          onBlur={updateCampaign}
-        />
-      </div>
-      <Editor />
+      <EditableText
+        className="my-4"
+        value={campaign.description}
+        onInput={(value) => editCampaign("description", value)}
+        onBlur={updateCampaign}
+      />
+
+      <ListCharacters
+        characters={campaign.characters}
+        campaignId={campaign.id}
+        onCreated={(character) => {
+          editCampaign("characters", [...campaign.characters, character]);
+        }}
+      />
+      {/* <Editor /> */}
 
       {/* <QuillInput /> */}
       {/* <RichtTextInput /> */}
