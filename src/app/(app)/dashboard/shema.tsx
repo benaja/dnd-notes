@@ -17,4 +17,5 @@ export const characterSchema = z.object({
   description: z.string().optional().nullable(),
   campaignId: z.string(),
   type: z.nativeEnum(CharacterType),
+  image: z.string().optional().nullable(),
 });

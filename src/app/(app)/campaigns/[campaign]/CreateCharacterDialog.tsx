@@ -22,6 +22,7 @@ import { characterSchema, CharacterType } from "../../dashboard/shema";
 import RadioGroupInput from "~/components/fiels/RadioGroupInput";
 import { Character } from "@prisma/client";
 import { useState } from "react";
+import { UploadButton } from "~/lib/uitls/uploadthing";
 const schema = characterSchema.pick({
   name: true,
   description: true,
@@ -45,6 +46,7 @@ export default function CreateCharacterDialog({
       name: "",
       description: "",
       type: CharacterType.NPC,
+      image: "",
     },
     resolver: zodResolver(schema),
     mode: "onBlur",
@@ -95,6 +97,13 @@ export default function CreateCharacterDialog({
                   value: CharacterType.Player,
                 },
               ]}
+            />
+            <UploadButton
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                if (!res) return;
+                formMethods.setValue("image", res[0].fileKey);
+              }}
             />
             <DialogFooter>
               <Button type="submit">Create</Button>
