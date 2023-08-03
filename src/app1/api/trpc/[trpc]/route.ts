@@ -1,8 +1,8 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { env } from "~/env.mjs";
-import { appRouter } from "~/server/root";
+import { appRouter } from "~/server/routers/_app";
 import { createTRPCContext } from "~/server/trpc";
-import prisma from "~/lib/prisma";
+import prisma from "~/server/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]/route";
 

@@ -6,9 +6,10 @@ await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ["@prisma/client", "bycript"],
-  },
+  reactStrictMode: true,
+  // experimental: {
+  //   serverComponentsExternalPackages: ["@prisma/client", "bycript"],
+  // },
 };
 
 export default nextConfig;

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "~/app/api/auth/[...nextauth]/route";
-import User from "~/app/user";
-import { FetchButton, LoginButton, LogoutButton } from "~/app/auth";
+import { authOptions } from "~/app1/api/auth/[...nextauth]/route";
+import User from "~/app1/user";
+import { FetchButton, LoginButton, LogoutButton } from "~/app1/auth";
 import { trpc } from "~/lib/trpc-client";
 
 export default async function Home() {

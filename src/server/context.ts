@@ -4,6 +4,7 @@ import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
 import { IncomingMessage } from "http";
 import { getSession } from "next-auth/react";
 import ws from "ws";
+import { getServerAuthSession } from "~/pages/api/auth/[...nextauth]";
 
 /**
  * Creates context for an incoming request
@@ -14,10 +15,15 @@ export const createContext = async (
     | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
     | trpcNext.CreateNextContextOptions
 ) => {
-  const session = await getSession(opts);
-
+  console.log("createContext", opts);
+  return {
+    session: await getSession(),
+  };
+  // const session = await getServerAuthSession({
+  //   req: opts.req,
+  //   res: opts.res,
+  // });
   console.log("createContext for", session?.user?.name ?? "unknown user");
-
   return {
     session,
   };

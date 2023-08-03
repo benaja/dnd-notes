@@ -4,7 +4,7 @@ import User from "../../user";
 import { FetchButton, LoginButton, LogoutButton } from "../../auth";
 import { trpc } from "~/lib/trpc-client";
 import dynamic from "next/dynamic";
-import prisma from "~/lib/prisma";
+import prisma from "~/server/prisma";
 import Link from "next/link";
 const CreateCampaignDialog = dynamic(() => import("./CreateCampaignDialog"), {
   ssr: false,

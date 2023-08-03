@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { characterSchema } from "~/app/(app)/dashboard/shema";
-import { createTRPCRouter, protectedProcedure } from "~/server/trpc";
+import { characterSchema } from "~/app1/(app)/dashboard/shema";
+import { router, protectedProcedure } from "~/server/trpc";
 
-export const characterRouter = createTRPCRouter({
+export const characterRouter = router({
   create: protectedProcedure
     .input(characterSchema)
     .mutation(async ({ input, ctx }) => {

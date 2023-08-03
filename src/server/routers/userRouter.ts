@@ -1,13 +1,9 @@
 import { hash } from "bcrypt";
 import { z } from "zod";
-import prisma from "~/lib/prisma";
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/trpc";
+import prisma from "~/server/prisma";
+import { router, publicProcedure, protectedProcedure } from "~/server/trpc";
 
-export const userRouter = createTRPCRouter({
+export const userRouter = router({
   register: publicProcedure
     .input(
       z

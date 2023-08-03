@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { campaignSchema } from "~/app/(app)/dashboard/shema";
-import { createTRPCRouter, protectedProcedure } from "~/server/trpc";
+import { router, protectedProcedure } from "~/server/trpc";
 
-export const campaignRouter = createTRPCRouter({
+export const campaignRouter = router({
   getById: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
@@ -11,7 +10,7 @@ export const campaignRouter = createTRPCRouter({
           id: input,
         },
         include: {
-          characters: true
+          characters: true,
         },
       });
 
