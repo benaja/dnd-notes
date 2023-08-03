@@ -17,7 +17,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { z } from "zod";
 import { trpc } from "~/lib/trpc-client";
-import { campaignSchema } from "./shema";
+import { campaignSchema } from "../../../components/campaign/shema";
 import { useRouter } from "next/navigation";
 type CampaignFormValues = z.infer<typeof campaignSchema>;
 

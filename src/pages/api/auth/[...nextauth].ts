@@ -1,88 +1,20 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { PrismaAdapter } from "@auth/prisma-adapter";
 import { compare } from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import NextAuth, { getServerSession } from "next-auth/next";
-import { env } from "~/env.mjs";
 import { GetServerSidePropsContext } from "next";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "~/server/prisma";
 
-const prisma = new PrismaClient();
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { authOptions } from "~/server/authOptions";
 
-export const authOptions: NextAuthOptions = {
+export default NextAuth({
+  // adapter cant be in authOptions otherwise the websocket trpc client will fail
   adapter: PrismaAdapter(prisma),
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/auth/signin",
-  },
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-    }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "example@example.com",
-        },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials?: { email: string; password: string }) {
-        if (!credentials?.email || !credentials.password) {
-          return null;
-        }
-
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-
-        if (
-          !user ||
-          !user.password ||
-          !(await compare(credentials.password, user.password))
-        ) {
-          return null;
-        }
-
-        return user;
-      },
-    }),
-  ],
-  callbacks: {
-    session: async ({ session, token }) => {
-      const user = await prisma.user.findUnique({
-        where: {
-          id: token.userId as string,
-        },
-      });
-
-      return {
-        ...session,
-        user: {
-          id: user?.id,
-          name: user?.name,
-          email: user?.email,
-        },
-      };
-    },
-    jwt: ({ token, user }) => {
-      if (user) {
-        token.userId = user.id;
-      }
-      return token;
-    },
-  },
-};
-
-export default NextAuth(authOptions);
+  ...authOptions,
+});
 
 // export { handler as GET, handler as POST };
 

@@ -1,11 +1,11 @@
-import * as trpc from "@trpc/server";
-import * as trpcNext from "@trpc/server/adapters/next";
+import trpcNext from "@trpc/server/adapters/next";
+import trpc from "@trpc/server";
 import { NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
 import { IncomingMessage } from "http";
+import { getServerSession } from "next-auth";
 import { getSession } from "next-auth/react";
 import ws from "ws";
-import { getServerAuthSession } from "~/pages/api/auth/[...nextauth]";
-
+import { authOptions } from "./authOptions";
 /**
  * Creates context for an incoming request
  * @link https://trpc.io/docs/context
@@ -13,17 +13,15 @@ import { getServerAuthSession } from "~/pages/api/auth/[...nextauth]";
 export const createContext = async (
   opts:
     | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
-    | trpcNext.CreateNextContextOptions
+    | trpcNext.CreateNextContextOptions,
+  type: "http" | "websocket" = "http",
 ) => {
-  console.log("createContext", opts);
-  return {
-    session: await getSession(),
-  };
-  // const session = await getServerAuthSession({
-  //   req: opts.req,
-  //   res: opts.res,
-  // });
-  console.log("createContext for", session?.user?.name ?? "unknown user");
+  let session = null;
+  if (type === "http") {
+    session = await getServerSession(opts.req, opts.res, authOptions);
+  } else {
+    session = await getSession({ req: opts.req });
+  }
   return {
     session,
   };

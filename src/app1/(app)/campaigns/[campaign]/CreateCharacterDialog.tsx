@@ -18,7 +18,10 @@ import { Label } from "~/components/ui/label";
 import { z } from "zod";
 import { trpc } from "~/lib/trpc-client";
 import { useRouter } from "next/navigation";
-import { characterSchema, CharacterType } from "../../dashboard/shema";
+import {
+  characterSchema,
+  CharacterType,
+} from "../../../../components/campaign/shema";
 import RadioGroupInput from "~/components/fiels/RadioGroupInput";
 import { Character } from "@prisma/client";
 import { useState } from "react";

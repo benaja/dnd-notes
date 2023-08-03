@@ -1,6 +1,6 @@
 import { hash } from "bcrypt";
 import { z } from "zod";
-import prisma from "~/server/prisma";
+import { prisma } from "~/server/prisma";
 import { router, publicProcedure, protectedProcedure } from "~/server/trpc";
 
 export const userRouter = router({

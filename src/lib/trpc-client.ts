@@ -1,46 +1,36 @@
-import superjson from "superjson";
-import {
-  createWSClient,
-  httpBatchLink,
-  loggerLink,
-  wsLink,
-} from "@trpc/client";
-import type { AppRouter } from "~/server/routers/_app";
+import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
+import { loggerLink } from "@trpc/client/links/loggerLink";
+import { wsLink, createWSClient } from "@trpc/client/links/wsLink";
 import { createTRPCNext } from "@trpc/next";
-
-import { inferProcedureOutput } from "@trpc/server";
+import type { inferProcedureOutput } from "@trpc/server";
 import { NextPageContext } from "next";
+import type { AppRouter } from "~/server/routers/_app";
+import superjson from "superjson";
 import getConfig from "next/config";
 
-import { env } from "~/env.mjs";
+const { publicRuntimeConfig } = getConfig();
 
-//     👆 **type-only** import
-
-// Pass AppRouter as generic here. 👇 This lets the `trpc` object know
-// what procedures are available on the server and their input/output types.
-// export const trpc = createTRPCProxyClient<AppRouter>({
-//   transformer: superjson,
-//   links: [httpBatchLink({ url: "http://localhost:3000/api/trpc" })],
-// });
+// ℹ️ Type-only import:
+// https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
 function getEndingLink(ctx: NextPageContext | undefined) {
   if (typeof window === "undefined") {
     return httpBatchLink({
-      url: `${env.APP_URL}/api/trpc`,
+      url: `${publicRuntimeConfig.APP_URL}/api/trpc`,
       headers() {
+        console.log("getEndingLink", ctx?.req?.headers.cookie);
         if (!ctx?.req?.headers) {
           return {};
         }
         // on ssr, forward client's headers to the server
         return {
-          ...ctx.req.headers,
-          "x-ssr": "1",
+          cookie: ctx.req.headers.cookie,
         };
       },
     });
   }
   const client = createWSClient({
-    url: env.NEXT_PUBLIC_WS_URL,
+    url: publicRuntimeConfig.WS_URL,
   });
   return wsLink<AppRouter>({
     client,
@@ -53,6 +43,11 @@ function getEndingLink(ctx: NextPageContext | undefined) {
  */
 export const trpc = createTRPCNext<AppRouter>({
   config({ ctx }) {
+    /**
+     * If you want to use SSR, you need to use the server's full URL
+     * @link https://trpc.io/docs/ssr
+     */
+
     return {
       /**
        * @link https://trpc.io/docs/client/links
@@ -89,5 +84,5 @@ export const trpc = createTRPCNext<AppRouter>({
  * @example type HelloOutput = inferQueryOutput<'hello'>
  */
 export type inferQueryOutput<
-  TRouteKey extends keyof AppRouter["_def"]["queries"]
+  TRouteKey extends keyof AppRouter["_def"]["queries"],
 > = inferProcedureOutput<AppRouter["_def"]["queries"][TRouteKey]>;

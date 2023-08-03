@@ -1,11 +1,27 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "~/server/trpc";
+import { prisma } from "~/server/prisma";
+import { campaignSchema } from "~/components/campaign/shema";
 
 export const campaignRouter = router({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const campaigns = await prisma.campaign.findMany({
+      where: {
+        users: {
+          some: {
+            userId: ctx.session.user.id,
+          },
+        },
+      },
+    });
+
+    return campaigns;
+  }),
+
   getById: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      const campaign = await ctx.prisma.campaign.findUnique({
+      const campaign = await prisma.campaign.findUnique({
         where: {
           id: input,
         },
@@ -20,7 +36,7 @@ export const campaignRouter = router({
   create: protectedProcedure
     .input(campaignSchema)
     .mutation(async ({ input, ctx }) => {
-      const campaign = await ctx.prisma.campaign.create({
+      const campaign = await prisma.campaign.create({
         data: {
           ...input,
           users: {
@@ -44,7 +60,7 @@ export const campaignRouter = router({
   update: protectedProcedure
     .input(campaignSchema)
     .mutation(async ({ input, ctx }) => {
-      const campaign = await ctx.prisma.campaign.update({
+      const campaign = await prisma.campaign.update({
         where: {
           id: input.id,
         },

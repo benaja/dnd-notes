@@ -15,11 +15,6 @@ export default async function Home() {
 
   const campaigns = await prisma.campaign.findMany();
 
-  // console.log((await res).json());
-
-  // const res = await trpc.example.getSecretMessage.query();
-
-  // console.log(res);
   return (
     <div>
       <h1 className="text-3xl"> Hey {session?.user?.name ?? "there"}!</h1>

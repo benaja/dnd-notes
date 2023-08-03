@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "~/server/trpc";
+import { prisma } from "../prisma";
 
 export const exampleRouter = router({
   hello: publicProcedure
@@ -11,7 +12,7 @@ export const exampleRouter = router({
     }),
 
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.user.findMany();
+    return prisma.user.findMany();
   }),
 
   getSecretMessage: protectedProcedure.query(() => {

@@ -9,6 +9,7 @@ export default function Page() {
       <LoginButton />
       <LogoutButton />
       <FetchButton />
+
       <h1 className=" text-2xl">Next.js + TypeScript + Tailwind CSS</h1>
 
       <pre>{JSON.stringify(session.data)}</pre>

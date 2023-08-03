@@ -7,11 +7,6 @@ import { trpc } from "~/lib/trpc-client";
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
-  // console.log((await res).json());
-
-  // const res = await trpc.example.getSecretMessage.query();
-
-  // console.log(res);
   return (
     <div>
       <LoginButton />

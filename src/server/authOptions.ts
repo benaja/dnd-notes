@@ -1,19 +1,15 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import { compare } from "bcrypt";
 import { NextAuthOptions } from "next-auth";
-import NextAuth, { getServerSession } from "next-auth/next";
-import { GetServerSidePropsContext } from "next";
-import { CustomSession } from "~/server/trpc";
-
-const prisma = new PrismaClient();
+import { prisma } from "~/server/prisma";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
+  },
+  pages: {
+    signIn: "/auth/signin",
   },
   providers: [
     GoogleProvider({
@@ -77,20 +73,4 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-};
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
-
-/**
- * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
- *
- * @see https://next-auth.js.org/configuration/nextjs
- */
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn, signOut } from "next-auth/react";
+import { useEffect } from "react";
 import { trpc } from "~/lib/trpc-client";
 
 export function LoginButton() {
@@ -23,7 +24,10 @@ export function FetchButton() {
     });
   }
 
-  console.log(secretMessageQuery.data);
+  useEffect(() => {
+    console.log("secretMessageQuery.data", secretMessageQuery.data);
+  }, [secretMessageQuery.data]);
+
 
   return <button onClick={() => doFetch()}>Fetch</button>;
 }
