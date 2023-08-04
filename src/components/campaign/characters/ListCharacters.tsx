@@ -1,5 +1,8 @@
 import { Character } from "@prisma/client";
-import CreateCharacterDialog from "./CreateCharacterDialog";
+import dynamic from "next/dynamic";
+const CreateCharacterDialog = dynamic(() => import("./CreateCharacterDialog"), {
+  ssr: false,
+});
 
 export default function ListCharacters({
   characters,

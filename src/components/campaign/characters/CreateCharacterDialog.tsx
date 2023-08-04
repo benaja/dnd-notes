@@ -18,14 +18,12 @@ import { Label } from "~/components/ui/label";
 import { z } from "zod";
 import { trpc } from "~/lib/trpc-client";
 import { useRouter } from "next/navigation";
-import {
-  characterSchema,
-  CharacterType,
-} from "../../../../components/campaign/shema";
+import { characterSchema, CharacterType } from "../shema";
 import RadioGroupInput from "~/components/fiels/RadioGroupInput";
 import { Character } from "@prisma/client";
 import { useState } from "react";
-import { UploadButton } from "~/lib/uitls/uploadthing";
+import { UploadButton } from "~/lib/uploadthing";
+import UploadImage from "~/components/fiels/UploadImage";
 const schema = characterSchema.pick({
   name: true,
   description: true,
@@ -101,13 +99,14 @@ export default function CreateCharacterDialog({
                 },
               ]}
             />
-            <UploadButton
+            <UploadImage />
+            {/* <UploadButton
               endpoint="imageUploader"
               onClientUploadComplete={(res) => {
                 if (!res) return;
                 formMethods.setValue("image", res[0].fileKey);
               }}
-            />
+            /> */}
             <DialogFooter>
               <Button type="submit">Create</Button>
             </DialogFooter>

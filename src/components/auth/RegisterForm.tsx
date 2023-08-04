@@ -1,5 +1,5 @@
 import { signIn } from "next-auth/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import TextInput from "~/components/fiels/TextInput";
@@ -12,7 +12,11 @@ interface RegisterFormValues {
   passwordConfirmation: string;
 }
 
-export const RegisterForm = () => {
+export const RegisterForm = ({
+  callbackUrl = "/app",
+}: {
+  callbackUrl: string;
+}) => {
   const [loading, setLoading] = useState(false);
   const formMethods = useForm<RegisterFormValues>({
     defaultValues: {
@@ -24,19 +28,21 @@ export const RegisterForm = () => {
   });
   const registerMutation = trpc.user.register.useMutation();
 
-  if (registerMutation.error?.data?.zodError) {
-    const fieldErrors = registerMutation.error.data.zodError.fieldErrors;
-    formMethods.clearErrors();
+  useEffect(() => {
+    if (registerMutation.error?.data?.zodError) {
+      const fieldErrors = registerMutation.error.data.zodError.fieldErrors;
+      formMethods.clearErrors();
 
-    for (let key of Object.keys(fieldErrors)) {
-      formMethods.setError(key as keyof RegisterFormValues, {
-        type: "manual",
-        message: fieldErrors[key]?.[0],
-      });
+      for (let key of Object.keys(fieldErrors)) {
+        formMethods.setError(key as keyof RegisterFormValues, {
+          type: "manual",
+          message: fieldErrors[key]?.[0],
+        });
+      }
+
+      console.log(registerMutation.error.data.zodError.fieldErrors);
     }
-
-    console.log(registerMutation.error.data.zodError.fieldErrors);
-  }
+  }, [registerMutation.error, formMethods]);
 
   const onSubmit = async (values: RegisterFormValues) => {
     setLoading(true);
@@ -44,34 +50,14 @@ export const RegisterForm = () => {
     try {
       await registerMutation.mutateAsync(values);
 
-      signIn(undefined, { callbackUrl: "/" });
+      await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        callbackUrl,
+      });
     } catch (e) {}
 
     setLoading(false);
-
-    // const res = await fetch("/api/register", {
-    //   method: "POST",
-    //   body: JSON.stringify(values),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-
-    // setLoading(false);
-    // if (!res.ok) {
-    //   const response = await res.json();
-    //   if (response.status === "validation-error") {
-    //     for (let error of response.issues) {
-    //       formMethods.clearErrors();
-    //       formMethods.setError(error.path[0], {
-    //         type: "manual",
-    //         message: error.message,
-    //       });
-    //     }
-    //   }
-    //   // setError((await res.json()).message);
-    //   return;
-    // }
   };
 
   return (

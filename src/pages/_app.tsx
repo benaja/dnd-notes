@@ -1,16 +1,35 @@
 import "~/assets/globals.css";
+import "@uploadthing/react/styles.css";
+
 import type { AppProps, AppType } from "next/app";
 import { trpc } from "~/lib/trpc-client";
 import { SessionProvider } from "next-auth/react";
+import { NextPage } from "next";
+import { ReactElement, ReactNode } from "react";
+import Link from "next/link";
+import Head from "next/head";
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
 const MyApp: AppType = ({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps) => {
+}: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <>
+
+      <SessionProvider session={session}>
+        {getLayout(<Component {...pageProps} />)}
+      </SessionProvider>
+    </>
   );
 };
 

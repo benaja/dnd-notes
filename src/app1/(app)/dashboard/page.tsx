@@ -6,9 +6,12 @@ import { trpc } from "~/lib/trpc-client";
 import dynamic from "next/dynamic";
 import prisma from "~/server/prisma";
 import Link from "next/link";
-const CreateCampaignDialog = dynamic(() => import("./CreateCampaignDialog"), {
-  ssr: false,
-});
+const CreateCampaignDialog = dynamic(
+  () => import("../../../components/campaign/CreateCampaignDialog"),
+  {
+    ssr: false,
+  },
+);
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

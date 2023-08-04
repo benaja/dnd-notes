@@ -7,11 +7,7 @@ import Icon from "~/components/ui/Icon";
 import TopNavigation from "~/components/ui/TopNavigation";
 import { Transition } from "react-transition-group";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [isActive, setIsActive] = useState(false);
   const [mousover, setMousover] = useState(false);
   const [persist, setPersist] = useState(false);
@@ -101,7 +97,7 @@ export default function RootLayout({
           ))}
         </ul>
       </nav>
-      <div className="flex w-screen pt-14 sm:pt-20">
+      <div className="flex min-h-screen w-screen bg-gray-50 pt-14 sm:pt-20">
         <div
           className={classNames(
             {
@@ -111,7 +107,7 @@ export default function RootLayout({
             "hidden shrink-0 transition-all duration-500 sm:block",
           )}
         ></div>
-        <div className="grow overflow-x-hidden px-6 py-6 sm:px-10 sm:py-8">
+        <div className="grow overflow-x-hidden  px-6 py-6 sm:px-10 sm:py-8">
           {children}
         </div>
       </div>

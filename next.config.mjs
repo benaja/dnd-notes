@@ -25,6 +25,12 @@ const nextConfig = {
   },
   /** We run eslint as a separate task in CI */
   eslint: { ignoreDuringBuilds: !!process.env.CI },
+  experimental: {
+    esmExternals: false,
+  },
+  images: {
+    domains: ["uploadthing.com"],
+  },
 };
 
 export default nextConfig;

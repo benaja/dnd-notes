@@ -1,14 +1,27 @@
+import { useSearchParams } from "next/navigation";
 import { RegisterForm } from "~/components/auth/RegisterForm";
+import AuthLayout from "~/components/layouts/AuthLayout";
+import AppLink from "~/components/ui/AppLink";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/app";
+
   return (
-    <>
-      <section className="flex h-screen items-center justify-center">
-        <div className="bg-white px-8 py-10 md:w-8/12 lg:w-5/12">
-          <h1 className="mb-6 text-3xl font-bold">Create an Account</h1>
-          <RegisterForm />
-        </div>
-      </section>
-    </>
+    <AuthLayout>
+      <div className="mb-6">
+        <h1 className="text-4xl font-medium">Create an Account</h1>
+        <p className="mt-3">
+          <span className="text-gray-400">Already have an account?</span>
+          <AppLink
+            href={{ pathname: "/auth/signin", query: { callbackUrl } }}
+            className="ml-2 font-medium "
+          >
+            Sign in
+          </AppLink>
+        </p>
+      </div>
+      <RegisterForm callbackUrl={callbackUrl} />
+    </AuthLayout>
   );
 }
