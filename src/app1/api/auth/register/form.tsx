@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-import TextInput from "~/components/fiels/TextInput";
+import TextInput from "~/components/fields/TextInput";
 import { trpc } from "~/lib/trpc-client";
 
 interface RegisterFormValues {

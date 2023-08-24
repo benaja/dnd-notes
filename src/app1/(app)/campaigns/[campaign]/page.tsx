@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import EditableText from "~/components/fiels/EditableText";
-import Editor from "~/components/fiels/Editor";
-import QuillInput from "~/components/fiels/RichtTextInput";
+import { useCallback, useEffect, useState } from "react";
+import ListCharacters from "~/components/campaign/characters/ListCharacters";
+import { CharacterType } from "~/components/campaign/shema";
+import EditableText from "~/components/fields/EditableText";
+import Editor from "~/components/fields/Editor";
+import QuillInput from "~/components/fields/RichtTextInput";
 import { trpc } from "~/lib/trpc-client";
-import ListCharacters from "./ListCharacters";
 
 export default function Campaign({
   params,
@@ -24,19 +25,19 @@ export default function Campaign({
     setCampaign(data);
   }, [data]);
 
-  if (!campaign || !data) {
-    return null;
-  }
-
-  function editCampaign(key: string, value: any) {
+  const editCampaign = useCallback((key: string, value: any) => {
     setCampaign((prev) =>
       prev
         ? {
             ...prev,
             [key]: value,
           }
-        : null
+        : null,
     );
+  }, []);
+
+  if (!campaign || !data) {
+    return null;
   }
 
   function updateCampaign() {
@@ -63,9 +64,13 @@ export default function Campaign({
         onBlur={updateCampaign}
       />
 
+      <p className="text-lg font-bold">Players</p>
       <ListCharacters
-        characters={campaign.characters}
+        characters={campaign.characters.filter(
+          (c) => c.type === CharacterType.Player,
+        )}
         campaignId={campaign.id}
+        type={CharacterType.Player}
         onCreated={(character) => {
           editCampaign("characters", [...campaign.characters, character]);
         }}

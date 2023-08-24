@@ -20,12 +20,15 @@ import { TRANSFORMERS } from "@lexical/markdown";
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
-import "./themes/styles.css";
 import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
 import { MentionNode } from "./nodes/MentionNode";
 
 function Placeholder() {
-  return <div className="editor-placeholder">Enter some rich text...</div>;
+  return (
+    <div className="pointer-events-none absolute left-3 top-4 inline-block select-none overflow-hidden text-ellipsis text-gray-500">
+      Enter some rich text...
+    </div>
+  );
 }
 
 const editorConfig = {
@@ -56,7 +59,7 @@ const editorConfig = {
 export default function Editor() {
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container">
+      <div className="editor-container text-black ">
         <ToolbarPlugin />
         <div className="editor-inner">
           <RichTextPlugin

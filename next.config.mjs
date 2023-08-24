@@ -22,6 +22,7 @@ const nextConfig = {
     APP_URL: process.env.APP_URL,
     WS_URL: process.env.WS_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    S3_BUCKET_ENDPOINT: process.env.S3_BUCKET_ENDPOINT,
   },
   /** We run eslint as a separate task in CI */
   eslint: { ignoreDuringBuilds: !!process.env.CI },
@@ -29,7 +30,7 @@ const nextConfig = {
     esmExternals: false,
   },
   images: {
-    domains: ["uploadthing.com"],
+    domains: ["uploadthing.com", "dnd-notes.fra1.digitaloceanspaces.com"],
   },
 };
 

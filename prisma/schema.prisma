@@ -106,6 +106,7 @@ model Character {
   name        String
   description String?  @db.Text
   type        String
+  avatar      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

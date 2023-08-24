@@ -174,7 +174,7 @@ export default function ToolbarPlugin() {
           updateToolbar();
           return false;
         },
-        LowPriority
+        LowPriority,
       ),
       editor.registerCommand(
         CAN_UNDO_COMMAND,
@@ -182,7 +182,7 @@ export default function ToolbarPlugin() {
           setCanUndo(payload);
           return false;
         },
-        LowPriority
+        LowPriority,
       ),
       editor.registerCommand(
         CAN_REDO_COMMAND,
@@ -190,8 +190,8 @@ export default function ToolbarPlugin() {
           setCanRedo(payload);
           return false;
         },
-        LowPriority
-      )
+        LowPriority,
+      ),
     );
   }, [editor, updateToolbar]);
 
@@ -207,7 +207,7 @@ export default function ToolbarPlugin() {
         }
       });
     },
-    [editor, selectedElementKey]
+    [editor, selectedElementKey],
   );
 
   const insertLink = useCallback(() => {
@@ -219,7 +219,10 @@ export default function ToolbarPlugin() {
   }, [editor, isLink]);
 
   return (
-    <div className="toolbar" ref={toolbarRef}>
+    <div
+      className="toolbar mb-px flex rounded-t-md bg-white p-1 align-middle"
+      ref={toolbarRef}
+    >
       <button
         disabled={!canUndo}
         onClick={() => {
@@ -262,7 +265,7 @@ export default function ToolbarPlugin() {
                 toolbarRef={toolbarRef}
                 setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
               />,
-              document.body
+              document.body,
             )}
           <Divider />
         </>

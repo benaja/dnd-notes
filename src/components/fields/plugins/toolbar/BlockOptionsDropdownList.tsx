@@ -4,7 +4,7 @@ import {
   $isRangeSelection,
   LexicalEditor,
 } from "lexical";
-import { useEffect, useRef } from "react";
+import { ButtonHTMLAttributes, useEffect, useRef } from "react";
 import { $setBlocksType } from "@lexical/selection";
 import {
   INSERT_ORDERED_LIST_COMMAND,
@@ -13,6 +13,33 @@ import {
 } from "@lexical/list";
 import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import { $createCodeNode } from "@lexical/code";
+import classNames from "classnames";
+
+function DropdownItem({
+  children,
+  className,
+  active,
+  ...props
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+} & ButtonHTMLAttributes<HTMLButtonElement>) {
+  console.log(active);
+  return (
+    <button
+      {...props}
+      className={classNames(
+        className,
+        "mx-2 flex min-w-[200px] shrink-0 cursor-pointer flex-row content-center rounded-md border-none p-2 hover:bg-gray-100",
+        {
+          "font-bold": active,
+        },
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function BlockOptionsDropdownList({
   editor,
@@ -25,6 +52,7 @@ export default function BlockOptionsDropdownList({
   toolbarRef: React.RefObject<HTMLDivElement>;
   setShowBlockOptionsDropDown: (show: boolean) => void;
 }) {
+  console.log(blockType);
   const dropDownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -143,42 +171,42 @@ export default function BlockOptionsDropdownList({
   };
 
   return (
-    <div className="dropdown" ref={dropDownRef}>
-      <button className="item" onClick={formatParagraph}>
+    <div
+      className="dropdown absolute z-[5] block min-h-[40px] min-w-[100px] rounded bg-white shadow-md"
+      ref={dropDownRef}
+    >
+      <DropdownItem
+        onClick={formatParagraph}
+        active={blockType === "paragraph"}
+      >
         <span className="icon paragraph" />
         <span className="text">Normal</span>
-        {blockType === "paragraph" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatLargeHeading}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "h1"} onClick={formatLargeHeading}>
         <span className="icon large-heading" />
         <span className="text">Large Heading</span>
-        {blockType === "h1" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatSmallHeading}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "h2"} onClick={formatSmallHeading}>
         <span className="icon small-heading" />
         <span className="text">Small Heading</span>
-        {blockType === "h2" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatBulletList}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "ul"} onClick={formatBulletList}>
         <span className="icon bullet-list" />
         <span className="text">Bullet List</span>
-        {blockType === "ul" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatNumberedList}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "ol"} onClick={formatNumberedList}>
         <span className="icon numbered-list" />
         <span className="text">Numbered List</span>
-        {blockType === "ol" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatQuote}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "paragraph"} onClick={formatQuote}>
         <span className="icon quote" />
         <span className="text">Quote</span>
         {blockType === "quote" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatCode}>
+      </DropdownItem>
+      <DropdownItem active={blockType === "code"} onClick={formatCode}>
         <span className="icon code" />
         <span className="text">Code Block</span>
-        {blockType === "code" && <span className="active" />}
-      </button>
+      </DropdownItem>
     </div>
   );
 }

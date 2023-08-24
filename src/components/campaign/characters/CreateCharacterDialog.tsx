@@ -1,7 +1,7 @@
 "use client";
 
 import { FormProvider, useForm } from "react-hook-form";
-import TextInput from "~/components/fiels/TextInput";
+import TextInput from "~/components/fields/TextInput";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -13,70 +13,68 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
 import { z } from "zod";
 import { trpc } from "~/lib/trpc-client";
-import { useRouter } from "next/navigation";
-import { characterSchema, CharacterType } from "../shema";
-import RadioGroupInput from "~/components/fiels/RadioGroupInput";
+import { CharacterType } from "../shema";
 import { Character } from "@prisma/client";
 import { useState } from "react";
-import { UploadButton } from "~/lib/uploadthing";
-import UploadImage from "~/components/fiels/UploadImage";
-const schema = characterSchema.pick({
-  name: true,
-  description: true,
-  type: true,
+import ImageInput from "~/components/fields/ImageInput";
+
+const characterSchema = z.object({
+  name: z.string().max(255),
+  description: z.string().optional().nullable(),
+  avatar: z.string().optional().nullable(),
 });
-type CharacterFormValues = z.infer<typeof schema>;
+type CharacterFormValues = z.infer<typeof characterSchema>;
 
 export default function CreateCharacterDialog({
   campaignId,
   onCreated,
+  type,
 }: {
   campaignId: string;
   onCreated?: (character: Character) => void;
+  type: CharacterType;
 }) {
   const [open, setOpen] = useState(false);
-  const createCharacterMutation = trpc.character.create.useMutation();
-  const router = useRouter();
+  const createCharacterMutation = trpc.character.create.useMutation({
+    onSuccess(data) {
+      onCreated?.(data);
+      createCharacterMutation.reset();
+      setOpen(false);
+      formMethods.reset();
+    },
+  });
 
   const formMethods = useForm({
     defaultValues: {
       name: "",
       description: "",
       type: CharacterType.NPC,
-      image: "",
+      avatar: "",
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(characterSchema),
     mode: "onBlur",
   });
 
-  if (createCharacterMutation.status === "success") {
-    onCreated?.(createCharacterMutation.data);
-    createCharacterMutation.reset();
-    setOpen(false);
-    formMethods.reset();
-  }
-
   async function submit(values: CharacterFormValues) {
+    console.log(values);
     createCharacterMutation.mutate({
       ...values,
       campaignId,
+      type,
     });
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create Character</Button>
+        <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-2xl hover:bg-gray-200">
+          +
+        </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create Character</DialogTitle>
-          {/* <DialogDescription>
-            Give your campaign a name and a description.
-          </DialogDescription> */}
         </DialogHeader>
         <FormProvider {...formMethods}>
           <form onSubmit={formMethods.handleSubmit(submit)}>
@@ -86,7 +84,7 @@ export default function CreateCharacterDialog({
               label="Description"
               className="mt-4"
             />
-            <RadioGroupInput
+            {/* <RadioGroupInput
               name="type"
               items={[
                 {
@@ -98,15 +96,8 @@ export default function CreateCharacterDialog({
                   value: CharacterType.Player,
                 },
               ]}
-            />
-            <UploadImage />
-            {/* <UploadButton
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                if (!res) return;
-                formMethods.setValue("image", res[0].fileKey);
-              }}
             /> */}
+            <ImageInput name="avatar" label="Avatar" />
             <DialogFooter>
               <Button type="submit">Create</Button>
             </DialogFooter>

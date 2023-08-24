@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import TextInput from "~/components/fiels/TextInput";
+import TextInput from "~/components/fields/TextInput";
 
 export default function CredentialsForm() {
   const router = useRouter();

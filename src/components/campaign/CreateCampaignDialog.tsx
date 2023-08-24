@@ -1,7 +1,7 @@
 "use client";
 
 import { FormProvider, useForm } from "react-hook-form";
-import TextInput from "~/components/fiels/TextInput";
+import TextInput from "~/components/fields/TextInput";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,

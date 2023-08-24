@@ -1,10 +1,15 @@
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
-import EditableText from "~/components/fiels/EditableText";
+import { CharacterType } from "~/components/campaign/shema";
+import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
+const Editor = dynamic(() => import("~/components/fields/Editor"), {
+  ssr: false,
+});
 
 const Page: NextPageWithLayout = function Campaign() {
   const router = useRouter();
@@ -60,14 +65,30 @@ const Page: NextPageWithLayout = function Campaign() {
         onBlur={updateCampaign}
       />
 
+      <p className="text-lg font-bold">Players</p>
       <ListCharacters
-        characters={campaign.characters}
+        characters={campaign.characters.filter(
+          (c) => c.type === CharacterType.Player,
+        )}
         campaignId={campaign.id}
+        type={CharacterType.Player}
         onCreated={(character) => {
           editCampaign("characters", [...campaign.characters, character]);
         }}
       />
-      {/* <Editor /> */}
+
+      <p className="text-lg font-bold">NPCs</p>
+      <ListCharacters
+        characters={campaign.characters.filter(
+          (c) => c.type === CharacterType.NPC,
+        )}
+        campaignId={campaign.id}
+        type={CharacterType.NPC}
+        onCreated={(character) => {
+          editCampaign("characters", [...campaign.characters, character]);
+        }}
+      />
+      <Editor />
 
       {/* <QuillInput /> */}
       {/* <RichtTextInput /> */}

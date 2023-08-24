@@ -1,4 +1,4 @@
-.other h2 {
+/* .other h2 {
   font-size: 18px;
   color: #444;
   margin-bottom: 7px;
@@ -14,17 +14,7 @@
   padding: 0;
   margin: 0;
   list-style-type: none;
-}
-
-.App {
-  font-family: sans-serif;
-  text-align: center;
-}
-
-h1 {
-  font-size: 24px;
-  color: #333;
-}
+} */
 
 .ltr {
   text-align: left;
@@ -32,19 +22,6 @@ h1 {
 
 .rtl {
   text-align: right;
-}
-
-.editor-container {
-  margin: 20px auto 20px auto;
-  border-radius: 2px;
-  max-width: 600px;
-  color: #000;
-  position: relative;
-  line-height: 20px;
-  font-weight: 400;
-  text-align: left;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }
 
 .editor-inner {
@@ -62,19 +39,6 @@ h1 {
   outline: 0;
   padding: 15px 10px;
   caret-color: #444;
-}
-
-.editor-placeholder {
-  color: #999;
-  overflow: hidden;
-  position: absolute;
-  text-overflow: ellipsis;
-  top: 15px;
-  left: 10px;
-  font-size: 15px;
-  user-select: none;
-  display: inline-block;
-  pointer-events: none;
 }
 
 .editor-text-bold {
@@ -247,6 +211,7 @@ h1 {
   padding: 0;
   margin: 0;
   margin-left: 16px;
+  list-style-type: disc;
 }
 
 .editor-listitem {
@@ -304,16 +269,6 @@ pre::-webkit-scrollbar-thumb {
 
 .debug-timetravel-button:hover {
   text-decoration: underline;
-}
-
-.toolbar {
-  display: flex;
-  margin-bottom: 1px;
-  background: #fff;
-  padding: 4px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  vertical-align: middle;
 }
 
 .toolbar button.toolbar-item {
@@ -425,36 +380,6 @@ pre::-webkit-scrollbar-thumb {
   width: 18px;
   height: 18px;
   margin: 2px;
-}
-
-.dropdown {
-  z-index: 5;
-  display: block;
-  position: absolute;
-  box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-  border-radius: 8px;
-  min-width: 100px;
-  min-height: 40px;
-  background-color: #fff;
-}
-
-.dropdown .item {
-  margin: 0 8px 0 8px;
-  padding: 8px;
-  color: #050505;
-  cursor: pointer;
-  line-height: 16px;
-  font-size: 15px;
-  display: flex;
-  align-content: center;
-  flex-direction: row;
-  flex-shrink: 0;
-  justify-content: space-between;
-  background-color: #fff;
-  border-radius: 8px;
-  border: 0;
-  min-width: 268px;
 }
 
 .dropdown .item .active {
