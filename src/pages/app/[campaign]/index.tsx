@@ -7,9 +7,12 @@ import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
-const Editor = dynamic(() => import("~/components/fields/Editor"), {
-  ssr: false,
-});
+const Editor = dynamic(
+  () => import("~/components/fields/lexical-editor/Editor"),
+  {
+    ssr: false,
+  },
+);
 
 const Page: NextPageWithLayout = function Campaign() {
   const router = useRouter();

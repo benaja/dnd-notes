@@ -34,25 +34,38 @@ export const LowPriority = 1;
 const supportedBlockTypes = new Set([
   "paragraph",
   "quote",
-  "code",
+  // "code",
   "h1",
   "h2",
+  "h3",
   "ul",
   "ol",
 ]);
 
 const blockTypeToBlockName = {
   code: "Code Block",
-  h1: "Large Heading",
-  h2: "Small Heading",
-  h3: "Heading",
-  h4: "Heading",
-  h5: "Heading",
+  h1: "Heading 1",
+  h2: "Heading 2",
+  h3: "Heading 3",
   ol: "Numbered List",
+  ul: "Bulleted List",
   paragraph: "Normal",
   quote: "Quote",
-  ul: "Bulleted List",
 };
+
+const FONT_SIZE_OPTIONS: [string, string][] = [
+  ["10px", "10px"],
+  ["11px", "11px"],
+  ["12px", "12px"],
+  ["13px", "13px"],
+  ["14px", "14px"],
+  ["15px", "15px"],
+  ["16px", "16px"],
+  ["17px", "17px"],
+  ["18px", "18px"],
+  ["19px", "19px"],
+  ["20px", "20px"],
+];
 
 function Divider() {
   return <div className="divider" />;
@@ -105,8 +118,6 @@ export default function ToolbarPlugin() {
   const [blockType, setBlockType] =
     useState<keyof typeof blockTypeToBlockName>("paragraph");
   const [selectedElementKey, setSelectedElementKey] = useState(null);
-  const [showBlockOptionsDropDown, setShowBlockOptionsDropDown] =
-    useState(false);
   const [codeLanguage, setCodeLanguage] = useState("");
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
@@ -220,7 +231,7 @@ export default function ToolbarPlugin() {
 
   return (
     <div
-      className="toolbar mb-px flex rounded-t-md bg-white p-1 align-middle"
+      className="toolbar sticky top-20 mb-px flex rounded-t-md bg-white p-1 align-middle"
       ref={toolbarRef}
     >
       <button
@@ -246,28 +257,13 @@ export default function ToolbarPlugin() {
       <Divider />
       {supportedBlockTypes.has(blockType) && (
         <>
-          <button
-            className="toolbar-item block-controls"
-            onClick={() =>
-              setShowBlockOptionsDropDown(!showBlockOptionsDropDown)
-            }
-            aria-label="Formatting Options"
-          >
-            <span className={"icon block-type " + blockType} />
-            <span className="text">{blockTypeToBlockName[blockType]}</span>
-            <Icon>expand_more</Icon>
-          </button>
-          {showBlockOptionsDropDown &&
-            createPortal(
-              <BlockOptionsDropdownList
-                editor={editor}
-                blockType={blockType}
-                toolbarRef={toolbarRef}
-                setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
-              />,
-              document.body,
-            )}
           <Divider />
+          <BlockOptionsDropdownList
+            editor={editor}
+            blockType={blockType}
+            toolbarRef={toolbarRef}
+            blockTypeToBlockName={blockTypeToBlockName}
+          />
         </>
       )}
       {blockType === "code" ? (

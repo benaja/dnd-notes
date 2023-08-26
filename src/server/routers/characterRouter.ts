@@ -15,4 +15,15 @@ export const characterRouter = router({
 
       return character;
     }),
+  search: protectedProcedure.input(z.string()).query(async ({ input, ctx }) => {
+    const characters = await prisma.character.findMany({
+      where: {
+        name: {
+          contains: input,
+        },
+      },
+    });
+
+    return characters;
+  }),
 });

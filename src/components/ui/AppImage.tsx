@@ -2,13 +2,15 @@ import getConfig from "next/config";
 import Image from "next/image";
 
 export default function AppImage(props: {
-  src: string;
-  alt: string;
+  src?: string | null;
+  alt?: string;
   width?: number;
   height?: number;
   className?: string;
 }) {
   const { publicRuntimeConfig } = getConfig();
+
+  if (!props.src) return null;
 
   return (
     <Image

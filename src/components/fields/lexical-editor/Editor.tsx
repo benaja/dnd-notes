@@ -1,4 +1,4 @@
-import ExampleTheme from "./themes/ExampleTheme";
+import ExampleTheme from "../themes/ExampleTheme";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -22,6 +22,9 @@ import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
 import { MentionNode } from "./nodes/MentionNode";
+import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
+import { useEffect, useState } from "react";
+import { CAN_USE_DOM } from "./utils/canUseDOM";
 
 function Placeholder() {
   return (
@@ -57,13 +60,47 @@ const editorConfig = {
 };
 
 export default function Editor() {
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+  const [isSmallWidthViewport, setIsSmallWidthViewport] =
+    useState<boolean>(false);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
+  useEffect(() => {
+    const updateViewPortWidth = () => {
+      const isNextSmallWidthViewport =
+        CAN_USE_DOM && window.matchMedia("(max-width: 1025px)").matches;
+
+      if (isNextSmallWidthViewport !== isSmallWidthViewport) {
+        setIsSmallWidthViewport(isNextSmallWidthViewport);
+      }
+    };
+    updateViewPortWidth();
+    window.addEventListener("resize", updateViewPortWidth);
+
+    return () => {
+      window.removeEventListener("resize", updateViewPortWidth);
+    };
+  }, [isSmallWidthViewport]);
+
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container text-black ">
         <ToolbarPlugin />
         <div className="editor-inner">
           <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
+            contentEditable={
+              <div className="editor-scroller">
+                <div className="editor" ref={onRef}>
+                  <ContentEditable className="editor-input" />
+                </div>
+              </div>
+            }
             placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
@@ -77,6 +114,12 @@ export default function Editor() {
           <ListMaxIndentLevelPlugin maxDepth={7} />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <AttachCharactersPlugin />
+
+          {floatingAnchorElem && !isSmallWidthViewport && (
+            <>
+              <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
+            </>
+          )}
         </div>
       </div>
     </LexicalComposer>
