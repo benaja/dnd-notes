@@ -14,7 +14,11 @@ import {
   LexicalEditor,
   RangeSelection,
 } from "lexical";
-import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import {
+  $isLinkNode,
+  TOGGLE_LINK_COMMAND,
+  $createLinkNode,
+} from "@lexical/link";
 import { $isParentElementRTL, $isAtNodeEnd } from "@lexical/selection";
 import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
 import { $isListNode, ListNode } from "@lexical/list";
@@ -28,6 +32,7 @@ import {
 import Icon from "~/components/ui/Icon";
 import BlockOptionsDropdownList from "./toolbar/BlockOptionsDropdownList";
 import FloatingLinkEditor from "./toolbar/FloatingLinkEditor";
+import { $setBlocksType } from "@lexical/selection";
 
 export const LowPriority = 1;
 
@@ -223,7 +228,7 @@ export default function ToolbarPlugin() {
 
   const insertLink = useCallback(() => {
     if (!isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, "https://");
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, "");
     } else {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
     }

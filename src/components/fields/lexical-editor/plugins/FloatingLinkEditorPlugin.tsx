@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import styles from "./floating-link-editor-plugin.module.css";
 
 import {
   $isAutoLinkNode,
@@ -34,6 +33,7 @@ import { createPortal } from "react-dom";
 import { getSelectedNode } from "../utils/getSelectionNode";
 import { sanitizeUrl } from "../utils/url";
 import { setFloatingElemPositionForLinkEditor } from "../utils/setFloatingElemPositionForLinkEditor";
+import Icon from "~/components/ui/Icon";
 
 function FloatingLinkEditor({
   editor,
@@ -207,7 +207,7 @@ function FloatingLinkEditor({
             }}
           />
           <div>
-            <div
+            <button
               className="link-cancel"
               role="button"
               tabIndex={0}
@@ -215,7 +215,9 @@ function FloatingLinkEditor({
               onClick={() => {
                 setEditMode(false);
               }}
-            />
+            >
+              <Icon>edit</Icon>
+            </button>
 
             <div
               className="link-confirm"
@@ -235,7 +237,7 @@ function FloatingLinkEditor({
           >
             {linkUrl}
           </a>
-          <div
+          <button
             className="link-edit"
             role="button"
             tabIndex={0}
@@ -244,8 +246,10 @@ function FloatingLinkEditor({
               setEditedLinkUrl(linkUrl);
               setEditMode(true);
             }}
-          />
-          <div
+          >
+            <Icon>edit</Icon>
+          </button>
+          <button
             className="link-trash"
             role="button"
             tabIndex={0}
@@ -253,7 +257,9 @@ function FloatingLinkEditor({
             onClick={() => {
               editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
             }}
-          />
+          >
+            <Icon>delete</Icon>
+          </button>
         </div>
       )}
     </div>

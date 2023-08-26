@@ -12,19 +12,21 @@ import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
+import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugin";
 
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
-import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
+// import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
 import { MentionNode } from "./nodes/MentionNode";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import { useEffect, useState } from "react";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
+import { mergeRegister } from "@lexical/utils";
+import LinkPlugin from "./plugins/LinkPlugin";
 
 function Placeholder() {
   return (
@@ -66,6 +68,7 @@ export default function Editor() {
     useState<boolean>(false);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    console.log("onRef", _floatingAnchorElem);
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
@@ -91,8 +94,27 @@ export default function Editor() {
   return (
     <LexicalComposer initialConfig={editorConfig}>
       <div className="editor-container relative text-black ">
+        <LinkPlugin />
+
         <ToolbarPlugin />
         <div className="editor-inner">
+          <HistoryPlugin />
+          {/* <TreeViewPlugin /> */}
+          <AutoFocusPlugin />
+          {/* <CodeHighlightPlugin /> */}
+          <ListPlugin />
+          {/* <AutoLinkPlugin /> */}
+          <ListMaxIndentLevelPlugin maxDepth={7} />
+          {/* <MarkdownShortcutPlugin transformers={TRANSFORMERS} /> */}
+          <AttachCharactersPlugin />
+          {/* <LexicalClickableLinkPlugin /> */}
+
+          {floatingAnchorElem && !isSmallWidthViewport && (
+            <>
+              {/* <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} /> */}
+            </>
+          )}
+
           <RichTextPlugin
             contentEditable={
               <div className="editor-scroller">
@@ -104,22 +126,6 @@ export default function Editor() {
             placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <HistoryPlugin />
-          <TreeViewPlugin />
-          <AutoFocusPlugin />
-          <CodeHighlightPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <AutoLinkPlugin />
-          <ListMaxIndentLevelPlugin maxDepth={7} />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-          <AttachCharactersPlugin />
-
-          {floatingAnchorElem && !isSmallWidthViewport && (
-            <>
-              <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
-            </>
-          )}
         </div>
       </div>
     </LexicalComposer>

@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LowPriority, getSelectedNode } from "../ToolbarPlugin";
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { mergeRegister } from "@lexical/utils";
+import Icon from "~/components/ui/Icon";
 
 function positionEditorElement(editor: HTMLElement, rect: DOMRect | null) {
   if (rect === null) {
@@ -109,8 +110,8 @@ export default function FloatingLinkEditor({
           updateLinkEditor();
           return true;
         },
-        LowPriority
-      )
+        LowPriority,
+      ),
     );
   }, [editor, updateLinkEditor]);
 
@@ -125,6 +126,12 @@ export default function FloatingLinkEditor({
       inputRef.current.focus();
     }
   }, [isEditMode]);
+
+  useEffect(() => {
+    if (linkUrl === "") {
+      setEditMode(true);
+    }
+  }, [linkUrl]);
 
   return (
     <div ref={editorRef} className="link-editor">
@@ -142,6 +149,8 @@ export default function FloatingLinkEditor({
               if (lastSelection !== null) {
                 if (linkUrl !== "") {
                   editor.dispatchCommand(TOGGLE_LINK_COMMAND, linkUrl);
+                } else {
+                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
                 }
                 setEditMode(false);
               }
@@ -153,19 +162,32 @@ export default function FloatingLinkEditor({
         />
       ) : (
         <>
-          <div className="link-input">
+          <div className="flex w-full justify-between p-4">
             <a href={linkUrl} target="_blank" rel="noopener noreferrer">
               {linkUrl}
             </a>
-            <div
-              className="link-edit"
-              role="button"
-              tabIndex={0}
-              onMouseDown={(event) => event.preventDefault()}
-              onClick={() => {
-                setEditMode(true);
-              }}
-            />
+            <div className="flex gap-2">
+              <button
+                role="button"
+                tabIndex={0}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  setEditMode(true);
+                }}
+              >
+                <Icon>edit</Icon>
+              </button>
+              <button
+                role="button"
+                tabIndex={0}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => {
+                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+                }}
+              >
+                <Icon>delete</Icon>
+              </button>
+            </div>
           </div>
         </>
       )}
