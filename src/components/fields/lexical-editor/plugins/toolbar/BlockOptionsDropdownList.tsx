@@ -24,6 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
 } from "~/components/ui/dropdown-menu";
+import DropDown, { DropDownItem } from "./DropDown";
 
 function DropdownItem({
   children,
@@ -78,46 +79,7 @@ export default function BlockOptionsDropdownList({
   toolbarRef: React.RefObject<HTMLDivElement>;
   blockTypeToBlockName: Record<string, string>;
 }) {
-  const [showBlockOptionsDropDown, setShowBlockOptionsDropDown] =
-    useState(false);
-  console.log("blockType", blockType);
-  console.log("showBlockOptionsDropDown", showBlockOptionsDropDown);
-  const dropDownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const toolbar = toolbarRef.current;
-    const dropDown = dropDownRef.current;
-
-    console.log("toolbar", toolbar);
-    console.log("dropDown", dropDown);
-
-    if (toolbar !== null && dropDown !== null) {
-      const { top, left } = toolbar.getBoundingClientRect();
-      dropDown.style.top = `${top + 40}px`;
-      dropDown.style.left = `${left}px`;
-    }
-  }, [dropDownRef, toolbarRef, showBlockOptionsDropDown]);
-
-  useEffect(() => {
-    const dropDown = dropDownRef.current;
-    const toolbar = toolbarRef.current;
-
-    if (dropDown !== null && toolbar !== null) {
-      const handle = (event: MouseEvent) => {
-        const target = event.target as Node;
-        if (!target) return;
-
-        if (!dropDown.contains(target) && !toolbar.contains(target)) {
-          setShowBlockOptionsDropDown(false);
-        }
-      };
-      document.addEventListener("click", handle);
-
-      return () => {
-        document.removeEventListener("click", handle);
-      };
-    }
-  }, [dropDownRef, setShowBlockOptionsDropDown, toolbarRef]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const formatParagraph = () => {
     if (blockType !== "paragraph") {
@@ -126,10 +88,12 @@ export default function BlockOptionsDropdownList({
 
         if ($isRangeSelection(selection)) {
           $setBlocksType(selection, () => $createParagraphNode());
+
+          editor.focus();
         }
       });
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   const formatHeading = (heading: "h1" | "h2" | "h3") => {
@@ -139,10 +103,15 @@ export default function BlockOptionsDropdownList({
 
         if ($isRangeSelection(selection)) {
           $setBlocksType(selection, () => $createHeadingNode(heading));
+          const anchor = selection.anchor.getNode();
+          console.log("anchor", anchor.getKey());
+          const element = editor.getElementByKey(anchor.getKey());
+          element?.focus();
+          console.log("element", element);
         }
       });
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   const formatBulletList = () => {
@@ -157,7 +126,7 @@ export default function BlockOptionsDropdownList({
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   const formatNumberedList = () => {
@@ -172,7 +141,7 @@ export default function BlockOptionsDropdownList({
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   const formatQuote = () => {
@@ -185,7 +154,7 @@ export default function BlockOptionsDropdownList({
         }
       });
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   const formatCode = () => {
@@ -198,18 +167,24 @@ export default function BlockOptionsDropdownList({
         }
       });
     }
-    setShowBlockOptionsDropDown(false);
+    setIsDropdownOpen(false);
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      open={isDropdownOpen}
+      onOpenChange={(value) => setIsDropdownOpen(value)}
+    >
       <DropdownMenuTrigger
         className="flex items-center gap-2"
         aria-label="Formatting Options"
+        asChild
       >
-        <Icon>{blockTypeToIcon[blockType]}</Icon>
-        <span className="text">{blockTypeToBlockName[blockType]}</span>
-        <Icon>expand_more</Icon>
+        <button disabled>
+          <Icon>{blockTypeToIcon[blockType]}</Icon>
+          <span className="text">{blockTypeToBlockName[blockType]}</span>
+          <Icon>expand_more</Icon>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="dropdown  block min-h-[40px] min-w-[100px] rounded bg-white shadow-md">
         <DropdownItem
