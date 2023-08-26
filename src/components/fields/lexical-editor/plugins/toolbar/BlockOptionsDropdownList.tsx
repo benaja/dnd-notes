@@ -39,7 +39,6 @@ function DropdownItem({
   icon?: string;
   onClick?: () => void;
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
-  console.log(active);
   return (
     <DropdownMenuItem
       className={classNames(
@@ -103,11 +102,6 @@ export default function BlockOptionsDropdownList({
 
         if ($isRangeSelection(selection)) {
           $setBlocksType(selection, () => $createHeadingNode(heading));
-          const anchor = selection.anchor.getNode();
-          console.log("anchor", anchor.getKey());
-          const element = editor.getElementByKey(anchor.getKey());
-          element?.focus();
-          console.log("element", element);
         }
       });
     }

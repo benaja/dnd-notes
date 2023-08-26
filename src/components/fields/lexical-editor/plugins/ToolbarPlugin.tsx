@@ -231,7 +231,7 @@ export default function ToolbarPlugin() {
 
   return (
     <div
-      className="toolbar sticky top-20 mb-px flex rounded-t-md bg-white p-1 align-middle"
+      className="toolbar sticky top-20 z-50 mb-px flex rounded-t-md bg-white p-1 align-middle"
       ref={toolbarRef}
     >
       <button

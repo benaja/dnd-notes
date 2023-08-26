@@ -90,7 +90,7 @@ export default function Editor() {
 
   return (
     <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container text-black ">
+      <div className="editor-container relative text-black ">
         <ToolbarPlugin />
         <div className="editor-inner">
           <RichTextPlugin

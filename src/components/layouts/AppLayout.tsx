@@ -97,19 +97,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           ))}
         </ul>
       </nav>
-      <div className="flex min-h-screen w-screen bg-gray-50 pt-14 sm:pt-20">
-        <div
-          className={classNames(
-            {
-              "w-80": persist,
-              "w-20": !persist,
-            },
-            "hidden shrink-0 transition-all duration-500 sm:block",
-          )}
-        ></div>
-        <div className="grow overflow-x-hidden  px-6 py-6 sm:px-10 sm:py-8">
-          {children}
-        </div>
+
+      <div
+        className={classNames(
+          "min-h-screen bg-gray-50 px-4 pt-20 transition-all duration-500 sm:pt-24 md:px-10",
+          {
+            "ml-20": !expanded,
+            "ml-80": expanded,
+          },
+        )}
+      >
+        {children}
       </div>
     </>
   );
