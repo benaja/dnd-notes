@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
 import { mergeRegister } from "@lexical/utils";
 import LinkPlugin from "./plugins/LinkPlugin";
+import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 
 function Placeholder() {
   return (
@@ -103,7 +104,7 @@ export default function Editor() {
           <AutoFocusPlugin />
           {/* <CodeHighlightPlugin /> */}
           <ListPlugin />
-          {/* <AutoLinkPlugin /> */}
+          <AutoLinkPlugin />
           <ListMaxIndentLevelPlugin maxDepth={7} />
           {/* <MarkdownShortcutPlugin transformers={TRANSFORMERS} /> */}
           <AttachCharactersPlugin />
