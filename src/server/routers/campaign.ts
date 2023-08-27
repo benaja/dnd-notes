@@ -27,6 +27,7 @@ export const campaignRouter = router({
         },
         include: {
           characters: true,
+          description: true,
         },
       });
 
@@ -39,6 +40,11 @@ export const campaignRouter = router({
       const campaign = await prisma.campaign.create({
         data: {
           ...input,
+          description: {
+            create: {
+              value: "",
+            },
+          },
           users: {
             create: [
               {

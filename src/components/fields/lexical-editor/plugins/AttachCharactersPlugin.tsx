@@ -13,12 +13,15 @@ import {
   MenuTextMatch,
   useBasicTypeaheadTriggerMatch,
 } from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import { TextNode } from "lexical";
+import { $getNodeByKey, TextNode } from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { $createCharacterMentionNode } from "../nodes/MentionNode";
+import {
+  $createCharacterMentionNode,
+  CharacterMentionNode,
+} from "../nodes/MentionNode";
 import { trpc } from "~/lib/trpc-client";
 import { Character } from "@prisma/client";
 import AppImage from "~/components/ui/AppImage";
@@ -179,12 +182,10 @@ function getPossibleQueryMatch(text: string): MenuTextMatch | null {
 
 class MentionTypeaheadOption extends MenuOption {
   character: Character;
-  picture: JSX.Element;
 
-  constructor(character: Character, picture: JSX.Element) {
+  constructor(character: Character) {
     super(character.id);
     this.character = character;
-    this.picture = picture;
   }
 }
 
@@ -244,16 +245,19 @@ export default function NewMentionsPlugin(): JSX.Element | null {
     minLength: 0,
   });
 
-  const options = useMemo(
-    () =>
-      results
-        .map(
-          (result) =>
-            new MentionTypeaheadOption(result, <i className="icon user" />),
-        )
-        .slice(0, SUGGESTION_LIST_LENGTH_LIMIT),
-    [results],
-  );
+  const options = useMemo(() => {
+    if (results.length === 0) {
+      return [
+        new MentionTypeaheadOption({
+          id: null,
+          name: queryString,
+        }),
+      ];
+    }
+    return results
+      .map((result) => new MentionTypeaheadOption(result))
+      .slice(0, SUGGESTION_LIST_LENGTH_LIMIT);
+  }, [results, queryString]);
 
   const onSelectOption = useCallback(
     (
@@ -285,6 +289,29 @@ export default function NewMentionsPlugin(): JSX.Element | null {
     },
     [checkForSlashTriggerMatch, editor],
   );
+
+  useEffect(() => {
+    const removeMutationListener = editor.registerMutationListener(
+      CharacterMentionNode,
+      (mutatedNodes) => {
+        console.log("registrered nodes", mutatedNodes);
+
+        editor.update(() => {
+          for (let [nodeKey, mutation] of mutatedNodes) {
+            const node = $getNodeByKey<CharacterMentionNode>(nodeKey);
+            console.log(node);
+            // if (mutation === "created") {
+            //   node.select();
+            // }
+          }
+        });
+      },
+    );
+
+    return () => {
+      removeMutationListener();
+    };
+  }, [editor]);
 
   return (
     <LexicalTypeaheadMenuPlugin<MentionTypeaheadOption>

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
 import { CharacterType } from "~/components/campaign/shema";
+import ContentEditor from "~/components/fields/ContentEditor";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import { trpc } from "~/lib/trpc-client";
@@ -13,6 +14,9 @@ const Editor = dynamic(
     ssr: false,
   },
 );
+const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
+  ssr: false,
+});
 
 const Page: NextPageWithLayout = function Campaign() {
   const router = useRouter();
@@ -49,6 +53,7 @@ const Page: NextPageWithLayout = function Campaign() {
     updateMutation.mutate(campaign);
   }
 
+  console.log("campaign", campaign);
   return (
     <div>
       <EditableText
@@ -61,12 +66,6 @@ const Page: NextPageWithLayout = function Campaign() {
           return <h1 {...props}>{value}</h1>;
         }}
       </EditableText>
-      <EditableText
-        className="my-4"
-        value={campaign.description}
-        onInput={(value) => editCampaign("description", value)}
-        onBlur={updateCampaign}
-      />
 
       <p className="text-lg font-bold">Players</p>
       <ListCharacters
@@ -91,7 +90,7 @@ const Page: NextPageWithLayout = function Campaign() {
           editCampaign("characters", [...campaign.characters, character]);
         }}
       />
-      <Editor />
+      <ContentEditor content={campaign.description} />
 
       {/* <QuillInput /> */}
       {/* <RichtTextInput /> */}

@@ -3,6 +3,7 @@ import { userRouter } from "./userRouter";
 import { campaignRouter } from "./campaign";
 import { characterRouter } from "./characterRouter";
 import { exampleRouter } from "./example";
+import { contentRouter } from "./contentRouter";
 
 /**
  * This is the primary router for your server.
@@ -17,6 +18,7 @@ export const appRouter = router({
   user: userRouter,
   campaign: campaignRouter,
   character: characterRouter,
+  content: contentRouter,
 });
 
 // export type definition of API
