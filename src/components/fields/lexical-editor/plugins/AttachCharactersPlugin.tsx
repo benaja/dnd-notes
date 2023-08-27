@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import { $createMentionNode } from "../nodes/MentionNode";
+import { $createCharacterMentionNode } from "../nodes/MentionNode";
 import { trpc } from "~/lib/trpc-client";
 import { Character } from "@prisma/client";
 import AppImage from "~/components/ui/AppImage";
@@ -93,17 +93,6 @@ const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
 const mentionsCache = new Map();
 
-const dummyLookupService = {
-  search(string: string, callback: (results: Array<string>) => void): void {
-    // setTimeout(() => {
-    //   const results = dummyMentionsData.filter((mention) =>
-    //     mention.toLowerCase().includes(string.toLowerCase())
-    //   );
-    //   callback(results);
-    // }, 500);
-  },
-};
-
 function useMentionLookupService(mentionString: string | null) {
   const [results, setResults] = useState<Character[]>([]);
   const utils = trpc.useContext();
@@ -130,18 +119,6 @@ function useMentionLookupService(mentionString: string | null) {
       mentionsCache.set(mentionString, data);
       setResults(data);
     });
-
-    // const search = trpc.character.search.useQuery(mentionString, {
-    //   onSuccess: (data) => {
-    //     mentionsCache.set(mentionString, data);
-    //     setResults(data.map((c) => c.name));
-    //   },
-    // });
-
-    // dummyLookupService.search(mentionString, (newResults) => {
-    //   mentionsCache.set(mentionString, newResults);
-    //   setResults(newResults);
-    // });
   }, [mentionString]);
 
   return results;
@@ -285,7 +262,9 @@ export default function NewMentionsPlugin(): JSX.Element | null {
       closeMenu: () => void,
     ) => {
       editor.update(() => {
-        const mentionNode = $createMentionNode(selectedOption.character.name);
+        const mentionNode = $createCharacterMentionNode(
+          selectedOption.character,
+        );
         if (nodeToReplace) {
           nodeToReplace.replace(mentionNode);
         }

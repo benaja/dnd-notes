@@ -21,7 +21,7 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 // import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
-import { MentionNode } from "./nodes/MentionNode";
+import { CharacterMentionNode } from "./nodes/MentionNode";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import { useEffect, useState } from "react";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
@@ -58,7 +58,7 @@ const editorConfig = {
     TableRowNode,
     AutoLinkNode,
     LinkNode,
-    MentionNode,
+    CharacterMentionNode,
   ],
 };
 

@@ -33,6 +33,7 @@ import Icon from "~/components/ui/Icon";
 import BlockOptionsDropdownList from "./toolbar/BlockOptionsDropdownList";
 import FloatingLinkEditor from "./toolbar/FloatingLinkEditor";
 import { $setBlocksType } from "@lexical/selection";
+import { $isCharacterMentionNode } from "../nodes/MentionNode";
 
 export const LowPriority = 1;
 
@@ -126,6 +127,7 @@ export default function ToolbarPlugin() {
   const [codeLanguage, setCodeLanguage] = useState("");
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
+  const [isCharacter, setIsCharacter] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -173,6 +175,14 @@ export default function ToolbarPlugin() {
         setIsLink(true);
       } else {
         setIsLink(false);
+      }
+
+      if ($isCharacterMentionNode(parent) || $isCharacterMentionNode(node)) {
+        console.log("is character");
+        setIsCharacter(true);
+      } else {
+        console.log("is not character");
+        setIsCharacter(false);
       }
     }
   }, [editor]);
