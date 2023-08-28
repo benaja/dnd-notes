@@ -3,22 +3,13 @@
 import { FormProvider, useForm } from "react-hook-form";
 import TextInput from "~/components/fields/TextInput";
 import { Button } from "~/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
+import { DialogFooter } from "~/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { trpc } from "~/lib/trpc-client";
 import { CharacterType } from "../shema";
-import { Character } from "@prisma/client";
-import { useState } from "react";
 import ImageInput from "~/components/fields/ImageInput";
+import { Character } from "@prisma/client";
 
 const characterSchema = z.object({
   name: z.string().max(255),
@@ -27,21 +18,21 @@ const characterSchema = z.object({
 });
 type CharacterFormValues = z.infer<typeof characterSchema>;
 
-export default function CreateCharacterDialog({
+export default function CreateCharacterForm({
   campaignId,
-  onCreated,
   type,
+  onCreated,
 }: {
   campaignId: string;
-  onCreated?: (character: Character) => void;
   type: CharacterType;
+  onCreated?: (character: Character) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const utils = trpc.useContext();
   const createCharacterMutation = trpc.character.create.useMutation({
     onSuccess(data) {
-      onCreated?.(data);
       createCharacterMutation.reset();
-      setOpen(false);
+      utils.campaign.getById.invalidate(campaignId);
+      onCreated?.(data);
       formMethods.reset();
     },
   });
@@ -58,33 +49,19 @@ export default function CreateCharacterDialog({
   });
 
   async function submit(values: CharacterFormValues) {
-    console.log(values);
     createCharacterMutation.mutate({
       ...values,
       campaignId,
       type,
     });
   }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-2xl hover:bg-gray-200">
-          +
-        </button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Create Character</DialogTitle>
-        </DialogHeader>
-        <FormProvider {...formMethods}>
-          <form onSubmit={formMethods.handleSubmit(submit)}>
-            <TextInput name="name" label="Name" />
-            <TextInput
-              name="description"
-              label="Description"
-              className="mt-4"
-            />
-            {/* <RadioGroupInput
+    <FormProvider {...formMethods}>
+      <form onSubmit={formMethods.handleSubmit(submit)}>
+        <TextInput name="name" label="Name" />
+        <TextInput name="description" label="Description" className="mt-4" />
+        {/* <RadioGroupInput
               name="type"
               items={[
                 {
@@ -97,13 +74,11 @@ export default function CreateCharacterDialog({
                 },
               ]}
             /> */}
-            <ImageInput name="avatar" label="Avatar" />
-            <DialogFooter>
-              <Button type="submit">Create</Button>
-            </DialogFooter>
-          </form>
-        </FormProvider>
-      </DialogContent>
-    </Dialog>
+        <ImageInput name="avatar" label="Avatar" />
+        <DialogFooter>
+          <Button type="submit">Create</Button>
+        </DialogFooter>
+      </form>
+    </FormProvider>
   );
 }

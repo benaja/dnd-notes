@@ -6,7 +6,7 @@ import ContentEditor from "~/components/fields/ContentEditor";
 import DatePicker from "~/components/fields/DatePicker";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
-import { useDebounce } from "~/lib/hooks";
+import useDebounce from "~/lib/hooks/useDebounce";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 

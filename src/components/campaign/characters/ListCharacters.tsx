@@ -3,21 +3,22 @@ import dynamic from "next/dynamic";
 import { CharacterType } from "../shema";
 import Image from "next/image";
 import AppImage from "~/components/ui/AppImage";
-const CreateCharacterDialog = dynamic(() => import("./CreateCharacterDialog"), {
+import useDialog from "~/lib/hooks/useDialog";
+const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
   ssr: false,
 });
 
 export default function ListCharacters({
   characters,
   campaignId,
-  onCreated,
   type,
 }: {
   characters: Character[];
   campaignId: string;
-  onCreated?: (character: Character) => void;
   type: CharacterType;
 }) {
+  const [dialog, showDialog] = useDialog();
+
   return (
     <div>
       <div className="flex gap-4">
@@ -42,11 +43,25 @@ export default function ListCharacters({
             </div>
           );
         })}
-        <CreateCharacterDialog
+        <button
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-2xl hover:bg-gray-200"
+          onClick={() =>
+            showDialog("Create Character", (onClose) => (
+              <CreateCharacterForm
+                campaignId={campaignId}
+                type={type}
+                onCreated={onClose}
+              />
+            ))
+          }
+        >
+          +
+        </button>
+        {/* <CreateCharacterDialog
           campaignId={campaignId}
           onCreated={onCreated}
           type={type}
-        />
+        /> */}
       </div>
     </div>
   );

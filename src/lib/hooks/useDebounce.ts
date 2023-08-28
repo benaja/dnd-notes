@@ -1,7 +1,7 @@
 import debounce from "lodash/debounce";
 import { useMemo } from "react";
 
-export function useDebounce<T extends any[]>(
+export default function useDebounce<T extends any[]>(
   callback: (...args: T) => void,
   delay: number = 300,
 ): (...args: T) => void {

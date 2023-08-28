@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import { memo, useState } from "react";
 import { trpc } from "~/lib/trpc-client";
 import { EditorEvents } from "./lexical-editor/Editor";
-import { useDebounce } from "~/lib/hooks";
+import useDebounce from "~/lib/hooks/useDebounce";
 const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
   ssr: false,
 });
