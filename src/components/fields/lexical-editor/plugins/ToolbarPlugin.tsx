@@ -178,10 +178,8 @@ export default function ToolbarPlugin() {
       }
 
       if ($isCharacterMentionNode(parent) || $isCharacterMentionNode(node)) {
-        console.log("is character");
         setIsCharacter(true);
       } else {
-        console.log("is not character");
         setIsCharacter(false);
       }
     }

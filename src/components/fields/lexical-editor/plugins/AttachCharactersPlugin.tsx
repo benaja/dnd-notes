@@ -262,8 +262,6 @@ export default function NewMentionsPlugin({
       .slice(0, SUGGESTION_LIST_LENGTH_LIMIT);
   }, [results, queryString]);
 
-  console.log("options", options);
-
   const onSelectOption = useCallback(
     async (
       selectedOption: MentionTypeaheadOption,

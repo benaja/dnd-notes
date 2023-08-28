@@ -6,6 +6,7 @@ import ContentEditor from "~/components/fields/ContentEditor";
 import DatePicker from "~/components/fields/DatePicker";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
+import { useDebounce } from "~/lib/hooks";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 
@@ -16,7 +17,6 @@ const Page: NextPageWithLayout = function Session() {
   );
   const utils = trpc.useContext();
 
-  console.log("data", session);
   const updateSessionMutation = trpc.session.update.useMutation();
 
   function editSession(key: string, value: any) {
@@ -26,24 +26,18 @@ const Page: NextPageWithLayout = function Session() {
       [key]: value,
     };
     utils.session.getById.setData(session.id, newSession);
-    debouncedChangeHandler(newSession);
+    updateSession(newSession);
   }
 
-  function updateSession(value: typeof session) {
+  const updateSession = useDebounce((value: typeof session) => {
     if (!value) return;
-    console.log("updateSession", value.title);
     updateSessionMutation.mutate({
       id: value.id,
       title: value.title,
       date: value.date,
       content: value.content.value,
     });
-  }
-
-  const debouncedChangeHandler = useMemo(
-    () => debounce(updateSession, 300),
-    [],
-  );
+  });
 
   if (!session) {
     return <></>;
@@ -54,7 +48,7 @@ const Page: NextPageWithLayout = function Session() {
       <div className="flex items-center gap-6">
         <EditableText
           value={session.title}
-          className="grow text-3xl"
+          className="h-[1em] grow text-3xl"
           onInput={(value) => editSession("title", value)}
         >
           {({ value, ...props }) => {

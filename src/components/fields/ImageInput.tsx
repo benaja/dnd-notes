@@ -21,7 +21,6 @@ export default function ImageInput({
         value={field.value}
         onChange={(value) => {
           field.onChange(value);
-          console.log(value);
         }}
       />
 
