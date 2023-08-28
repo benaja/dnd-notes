@@ -93,13 +93,13 @@ model CampaignSessions {
   campaignId String
   date       DateTime
   title      String
-  contentId  String?
+  contentId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  campaign    Campaign    @relation(fields: [campaignId], references: [id])
-  caracters   Character[]
-  description Content?    @relation(fields: [contentId], references: [id])
+  campaign  Campaign    @relation(fields: [campaignId], references: [id])
+  caracters Character[]
+  content   Content     @relation(fields: [contentId], references: [id])
 }
 
 model Character {

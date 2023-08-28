@@ -13,20 +13,20 @@ export default function EditableText(
   }: {
     value?: string | null;
     onInput?: (value: string) => void;
-    onBlur?: () => void;
+    onBlur?: (value: string) => void;
     display?: React.ReactNode;
     children?: (props: {
-      value: string;
+      value?: string | null;
       onClick: () => void;
       className?: string;
     }) => React.ReactNode;
     className?: string;
   } = {
-    onInput: () => {},
     value: "",
     display: <p></p>,
-  }
+  },
 ) {
+  const [internalValue, setInternalValue] = useState(value);
   const [isEditing, setIsEditing] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
@@ -40,6 +40,11 @@ export default function EditableText(
     setIsEditing(true);
   }
 
+  function updateValue(value: string) {
+    setInternalValue(value);
+    onInput?.(value);
+  }
+
   if (isEditing) {
     return (
       <div className={className}>
@@ -47,11 +52,11 @@ export default function EditableText(
           ref={input}
           type="text"
           className={classNames("-m-1 w-full bg-transparent p-1")}
-          value={value}
-          onInput={(e) => onInput && onInput(e.target.value)}
-          onBlur={() => {
+          value={internalValue || ""}
+          onInput={(e) => updateValue((e.target as HTMLInputElement).value)}
+          onBlur={(e) => {
             setIsEditing(false);
-            onBlur && onBlur();
+            onBlur?.((e.target as HTMLInputElement).value);
           }}
         />
       </div>

@@ -32,6 +32,11 @@ export const campaignRouter = router({
               characters: true,
             },
           },
+          sessions: {
+            orderBy: {
+              date: "desc",
+            },
+          },
         },
       });
 

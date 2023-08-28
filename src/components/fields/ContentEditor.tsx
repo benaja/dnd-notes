@@ -29,9 +29,5 @@ export default function ContentEditor({ content }: { content: Content }) {
     }
   }
 
-  return (
-    <div>
-      <EditorField value={value} onChange={onChange} onEvent={onEvent} />
-    </div>
-  );
+  return <EditorField value={value} onChange={onChange} onEvent={onEvent} />;
 }

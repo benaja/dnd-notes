@@ -1,9 +1,10 @@
 import { router, publicProcedure } from "~/server/trpc";
 import { userRouter } from "./userRouter";
-import { campaignRouter } from "./campaign";
+import { campaignRouter } from "./campaignRouter";
 import { characterRouter } from "./characterRouter";
 import { exampleRouter } from "./example";
 import { contentRouter } from "./contentRouter";
+import { sessionRouter } from "./sessionRouter";
 
 /**
  * This is the primary router for your server.
@@ -19,6 +20,7 @@ export const appRouter = router({
   campaign: campaignRouter,
   character: characterRouter,
   content: contentRouter,
+  session: sessionRouter,
 });
 
 // export type definition of API
