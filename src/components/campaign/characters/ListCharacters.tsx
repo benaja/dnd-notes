@@ -21,6 +21,7 @@ export default function ListCharacters({
 
   return (
     <div>
+      {dialog}
       <div className="flex gap-4">
         {characters.map((character) => {
           return (
@@ -45,15 +46,16 @@ export default function ListCharacters({
         })}
         <button
           className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-2xl hover:bg-gray-200"
-          onClick={() =>
+          onClick={() => {
+            console.log("showDialog");
             showDialog("Create Character", (onClose) => (
               <CreateCharacterForm
                 campaignId={campaignId}
                 type={type}
                 onCreated={onClose}
               />
-            ))
-          }
+            ));
+          }}
         >
           +
         </button>

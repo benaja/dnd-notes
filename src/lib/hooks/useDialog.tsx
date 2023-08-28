@@ -43,7 +43,7 @@ export default function useDialog(): [
             +
           </button>
         </DialogTrigger> */}
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>
@@ -59,6 +59,7 @@ export default function useDialog(): [
       getContent: (onClose: () => void) => JSX.Element,
       closeOnClickOutside = false,
     ) => {
+      console.log("showDialog content");
       setDialogContent({
         closeOnClickOutside,
         content: getContent(onClose),

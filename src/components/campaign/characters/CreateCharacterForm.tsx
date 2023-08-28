@@ -10,6 +10,8 @@ import { trpc } from "~/lib/trpc-client";
 import { CharacterType } from "../shema";
 import ImageInput from "~/components/fields/ImageInput";
 import { Character } from "@prisma/client";
+import GenericForm from "~/components/fields/GenericForm";
+import AvatarImageInput from "~/components/fields/AvatarImageInput";
 
 const characterSchema = z.object({
   name: z.string().max(255),
@@ -27,6 +29,8 @@ export default function CreateCharacterForm({
   type: CharacterType;
   onCreated?: (character: Character) => void;
 }) {
+  const { data: fields } = trpc.settings.characterFields.useQuery();
+  console.log("CreateCharacterForm");
   const utils = trpc.useContext();
   const createCharacterMutation = trpc.character.create.useMutation({
     onSuccess(data) {
@@ -43,6 +47,8 @@ export default function CreateCharacterForm({
       description: "",
       type: CharacterType.NPC,
       avatar: "",
+      age: 0,
+      gender: "",
     },
     resolver: zodResolver(characterSchema),
     mode: "onBlur",
@@ -59,8 +65,12 @@ export default function CreateCharacterForm({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(submit)}>
-        <TextInput name="name" label="Name" />
-        <TextInput name="description" label="Description" className="mt-4" />
+        <div className="flex gap-8">
+          <TextInput name="name" label="Name" className="grow" />
+          <AvatarImageInput name="avatar" />
+        </div>
+        {fields && <GenericForm fields={fields} />}
+        {/* <TextInput name="description" label="Description" className="mt-4" /> */}
         {/* <RadioGroupInput
               name="type"
               items={[
@@ -74,7 +84,6 @@ export default function CreateCharacterForm({
                 },
               ]}
             /> */}
-        <ImageInput name="avatar" label="Avatar" />
         <DialogFooter>
           <Button type="submit">Create</Button>
         </DialogFooter>

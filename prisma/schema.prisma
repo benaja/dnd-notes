@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -103,14 +107,17 @@ model CampaignSessions {
 }
 
 model Character {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   campaignId  String
   name        String
-  description String?  @db.Text
+  description String? @db.Text
   type        String
   avatar      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  /// [Fields]
+  fields    Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   sessions CampaignSessions[]
   campaign Campaign           @relation(fields: [campaignId], references: [id])

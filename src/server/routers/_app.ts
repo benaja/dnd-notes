@@ -5,6 +5,7 @@ import { characterRouter } from "./characterRouter";
 import { exampleRouter } from "./example";
 import { contentRouter } from "./contentRouter";
 import { sessionRouter } from "./sessionRouter";
+import { settingsRouter } from "./settingsRouter";
 
 /**
  * This is the primary router for your server.
@@ -21,6 +22,7 @@ export const appRouter = router({
   character: characterRouter,
   content: contentRouter,
   session: sessionRouter,
+  settings: settingsRouter,
 });
 
 // export type definition of API

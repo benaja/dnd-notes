@@ -10,6 +10,7 @@ export const characterRouter = router({
       const character = await prisma.character.create({
         data: {
           ...input,
+          fields: [],
         },
       });
 
