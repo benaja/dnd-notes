@@ -1,6 +1,7 @@
+import { Campaign } from "@prisma/client";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
 import { CharacterType } from "~/components/campaign/shema";
 import ContentEditor from "~/components/fields/ContentEditor";
@@ -8,15 +9,11 @@ import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
-const Editor = dynamic(
-  () => import("~/components/fields/lexical-editor/Editor"),
-  {
-    ssr: false,
-  },
-);
 const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
   ssr: false,
 });
+
+export const CampaignContext = createContext<Campaign | null>(null);
 
 const Page: NextPageWithLayout = function Campaign() {
   const router = useRouter();
@@ -24,6 +21,7 @@ const Page: NextPageWithLayout = function Campaign() {
   const { data } = trpc.campaign.getById.useQuery(
     router.query.campaign as string,
   );
+
   const [campaign, setCampaign] = useState(data);
   const updateMutation = trpc.campaign.update.useMutation();
 
@@ -55,46 +53,49 @@ const Page: NextPageWithLayout = function Campaign() {
 
   console.log("campaign", campaign);
   return (
-    <div>
-      <EditableText
-        value={campaign.title}
-        className="text-3xl"
-        onInput={(value) => editCampaign("title", value)}
-        onBlur={updateCampaign}
-      >
-        {({ value, ...props }) => {
-          return <h1 {...props}>{value}</h1>;
-        }}
-      </EditableText>
+    <CampaignContext.Provider value={campaign}>
+      <div>
+        <EditableText
+          value={campaign.title}
+          className="text-3xl"
+          onInput={(value) => editCampaign("title", value)}
+          onBlur={updateCampaign}
+        >
+          {({ value, ...props }) => {
+            return <h1 {...props}>{value}</h1>;
+          }}
+        </EditableText>
 
-      <p className="text-lg font-bold">Players</p>
-      <ListCharacters
-        characters={campaign.characters.filter(
-          (c) => c.type === CharacterType.Player,
+        <p className="mt-4 text-lg font-bold">Players</p>
+        <ListCharacters
+          characters={campaign.characters.filter(
+            (c) => c.type === CharacterType.Player,
+          )}
+          campaignId={campaign.id}
+          type={CharacterType.Player}
+          onCreated={(character) => {
+            editCampaign("characters", [...campaign.characters, character]);
+          }}
+        />
+
+        <p className="mt-4 text-lg font-bold">NPCs</p>
+        <ListCharacters
+          characters={campaign.characters.filter(
+            (c) => c.type === CharacterType.NPC,
+          )}
+          campaignId={campaign.id}
+          type={CharacterType.NPC}
+          onCreated={(character) => {
+            editCampaign("characters", [...campaign.characters, character]);
+          }}
+        />
+
+        <p className="mt-4 text-lg font-bold">Campaign Notes</p>
+        {campaign.description && (
+          <ContentEditor content={campaign.description} />
         )}
-        campaignId={campaign.id}
-        type={CharacterType.Player}
-        onCreated={(character) => {
-          editCampaign("characters", [...campaign.characters, character]);
-        }}
-      />
-
-      <p className="text-lg font-bold">NPCs</p>
-      <ListCharacters
-        characters={campaign.characters.filter(
-          (c) => c.type === CharacterType.NPC,
-        )}
-        campaignId={campaign.id}
-        type={CharacterType.NPC}
-        onCreated={(character) => {
-          editCampaign("characters", [...campaign.characters, character]);
-        }}
-      />
-      <ContentEditor content={campaign.description} />
-
-      {/* <QuillInput /> */}
-      {/* <RichtTextInput /> */}
-    </div>
+      </div>
+    </CampaignContext.Provider>
   );
 };
 

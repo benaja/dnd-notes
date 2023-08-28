@@ -7,13 +7,8 @@ const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
   ssr: false,
 });
 
-export default function ContentEditor({
-  content,
-}: {
-  content: Content & { characters: Character[] };
-}) {
+export default function ContentEditor({ content }: { content: Content }) {
   const [value, setValue] = useState(content.value);
-  const [characters, setCharacters] = useState(content.characters);
   const updateMutation = trpc.content.update.useMutation();
 
   function onChange(value: string) {

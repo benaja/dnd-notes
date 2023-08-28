@@ -26,6 +26,8 @@ import { trpc } from "~/lib/trpc-client";
 import { Character } from "@prisma/client";
 import AppImage from "~/components/ui/AppImage";
 import classNames from "classnames";
+import { CharacterType } from "~/components/campaign/shema";
+import { CampaignContext } from "~/pages/app/[campaign]";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -208,6 +210,7 @@ function MentionsTypeaheadMenuItem({
       onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
+      {!option.character.id && <span>Create:</span>}
       <AppImage
         src={option.character.avatar}
         alt="avatar image"
@@ -230,6 +233,12 @@ export default function NewMentionsPlugin({
   const [characterNodes, setCharacterNodes] = useState<
     Map<NodeKey, CharacterMentionNode>
   >(new Map());
+  const createCharacter = trpc.character.create.useMutation({
+    onSuccess() {
+      utils.campaign.getById.invalidate();
+    },
+  });
+  const campaign = React.useContext(CampaignContext);
 
   const [queryString, setQueryString] = useState<string | null>(null);
 
@@ -256,15 +265,22 @@ export default function NewMentionsPlugin({
   console.log("options", options);
 
   const onSelectOption = useCallback(
-    (
+    async (
       selectedOption: MentionTypeaheadOption,
       nodeToReplace: TextNode | null,
       closeMenu: () => void,
     ) => {
-      editor.update(() => {
-        const mentionNode = $createCharacterMentionNode(
-          selectedOption.character,
-        );
+      let character = selectedOption.character;
+      if (!character.id && campaign) {
+        character = await createCharacter.mutateAsync({
+          name: selectedOption.character.name,
+          campaignId: campaign.id,
+          type: CharacterType.NPC,
+        });
+      }
+
+      editor.update(async () => {
+        const mentionNode = $createCharacterMentionNode(character);
         if (nodeToReplace) {
           nodeToReplace.replace(mentionNode);
         }
@@ -272,7 +288,7 @@ export default function NewMentionsPlugin({
         closeMenu();
       });
     },
-    [editor],
+    [editor, campaign, createCharacter],
   );
 
   const checkForMentionMatch = useCallback(
@@ -324,7 +340,7 @@ export default function NewMentionsPlugin({
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },
       ) =>
-        anchorElementRef.current && results.length
+        anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
               <div className="mt-8 w-80 rounded bg-white p-4 shadow">
                 <ul>
