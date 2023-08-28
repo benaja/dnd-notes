@@ -15,6 +15,7 @@ export const characterRouter = router({
 
       return character;
     }),
+
   search: protectedProcedure.input(z.string()).query(async ({ input, ctx }) => {
     const characters = await prisma.character.findMany({
       where: {
@@ -26,4 +27,30 @@ export const characterRouter = router({
 
     return characters;
   }),
+
+  getById: protectedProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      const character = await prisma.character.findUnique({
+        where: {
+          id: input,
+        },
+      });
+
+      return character;
+    }),
+
+  getByIds: protectedProcedure
+    .input(z.array(z.string()))
+    .query(async ({ input, ctx }) => {
+      const characters = await prisma.character.findMany({
+        where: {
+          id: {
+            in: input,
+          },
+        },
+      });
+
+      return characters;
+    }),
 });

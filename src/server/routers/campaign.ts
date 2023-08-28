@@ -27,7 +27,11 @@ export const campaignRouter = router({
         },
         include: {
           characters: true,
-          description: true,
+          description: {
+            include: {
+              characters: true,
+            },
+          },
         },
       });
 

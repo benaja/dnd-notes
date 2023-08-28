@@ -109,13 +109,12 @@ model Character {
   description String?  @db.Text
   type        String
   avatar      String?
-  contentId   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   sessions CampaignSessions[]
   campaign Campaign           @relation(fields: [campaignId], references: [id])
-  Content  Content?           @relation(fields: [contentId], references: [id])
+  contents Content[]
 }
 
 model Inventory {

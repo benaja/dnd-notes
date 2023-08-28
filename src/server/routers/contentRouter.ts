@@ -7,7 +7,8 @@ export const contentRouter = router({
     .input(
       z.object({
         id: z.string(),
-        value: z.string(),
+        value: z.string().optional(),
+        characters: z.array(z.object({ id: z.string() })).optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
@@ -16,7 +17,10 @@ export const contentRouter = router({
           id: input.id,
         },
         data: {
-          value: input.value,
+          ...input,
+          characters: input.characters && {
+            set: input.characters,
+          },
         },
       });
 

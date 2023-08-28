@@ -30,6 +30,8 @@ import { mergeRegister } from "@lexical/utils";
 import LinkPlugin from "./plugins/LinkPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { Character } from "@prisma/client";
+import { $nodesOfType, NodeKey } from "lexical";
 
 function Placeholder() {
   return (
@@ -37,6 +39,10 @@ function Placeholder() {
       Enter some rich text...
     </div>
   );
+}
+
+export enum EditorEvents {
+  onCharactersChanged = "onCharactersChanged",
 }
 
 export const nodes = [
@@ -56,8 +62,10 @@ export const nodes = [
 
 export default function Editor({
   onChange,
+  onEvent,
 }: {
   onChange: (state: any) => void;
+  onEvent?: (event: EditorEvents, payload: any) => void;
 }) {
   const [editor] = useLexicalComposerContext();
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -103,7 +111,11 @@ export default function Editor({
         <AutoLinkPlugin />
         <ListMaxIndentLevelPlugin maxDepth={7} />
         {/* <MarkdownShortcutPlugin transformers={TRANSFORMERS} /> */}
-        <AttachCharactersPlugin />
+        <AttachCharactersPlugin
+          onCharactersChanged={(character) =>
+            onEvent?.(EditorEvents.onCharactersChanged, character)
+          }
+        />
         <OnChangePlugin onChange={onChange} />
         {/* <LexicalClickableLinkPlugin /> */}
 

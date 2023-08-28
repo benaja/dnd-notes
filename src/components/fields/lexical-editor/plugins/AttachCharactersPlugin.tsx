@@ -13,7 +13,7 @@ import {
   MenuTextMatch,
   useBasicTypeaheadTriggerMatch,
 } from "@lexical/react/LexicalTypeaheadMenuPlugin";
-import { $getNodeByKey, TextNode } from "lexical";
+import { $getNodeByKey, $nodesOfType, NodeKey, TextNode } from "lexical";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -94,32 +94,17 @@ const AtSignMentionsRegexAliasRegex = new RegExp(
 // At most, 5 suggestions are shown in the popup.
 const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
-const mentionsCache = new Map();
-
 function useMentionLookupService(mentionString: string | null) {
   const [results, setResults] = useState<Character[]>([]);
   const utils = trpc.useContext();
 
   useEffect(() => {
-    const cachedResults = mentionsCache.get(mentionString);
-
     if (mentionString == null) {
       setResults([]);
       return;
     }
 
-    if (cachedResults === null) {
-      return;
-    } else if (cachedResults !== undefined) {
-      setResults(cachedResults);
-      return;
-    }
-
-    mentionsCache.set(mentionString, null);
-
-    // trpc call
     utils.character.search.fetch(mentionString).then((data) => {
-      mentionsCache.set(mentionString, data);
       setResults(data);
     });
   }, [mentionString]);
@@ -225,6 +210,7 @@ function MentionsTypeaheadMenuItem({
     >
       <AppImage
         src={option.character.avatar}
+        alt="avatar image"
         className="h-10 w-10 rounded-full object-cover"
         width={64}
         height={64}
@@ -234,8 +220,16 @@ function MentionsTypeaheadMenuItem({
   );
 }
 
-export default function NewMentionsPlugin(): JSX.Element | null {
+export default function NewMentionsPlugin({
+  onCharactersChanged,
+}: {
+  onCharactersChanged?: (characters: Character[]) => void;
+}): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
+  const utils = trpc.useContext();
+  const [characterNodes, setCharacterNodes] = useState<
+    Map<NodeKey, CharacterMentionNode>
+  >(new Map());
 
   const [queryString, setQueryString] = useState<string | null>(null);
 
@@ -258,6 +252,8 @@ export default function NewMentionsPlugin(): JSX.Element | null {
       .map((result) => new MentionTypeaheadOption(result))
       .slice(0, SUGGESTION_LIST_LENGTH_LIMIT);
   }, [results, queryString]);
+
+  console.log("options", options);
 
   const onSelectOption = useCallback(
     (
@@ -294,16 +290,14 @@ export default function NewMentionsPlugin(): JSX.Element | null {
     const removeMutationListener = editor.registerMutationListener(
       CharacterMentionNode,
       (mutatedNodes) => {
-        console.log("registrered nodes", mutatedNodes);
+        editor.update(async () => {
+          const characterNodes = $nodesOfType(CharacterMentionNode);
+          const characterIds = characterNodes.map(
+            (node) => node.__character.id,
+          );
+          const characters = await utils.character.getByIds.fetch(characterIds);
 
-        editor.update(() => {
-          for (let [nodeKey, mutation] of mutatedNodes) {
-            const node = $getNodeByKey<CharacterMentionNode>(nodeKey);
-            console.log(node);
-            // if (mutation === "created") {
-            //   node.select();
-            // }
-          }
+          onCharactersChanged?.(characters);
         });
       },
     );
@@ -311,6 +305,13 @@ export default function NewMentionsPlugin(): JSX.Element | null {
     return () => {
       removeMutationListener();
     };
+  }, [editor, utils.character.getByIds, characterNodes, onCharactersChanged]);
+
+  useEffect(() => {
+    editor.update(() => {
+      const nodes = $nodesOfType(CharacterMentionNode);
+      setCharacterNodes(new Map(nodes.map((node) => [node.getKey(), node])));
+    });
   }, [editor]);
 
   return (
