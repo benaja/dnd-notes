@@ -10,9 +10,6 @@ export const sessionRouter = router({
         where: {
           id: input,
         },
-        include: {
-          content: true,
-        },
       });
 
       return session;
@@ -29,11 +26,6 @@ export const sessionRouter = router({
         data: {
           date: new Date(),
           title: "New Session",
-          content: {
-            create: {
-              value: "",
-            },
-          },
           campaign: {
             connect: {
               id: input.campaignId,
@@ -50,7 +42,7 @@ export const sessionRouter = router({
       z.object({
         id: z.string(),
         title: z.string(),
-        content: z.string(),
+        notes: z.string().optional().nullable(),
         date: z.date(),
       }),
     )
@@ -60,13 +52,7 @@ export const sessionRouter = router({
           id: input.id,
         },
         data: {
-          title: input.title,
-          date: input.date,
-          content: {
-            update: {
-              value: input.content,
-            },
-          },
+          ...input,
         },
       });
 

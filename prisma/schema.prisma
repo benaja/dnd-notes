@@ -68,14 +68,13 @@ model VerificationToken {
 model Campaign {
   id        String   @id @default(cuid())
   title     String
-  contentId String
+  notes     String?  @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users       CampaignOnUser[]
-  sessions    CampaignSessions[]
-  characters  Character[]
-  description Content            @relation(fields: [contentId], references: [id])
+  users      CampaignOnUser[]
+  sessions   CampaignSessions[]
+  characters Character[]
 }
 
 model CampaignOnUser {
@@ -97,13 +96,12 @@ model CampaignSessions {
   campaignId String
   date       DateTime
   title      String
-  contentId  String
+  notes      String?  @db.Text
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   campaign  Campaign    @relation(fields: [campaignId], references: [id])
   caracters Character[]
-  content   Content     @relation(fields: [contentId], references: [id])
 }
 
 model Character {
@@ -121,7 +119,6 @@ model Character {
 
   sessions CampaignSessions[]
   campaign Campaign           @relation(fields: [campaignId], references: [id])
-  contents Content[]
 }
 
 model Inventory {
@@ -146,13 +143,15 @@ model Item {
   inventory Inventory @relation(fields: [inventoryId], references: [id])
 }
 
-model Content {
+model Mentions {
   id        String   @id @default(cuid())
-  value     String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  characters       Character[]
-  Campaign         Campaign[]
-  CampaignSessions CampaignSessions[]
+  sourceId   String
+  targetId   String
+  sourceType String
+  targetType String
+
+  @@index([sourceId, sourceType, targetId, targetType])
 }

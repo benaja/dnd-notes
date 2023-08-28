@@ -55,6 +55,7 @@ export default function CreateCharacterForm({
   });
 
   async function submit(values: CharacterFormValues) {
+    console.log("submit", values);
     createCharacterMutation.mutate({
       ...values,
       campaignId,

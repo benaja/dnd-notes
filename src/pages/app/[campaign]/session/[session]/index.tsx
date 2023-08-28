@@ -1,5 +1,6 @@
 import { CampaignSessions, Session } from "@prisma/client";
 import debounce from "lodash/debounce";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
 import ContentEditor from "~/components/fields/ContentEditor";
@@ -9,6 +10,10 @@ import AppLayout from "~/components/layouts/AppLayout";
 import useDebounce from "~/lib/hooks/useDebounce";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
+
+const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
+  ssr: false,
+});
 
 const Page: NextPageWithLayout = function Session() {
   const router = useRouter();
@@ -35,7 +40,7 @@ const Page: NextPageWithLayout = function Session() {
       id: value.id,
       title: value.title,
       date: value.date,
-      content: value.content.value,
+      notes: value.notes,
     });
   });
 
@@ -62,11 +67,12 @@ const Page: NextPageWithLayout = function Session() {
         />
       </div>
 
-      {session.content && (
-        <div className="mt-8">
-          <ContentEditor content={session.content} />
-        </div>
-      )}
+      <div className="mt-8">
+        <EditorField
+          value={session.notes}
+          onChange={(value) => editSession("notes", value)}
+        />
+      </div>
     </div>
   );
 };

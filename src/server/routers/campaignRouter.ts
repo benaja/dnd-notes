@@ -27,11 +27,6 @@ export const campaignRouter = router({
         },
         include: {
           characters: true,
-          description: {
-            include: {
-              characters: true,
-            },
-          },
           sessions: {
             orderBy: {
               date: "desc",
@@ -49,11 +44,6 @@ export const campaignRouter = router({
       const campaign = await prisma.campaign.create({
         data: {
           ...input,
-          description: {
-            create: {
-              value: "",
-            },
-          },
           users: {
             create: [
               {

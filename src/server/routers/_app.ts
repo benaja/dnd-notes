@@ -3,7 +3,7 @@ import { userRouter } from "./userRouter";
 import { campaignRouter } from "./campaignRouter";
 import { characterRouter } from "./characterRouter";
 import { exampleRouter } from "./example";
-import { contentRouter } from "./contentRouter";
+import { mentionsRouter } from "./mentionsRouter";
 import { sessionRouter } from "./sessionRouter";
 import { settingsRouter } from "./settingsRouter";
 
@@ -20,7 +20,7 @@ export const appRouter = router({
   user: userRouter,
   campaign: campaignRouter,
   character: characterRouter,
-  content: contentRouter,
+  mentions: mentionsRouter,
   session: sessionRouter,
   settings: settingsRouter,
 });

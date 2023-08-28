@@ -97,21 +97,28 @@ const AtSignMentionsRegexAliasRegex = new RegExp(
 const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
 function useMentionLookupService(mentionString: string | null) {
-  const [results, setResults] = useState<Character[]>([]);
+  // const [results, setResults] = useState<Character[]>([]);
   const utils = trpc.useContext();
 
-  useEffect(() => {
-    if (mentionString == null) {
-      setResults([]);
-      return;
-    }
+  const { data: results } = trpc.character.search.useQuery(mentionString);
 
-    utils.character.search.fetch(mentionString).then((data) => {
-      setResults(data);
-    });
-  }, [mentionString]);
+  console.log("results", results);
 
-  return results;
+  // useEffect(() => {
+  //   if (mentionString == null) {
+  //     setResults([]);
+  //     return;
+  //   }
+
+  //   console.log("mentionString", mentionString);
+
+  //   utils.character.search.fetch(mentionString).then((data) => {
+  //     console.log("data", data);
+  //     setResults(data);
+  //   });
+  // }, [mentionString]);
+
+  return results ?? [];
 }
 
 function checkForCapitalizedNameMentions(
@@ -243,6 +250,8 @@ export default function NewMentionsPlugin({
   const [queryString, setQueryString] = useState<string | null>(null);
 
   const results = useMentionLookupService(queryString);
+
+  console.log("results", results);
 
   const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
     minLength: 0,

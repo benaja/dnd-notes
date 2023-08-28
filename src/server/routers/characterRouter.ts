@@ -7,6 +7,7 @@ export const characterRouter = router({
   create: protectedProcedure
     .input(characterSchema)
     .mutation(async ({ input, ctx }) => {
+      console.log(input);
       const character = await prisma.character.create({
         data: {
           ...input,
@@ -17,17 +18,20 @@ export const characterRouter = router({
       return character;
     }),
 
-  search: protectedProcedure.input(z.string()).query(async ({ input, ctx }) => {
-    const characters = await prisma.character.findMany({
-      where: {
-        name: {
-          contains: input,
+  search: protectedProcedure
+    .input(z.string().optional().nullable())
+    .query(async ({ input, ctx }) => {
+      if (!input) return [];
+      const characters = await prisma.character.findMany({
+        where: {
+          name: {
+            contains: input,
+          },
         },
-      },
-    });
+      });
 
-    return characters;
-  }),
+      return characters;
+    }),
 
   getById: protectedProcedure
     .input(z.string())
