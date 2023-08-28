@@ -19,7 +19,7 @@ const Page: NextPageWithLayout = function Session() {
 
   const updateSessionMutation = trpc.session.update.useMutation();
 
-  function editSession(key: string, value: any) {
+  function editSession(key: keyof CampaignSessions, value: any) {
     if (!session) return;
     const newSession = {
       ...session,

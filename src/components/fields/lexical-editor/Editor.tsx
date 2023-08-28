@@ -32,6 +32,7 @@ import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { Character } from "@prisma/client";
 import { $nodesOfType, NodeKey } from "lexical";
+import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
 
 function Placeholder() {
   return (
@@ -117,6 +118,7 @@ export default function Editor({
           }
         />
         <OnChangePlugin onChange={onChange} />
+        <ComponentPickerPlugin />
         {/* <LexicalClickableLinkPlugin /> */}
 
         {floatingAnchorElem && !isSmallWidthViewport && (

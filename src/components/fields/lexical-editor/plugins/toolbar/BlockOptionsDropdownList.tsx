@@ -6,13 +6,16 @@ import {
 } from "lexical";
 import { ButtonHTMLAttributes, useEffect, useRef, useState } from "react";
 import { $setBlocksType } from "@lexical/selection";
+
+import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
 import {
+  $createListItemNode,
+  $createListNode,
+  INSERT_CHECK_LIST_COMMAND,
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
-import { $createHeadingNode, $createQuoteNode } from "@lexical/rich-text";
-import { $createListItemNode, $createListNode } from "@lexical/list";
 import { $createCodeNode } from "@lexical/code";
 import classNames from "classnames";
 import { createPortal } from "react-dom";
@@ -110,13 +113,7 @@ export default function BlockOptionsDropdownList({
 
   const formatBulletList = () => {
     if (blockType !== "ul") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createListNode("bullet"));
-        }
-      });
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
@@ -125,18 +122,20 @@ export default function BlockOptionsDropdownList({
 
   const formatNumberedList = () => {
     if (blockType !== "ol") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $setBlocksType(selection, () => $createListNode("number"));
-        }
-      });
+      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
     } else {
       editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
     }
     setIsDropdownOpen(false);
   };
+
+  // const formatCheckList = () => {
+  //   if (blockType !== "check") {
+  //     editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined);
+  //   } else {
+  //     editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+  //   }
+  // };
 
   const formatQuote = () => {
     if (blockType !== "quote") {
@@ -223,6 +222,13 @@ export default function BlockOptionsDropdownList({
         >
           Numbered List
         </DropdownItem>
+        {/* <DropdownItem
+          active={blockType === "check"}
+          onClick={formatCheckList}
+          icon="checklist"
+        >
+          Checkbox List
+        </DropdownItem> */}
         <DropdownItem
           active={blockType === "quote"}
           onClick={formatQuote}

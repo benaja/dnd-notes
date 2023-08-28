@@ -46,6 +46,7 @@ const supportedBlockTypes = new Set([
   "h3",
   "ul",
   "ol",
+  "check",
 ]);
 
 const blockTypeToBlockName = {
@@ -55,6 +56,7 @@ const blockTypeToBlockName = {
   h3: "Heading 3",
   ol: "Numbered List",
   ul: "Bulleted List",
+  check: "Checkbox List",
   paragraph: "Normal",
   quote: "Quote",
 };
