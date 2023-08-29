@@ -10,32 +10,33 @@ export default function useUpload({
   onChange?: (files: string | string[] | null) => void;
 }) {
   const [isUploading, setIsUploading] = useState(false);
-  const [files, setFiles] = useState<string[]>([]);
 
-  const uploadFile = useCallback(async (files: FileWithPath[]) => {
-    setIsUploading(true);
+  const uploadFile = useCallback(
+    async (files: FileWithPath[]) => {
+      setIsUploading(true);
 
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append("files", file);
-    });
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
 
-    let data = (await fetch("/api/s3/upload", {
-      method: "POST",
-      body: formData,
-    }).then((res) => res.json())) as { path: string }[];
+      let data = (await fetch("/api/s3/upload", {
+        method: "POST",
+        body: formData,
+      }).then((res) => res.json())) as { path: string }[];
 
-    setFiles(data.map((file) => file.path));
-    setIsUploading(false);
-  }, []);
+      let filePaths = data.map((file) => file.path);
 
-  useEffect(() => {
-    if (multiple) {
-      onChange?.(files);
-    } else {
-      onChange?.(files[0] ?? null);
-    }
-  }, [files, multiple, onChange]);
+      setIsUploading(false);
+
+      if (multiple) {
+        onChange?.(filePaths);
+      } else {
+        onChange?.(filePaths[0] ?? null);
+      }
+    },
+    [multiple, onChange],
+  );
 
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
@@ -54,6 +55,5 @@ export default function useUpload({
     getRootProps,
     getInputProps,
     isUploading,
-    files,
   };
 }

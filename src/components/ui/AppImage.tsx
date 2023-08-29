@@ -16,7 +16,7 @@ export default function AppImage(props: {
     <Image
       {...props}
       src={publicRuntimeConfig.S3_BUCKET_ENDPOINT + "/" + props.src}
-      alt={props.alt}
+      alt={props.alt || "no alt text provided"}
     />
   );
 }

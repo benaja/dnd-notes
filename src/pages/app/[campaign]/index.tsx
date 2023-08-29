@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 import CreateSessionButton from "~/components/campaign/CreateSessionButton";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
-import { CharacterType } from "~/components/campaign/shema";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import { Button } from "~/components/ui/button";
@@ -15,6 +14,7 @@ import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
 import useMentions from "~/lib/hooks/useMentions";
 import { EditorEvents } from "~/components/lexical-editor/Editor";
+import { CharacterType } from "~/jsonTypes";
 const EditorField = dynamic(
   () => import("~/components/fields/inputs/EditorInput"),
   {

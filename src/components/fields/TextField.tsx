@@ -20,6 +20,8 @@ export default function TextField({
 }: HTMLProps<HTMLDivElement> & UseControllerProps & InputProps) {
   const { field, fieldState } = useFormField(props);
 
+  console.log(field.name, field.value);
+
   return (
     <BaseField
       label={label}

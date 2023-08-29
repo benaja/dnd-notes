@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
-import { CharacterType } from "~/components/campaign/shema";
 import EditableText from "~/components/fields/EditableText";
 import Editor from "~/components/lexical-editor/Editor";
 import QuillInput from "~/components/fields/RichtTextInput";

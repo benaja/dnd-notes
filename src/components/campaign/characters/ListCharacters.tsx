@@ -4,6 +4,7 @@ import { CharacterType } from "../shema";
 import Image from "next/image";
 import AppImage from "~/components/ui/AppImage";
 import useDialog from "~/lib/hooks/useDialog";
+import EditCharacterForm from "./EditCharacterForm";
 const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
   ssr: false,
 });
@@ -22,17 +23,22 @@ export default function ListCharacters({
   return (
     <div>
       {dialog}
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         {characters.map((character) => {
           return (
-            <div
+            <button
               key={character.id}
-              className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gray-700 p-2"
+              className="relative flex h-12 w-12  items-center justify-center rounded-full bg-gray-700 p-2 hover:opacity-80"
+              onClick={() =>
+                showDialog("Edit Character", (onClose) => (
+                  <EditCharacterForm character={character} onChange={onClose} />
+                ))
+              }
             >
               {character.avatar && (
                 <AppImage
                   src={character.avatar}
-                  className="absolute h-full w-full rounded-full object-cover"
+                  className="absolute h-full w-full shrink-0 rounded-full object-cover"
                   alt="avatar image"
                   width={48}
                   height={48}
@@ -41,7 +47,7 @@ export default function ListCharacters({
               <p className="text-2xl font-bold uppercase leading-[1em] text-white">
                 {character.name?.[0]}
               </p>
-            </div>
+            </button>
           );
         })}
         <button

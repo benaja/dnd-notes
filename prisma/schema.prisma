@@ -109,8 +109,10 @@ model Character {
   campaignId  String
   name        String
   description String? @db.Text
-  type        String
   avatar      String?
+
+  /// [CharacterType]
+  type String
 
   /// [Fields]
   fields    Json     @default("[]")
