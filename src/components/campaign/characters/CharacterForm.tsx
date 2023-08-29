@@ -32,11 +32,13 @@ const schema = characterSchema.omit({
 export type CharacterFormValues = z.infer<typeof schema>;
 
 export default function CharacterForm({
+  character,
   values,
   fields,
   onSubmit,
   onChange,
 }: {
+  character?: Character;
   values?: CharacterFormValues;
   fields: PrismaJson.FormField[];
   onSubmit?: (values: CharacterFormValues) => void;
@@ -94,7 +96,14 @@ export default function CharacterForm({
           <TextField name="name" label="Name" className="grow" />
           <AvatarImageField name="avatar" />
         </div>
-        {fields && <GenericForm fields={fields} />}
+        {fields && (
+          <GenericForm
+            fields={fields}
+            attachMentionsTo={{
+              character,
+            }}
+          />
+        )}
         <DialogFooter>
           <Button type="submit">Save</Button>
         </DialogFooter>

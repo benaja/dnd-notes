@@ -1,9 +1,15 @@
-import { FormField } from "~/server/routers/settingsRouter";
 import SelectField from "./SelectField";
 import EditorField from "./EditorField";
 import TextField from "./TextField";
+import { AttachToProps } from "~/lib/hooks/useMentions";
 
-export default function GenericForm({ fields }: { fields: FormField[] }) {
+export default function GenericForm({
+  fields,
+  attachMentionsTo,
+}: {
+  fields: PrismaJson.FormField[];
+  attachMentionsTo?: AttachToProps;
+}) {
   return (
     <div className="-mx-4 flex flex-wrap">
       {fields.map((field, index) => {
@@ -30,7 +36,12 @@ export default function GenericForm({ fields }: { fields: FormField[] }) {
           );
         } else if (field.type === "richText") {
           component = (
-            <EditorField minimal name={fieldName} label={field.label} />
+            <EditorField
+              minimal
+              name={fieldName}
+              label={field.label}
+              attachMentionsTo={attachMentionsTo}
+            />
           );
         } else {
           component = <div>Unknown field type: {field.type}</div>;

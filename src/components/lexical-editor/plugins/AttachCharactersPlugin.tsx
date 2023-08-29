@@ -26,8 +26,9 @@ import { trpc } from "~/lib/trpc-client";
 import { Character } from "@prisma/client";
 import AppImage from "~/components/ui/AppImage";
 import classNames from "classnames";
-import { CharacterType } from "~/components/campaign/shema";
 import { CampaignContext } from "~/pages/app/[campaign]";
+import useMentions, { AttachToProps } from "~/lib/hooks/useMentions";
+import { CharacterType } from "~/jsonTypes";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -231,8 +232,10 @@ function MentionsTypeaheadMenuItem({
 }
 
 export default function NewMentionsPlugin({
+  attachTo,
   onCharactersChanged,
 }: {
+  attachTo?: AttachToProps;
   onCharactersChanged?: (characters: Character[]) => void;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
@@ -253,6 +256,8 @@ export default function NewMentionsPlugin({
   const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
     minLength: 0,
   });
+
+  const { onCharacterChange } = useMentions(attachTo ?? {});
 
   const options = useMemo(() => {
     if (!results) return [];
@@ -281,6 +286,7 @@ export default function NewMentionsPlugin({
           name: selectedOption.character.name,
           campaignId: campaign.id,
           type: CharacterType.NPC,
+          fields: [],
         });
       }
 
@@ -319,6 +325,7 @@ export default function NewMentionsPlugin({
           const characters = await utils.character.getByIds.fetch(characterIds);
 
           onCharactersChanged?.(characters);
+          onCharacterChange(characters);
         });
       },
     );
@@ -326,7 +333,13 @@ export default function NewMentionsPlugin({
     return () => {
       removeMutationListener();
     };
-  }, [editor, utils.character.getByIds, characterNodes, onCharactersChanged]);
+  }, [
+    editor,
+    utils.character.getByIds,
+    characterNodes,
+    onCharactersChanged,
+    onCharacterChange,
+  ]);
 
   useEffect(() => {
     editor.update(() => {
@@ -341,6 +354,7 @@ export default function NewMentionsPlugin({
       onSelectOption={onSelectOption}
       triggerFn={checkForMentionMatch}
       options={options}
+      anchorClassName="z-50"
       menuRenderFn={(
         anchorElementRef,
         { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex },

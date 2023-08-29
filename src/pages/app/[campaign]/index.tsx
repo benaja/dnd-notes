@@ -31,15 +31,12 @@ const Page: NextPageWithLayout = function Campaign() {
   const { data: campaign } = trpc.campaign.getById.useQuery(
     router.query.campaign as string,
   );
-  const { onCharacterChange } = useMentions({
-    campaign: campaign,
-  });
 
-  function onEvent(evnet: EditorEvents, payload: any) {
-    if (evnet === EditorEvents.onCharactersChanged) {
-      onCharacterChange(payload as Character[]);
-    }
-  }
+  // function onEvent(evnet: EditorEvents, payload: any) {
+  //   if (evnet === EditorEvents.onCharactersChanged) {
+  //     onCharacterChange(payload as Character[]);
+  //   }
+  // }
 
   const updateMutation = trpc.campaign.update.useMutation();
 
@@ -83,9 +80,6 @@ const Page: NextPageWithLayout = function Campaign() {
           )}
           campaignId={campaign.id}
           type={CharacterType.Player}
-          // onCreated={(character) => {
-          //   editCampaign("characters", [...campaign.characters, character]);
-          // }}
         />
 
         <p className="mt-4 text-lg font-bold">NPCs</p>
@@ -95,16 +89,15 @@ const Page: NextPageWithLayout = function Campaign() {
           )}
           campaignId={campaign.id}
           type={CharacterType.NPC}
-          // onCreated={(character) => {
-          //   editCampaign("characters", [...campaign.characters, character]);
-          // }}
         />
 
         <p className="mt-4 text-lg font-bold">Campaign Notes</p>
         <EditorField
           value={campaign.notes}
+          attachMentionsTo={{
+            campaign,
+          }}
           onChange={(value) => editCampaign("notes", value)}
-          onEvent={onEvent}
         />
 
         <div className="mt-8 flex items-start justify-between">
@@ -112,6 +105,9 @@ const Page: NextPageWithLayout = function Campaign() {
           <CreateSessionButton />
         </div>
         <div>
+          {campaign.sessions.length === 0 && (
+            <p className="font-light text-gray-500">No sessions created yet</p>
+          )}
           {campaign.sessions.map((session) => (
             <AppLink
               href={`/app/${campaign.id}/session/${session.id}`}

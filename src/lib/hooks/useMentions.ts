@@ -2,15 +2,23 @@ import { Campaign, CampaignSessions, Character } from "@prisma/client";
 import { trpc } from "../trpc-client";
 import { MentionType } from "../types";
 
+export type AttachToProps = {
+  campaign?: {
+    id: string;
+  } | null;
+  session?: {
+    id: string;
+  } | null;
+  character?: {
+    id: string;
+  } | null;
+};
+
 export default function useMentions({
   campaign,
   session,
   character,
-}: {
-  campaign?: Campaign | null;
-  session?: CampaignSessions | null;
-  character?: Character | null;
-}) {
+}: AttachToProps) {
   const applyMentions = trpc.mentions.applyMention.useMutation();
 
   function getSource(): {
@@ -51,7 +59,7 @@ export default function useMentions({
     });
   }
 
-  function onCharacterChange(characters: Character[]) { 
+  function onCharacterChange(characters: Character[]) {
     console.log(characters);
     onChange(
       MentionType.character,

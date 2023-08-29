@@ -73,6 +73,9 @@ const Page: NextPageWithLayout = function Session() {
       <div className="mt-8">
         <EditorField
           value={session.notes}
+          attachMentionsTo={{
+            session,
+          }}
           onChange={(value) => editSession("notes", value)}
         />
       </div>

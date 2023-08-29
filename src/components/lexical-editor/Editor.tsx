@@ -33,6 +33,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { Character } from "@prisma/client";
 import { $nodesOfType, NodeKey } from "lexical";
 import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
+import { AttachToProps } from "~/lib/hooks/useMentions";
 
 function Placeholder() {
   return (
@@ -63,10 +64,12 @@ export const nodes = [
 
 export default function Editor({
   minimal,
+  attachMentionsTo,
   onChange,
   onEvent,
 }: {
   minimal?: boolean;
+  attachMentionsTo?: AttachToProps;
   onChange: (state: any) => void;
   onEvent?: (event: EditorEvents, payload: any) => void;
 }) {
@@ -118,6 +121,7 @@ export default function Editor({
           onCharactersChanged={(character) =>
             onEvent?.(EditorEvents.onCharactersChanged, character)
           }
+          attachTo={attachMentionsTo}
         />
         <OnChangePlugin onChange={onChange} />
         <ComponentPickerPlugin />
