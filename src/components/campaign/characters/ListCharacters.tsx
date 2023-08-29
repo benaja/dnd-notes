@@ -1,10 +1,9 @@
 import { Character } from "@prisma/client";
 import dynamic from "next/dynamic";
-import { CharacterType } from "../shema";
-import Image from "next/image";
 import AppImage from "~/components/ui/AppImage";
 import useDialog from "~/lib/hooks/useDialog";
-import EditCharacterForm from "./EditCharacterForm";
+import { CharacterType } from "~/jsonTypes";
+import Link from "next/link";
 const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
   ssr: false,
 });
@@ -26,14 +25,10 @@ export default function ListCharacters({
       <div className="flex flex-wrap gap-4">
         {characters.map((character) => {
           return (
-            <button
+            <Link
+              href={`/app/${campaignId}/characters/${character.id}`}
               key={character.id}
               className="relative flex h-12 w-12  items-center justify-center rounded-full bg-gray-700 p-2 hover:opacity-80"
-              onClick={() =>
-                showDialog("Edit Character", (onClose) => (
-                  <EditCharacterForm character={character} onChange={onClose} />
-                ))
-              }
             >
               {character.avatar && (
                 <AppImage
@@ -47,7 +42,7 @@ export default function ListCharacters({
               <p className="text-2xl font-bold uppercase leading-[1em] text-white">
                 {character.name?.[0]}
               </p>
-            </button>
+            </Link>
           );
         })}
         <button

@@ -1,6 +1,3 @@
-"use client";
-
-import { FormProvider, UseFormReturn, useForm } from "react-hook-form";
 import { trpc } from "~/lib/trpc-client";
 import { Character } from "@prisma/client";
 import CharacterForm, { CharacterFormValues } from "./CharacterForm";
@@ -30,6 +27,7 @@ export default function CreateCharacterForm({
     const character = await createCharacterMutation.mutateAsync({
       ...values,
       campaignId,
+      type,
     });
   }
 

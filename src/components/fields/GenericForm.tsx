@@ -2,6 +2,7 @@ import SelectField from "./SelectField";
 import EditorField from "./EditorField";
 import TextField from "./TextField";
 import { AttachToProps } from "~/lib/hooks/useMentions";
+import FormField, { FormFieldRenderProps } from "./FormField";
 
 export default function GenericForm({
   fields,
@@ -17,38 +18,39 @@ export default function GenericForm({
           width: field.width * 100 + "%",
         };
 
-        let component: JSX.Element;
-        let fieldName = `fields.${field.name}`;
+        let render: (props: FormFieldRenderProps) => React.ReactNode;
+        let fieldName = `fields.${index}.value`;
 
         if (field.type === "string") {
-          component = <TextField name={fieldName} label={field.label} />;
+          render = (props) => <TextField label={field.label} {...props} />;
         } else if (field.type === "number") {
-          component = (
-            <TextField name={fieldName} label={field.label} type="number" />
+          render = (props) => (
+            <TextField label={field.label} type="number" {...props} />
           );
         } else if (field.type === "select") {
-          component = (
+          render = (props) => (
             <SelectField
               name={fieldName}
               options={field.options || []}
               label={field.label}
+              {...props}
             />
           );
         } else if (field.type === "richText") {
-          component = (
+          render = (props) => (
             <EditorField
-              minimal
               name={fieldName}
               label={field.label}
               attachMentionsTo={attachMentionsTo}
+              {...props}
             />
           );
         } else {
-          component = <div>Unknown field type: {field.type}</div>;
+          render = () => <div>Unknown field type: {field.type}</div>;
         }
         return (
           <div key={field.name} style={style} className="p-4">
-            {component}
+            <FormField name={fieldName} render={render} />
           </div>
         );
       })}

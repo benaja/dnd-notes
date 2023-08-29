@@ -1,5 +1,5 @@
 import useFormField from "~/lib/hooks/useFormField";
-import BaseField from "./_BaseField";
+import BaseField, { BaseFieldProps } from "./_BaseField";
 import EditorInput from "./inputs/EditorInput";
 import { HTMLProps } from "react";
 import { UseControllerProps } from "react-hook-form";
@@ -20,20 +20,14 @@ export default function EditorField({
   attachMentionsTo,
   onChange,
   ...props
-}: HTMLProps<HTMLDivElement> & UseControllerProps & EditorFieldProps) {
-  const { field, fieldState } = useFormField(props);
-
+}: HTMLProps<HTMLDivElement> & EditorFieldProps & BaseFieldProps) {
   return (
-    <BaseField
-      label={label}
-      errorMessage={fieldState?.error?.message}
-      {...props}
-    >
+    <BaseField label={label} {...props}>
       <EditorInput
         minimal={minimal}
-        value={field.value}
+        value={value}
         attachMentionsTo={attachMentionsTo}
-        onChange={field.onChange}
+        onChange={onChange}
       />
     </BaseField>
   );

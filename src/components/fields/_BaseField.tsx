@@ -2,16 +2,19 @@ import { HTMLAttributes } from "react";
 import { UseControllerProps } from "react-hook-form";
 import useFormField from "~/lib/hooks/useFormField";
 
+export type BaseFieldProps = {
+  label?: string | null;
+  errorMessage?: string | null;
+};
+
 export default function BaseField({
   label,
   children,
   errorMessage,
   ...props
 }: HTMLAttributes<HTMLDivElement> &
-  UseControllerProps & {
-    label?: string | null;
+  BaseFieldProps & {
     children?: React.ReactNode;
-    errorMessage?: string | null;
   }) {
   return (
     <div {...props}>

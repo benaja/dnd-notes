@@ -1,34 +1,25 @@
 import { UseControllerProps, useController } from "react-hook-form";
-import BaseField from "./_BaseField";
+import BaseField, { BaseFieldProps } from "./_BaseField";
 import TextInput from "./inputs/TextInput";
 import useFormField from "~/lib/hooks/useFormField";
 import { HTMLAttributes, HTMLProps } from "react";
 
 type InputProps = {
   label?: string | null;
-  value?: string | null;
+  value?: string | number | null;
   type?: string;
-  onChange?: (value: string) => void;
+  onChange?: (value: string | number | null) => void;
 };
 
 export default function TextField({
-  label,
   value,
   onChange,
   type,
   ...props
-}: HTMLProps<HTMLDivElement> & UseControllerProps & InputProps) {
-  const { field, fieldState } = useFormField(props);
-
-  console.log(field.name, field.value);
-
+}: Omit<HTMLProps<HTMLDivElement>, "onChange"> & InputProps & BaseFieldProps) {
   return (
-    <BaseField
-      label={label}
-      errorMessage={fieldState?.error?.message}
-      {...props}
-    >
-      <TextInput type={type} {...field}></TextInput>
+    <BaseField {...props}>
+      <TextInput type={type} value={value} onChange={onChange}></TextInput>
     </BaseField>
   );
 }

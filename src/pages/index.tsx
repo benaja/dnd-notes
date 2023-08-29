@@ -1,5 +1,9 @@
 import { useSession } from "next-auth/react";
-import { FetchButton, LoginButton, LogoutButton } from "~/app1/auth";
+import {
+  FetchButton,
+  LoginButton,
+  LogoutButton,
+} from "~/components/auth/buttons";
 
 export default function Page() {
   const session = useSession();

@@ -5,14 +5,14 @@ import { useEffect, useRef, useState } from "react";
 export default function EditableText(
   {
     value,
-    onInput,
+    onChange,
     display,
     children,
     className,
     onBlur,
   }: {
     value?: string | null;
-    onInput?: (value: string) => void;
+    onChange?: (value: string) => void;
     onBlur?: (value: string) => void;
     display?: React.ReactNode;
     children?: (props: {
@@ -42,7 +42,7 @@ export default function EditableText(
 
   function updateValue(value: string) {
     setInternalValue(value);
-    onInput?.(value);
+    onChange?.(value);
   }
 
   if (isEditing) {
@@ -66,10 +66,10 @@ export default function EditableText(
   if (!children) {
     return (
       <p onClick={onContentClick} className={className}>
-        {value}
+        {internalValue}
       </p>
     );
   }
 
-  return children({ value, onClick: onContentClick, className });
+  return children({ value: internalValue, onClick: onContentClick, className });
 }

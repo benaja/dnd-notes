@@ -13,7 +13,7 @@ type InputProps = {
   className?: string;
 };
 
-function parseValue(value?: string | number, type?: string) {
+function parseValue(value?: string | number | null, type?: string) {
   if (type === "number" && typeof value === "string") {
     if (!value) return null;
     return parseFloat(value);
@@ -26,7 +26,7 @@ export default forwardRef(function TextInput(
     value,
     onChange,
     ...props
-  }: HTMLProps<HTMLInputElement> & {
+  }: Omit<HTMLProps<HTMLInputElement>, "value" | "onChange"> & {
     value?: string | number | null;
     onChange?: (value: string | number | null) => void;
   },

@@ -1,26 +1,17 @@
 import { Campaign, Character } from "@prisma/client";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 import CreateSessionButton from "~/components/campaign/CreateSessionButton";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
-import { Button } from "~/components/ui/button";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 import { format } from "date-fns";
 import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
-import useMentions from "~/lib/hooks/useMentions";
-import { EditorEvents } from "~/components/lexical-editor/Editor";
 import { CharacterType } from "~/jsonTypes";
-const EditorField = dynamic(
-  () => import("~/components/fields/inputs/EditorInput"),
-  {
-    ssr: false,
-  },
-);
+import EditorInput from "~/components/fields/inputs/EditorInput";
 
 export const CampaignContext = createContext<Campaign | null>(null);
 
@@ -92,7 +83,7 @@ const Page: NextPageWithLayout = function Campaign() {
         />
 
         <p className="mt-4 text-lg font-bold">Campaign Notes</p>
-        <EditorField
+        <EditorInput
           value={campaign.notes}
           attachMentionsTo={{
             campaign,
@@ -110,7 +101,7 @@ const Page: NextPageWithLayout = function Campaign() {
           )}
           {campaign.sessions.map((session) => (
             <AppLink
-              href={`/app/${campaign.id}/session/${session.id}`}
+              href={`/app/${campaign.id}/sessions/${session.id}`}
               key={session.id}
               className="block"
             >

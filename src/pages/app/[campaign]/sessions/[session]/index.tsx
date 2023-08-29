@@ -3,20 +3,13 @@ import debounce from "lodash/debounce";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
-import ContentEditor from "~/components/fields/ContentEditor";
 import DatePicker from "~/components/fields/DatePicker";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import useDebounce from "~/lib/hooks/useDebounce";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
-
-const EditorField = dynamic(
-  () => import("~/components/fields/inputs/EditorInput"),
-  {
-    ssr: false,
-  },
-);
+import EditorInput from "~/components/fields/inputs/EditorInput";
 
 const Page: NextPageWithLayout = function Session() {
   const router = useRouter();
@@ -71,7 +64,7 @@ const Page: NextPageWithLayout = function Session() {
       </div>
 
       <div className="mt-8">
-        <EditorField
+        <EditorInput
           value={session.notes}
           attachMentionsTo={{
             session,

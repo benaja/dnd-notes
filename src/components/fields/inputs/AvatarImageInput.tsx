@@ -7,16 +7,23 @@ import { HTMLProps } from "react";
 import { cn } from "~/lib/utils";
 import useInput from "~/lib/hooks/useInput";
 
+export type AvatarInputProps = Omit<HTMLProps<HTMLDivElement>, "value"> & {
+  value?: string | null;
+  onChange?: (value: string | null) => void;
+  errorMessage?: string | null;
+};
+
 export default function AvatarImageInput({
   value,
   onChange,
+  errorMessage,
   ...props
-}: HTMLProps<HTMLDivElement> & {
-  value?: string | null;
-  onChange?: (value: string | null) => void;
-}) {
-  const { internalValue, onInput } = useInput(value ?? null, onChange);
-  const { getRootProps, getInputProps, isUploading, files } = useUpload({
+}: AvatarInputProps) {
+  const { internalValue, onInput } = useInput<string | null>(
+    value ?? null,
+    onChange,
+  );
+  const { getRootProps, getInputProps, isUploading } = useUpload({
     multiple: false,
     onChange(value) {
       let file = Array.isArray(value) ? value[0] : value;

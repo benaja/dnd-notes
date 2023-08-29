@@ -1,7 +1,11 @@
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import Editor, { EditorEvents, nodes } from "../../lexical-editor/Editor";
+import { EditorEvents, nodes } from "../../lexical-editor/Editor";
 import exampleTheme from "../../lexical-editor/themes/ExampleTheme";
 import { AttachToProps } from "~/lib/hooks/useMentions";
+import dynamic from "next/dynamic";
+const Editor = dynamic(() => import("~/components/lexical-editor/Editor"), {
+  ssr: false,
+});
 
 export default function EditorInput({
   value,

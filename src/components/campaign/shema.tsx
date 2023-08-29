@@ -13,5 +13,12 @@ export const characterSchema = z.object({
   campaignId: z.string(),
   type: z.nativeEnum(CharacterType),
   avatar: z.string().optional().nullable(),
-  fields: z.record(z.any()),
+  fields: z
+    .array(
+      z.object({
+        name: z.string(),
+        value: z.any(),
+      }),
+    )
+    .optional(),
 });

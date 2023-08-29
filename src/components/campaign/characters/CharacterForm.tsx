@@ -10,6 +10,7 @@ import { CharacterType, FormFieldType } from "~/jsonTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Character } from "@prisma/client";
 import AvatarImageField from "~/components/fields/AvatarImageField";
+import FormField from "~/components/fields/FormField";
 
 function getZodType(type: FormFieldType): z.ZodType<any, any, any> {
   switch (type) {
@@ -65,15 +66,13 @@ export default function CharacterForm({
       name: "",
       type: CharacterType.NPC,
       avatar: "",
-      fields: fields.reduce((values, field) => {
-        return {
-          ...values,
-          [field.name]: null,
-        };
-      }, {}),
     },
     resolver: zodResolver(schema),
     mode: "onBlur",
+  });
+
+  formMethods.watch((values) => {
+    console.log(values);
   });
 
   function afterSubmit(character: Character) {
@@ -86,24 +85,33 @@ export default function CharacterForm({
 
   return (
     <FormProvider {...formMethods}>
+      {JSON.stringify(formMethods.formState.errors)}
       <form
         onSubmit={formMethods.handleSubmit((values) => {
           console.log(values);
           onSubmit?.(values);
         })}
       >
-        <div className="flex gap-8">
-          <TextField name="name" label="Name" className="grow" />
-          <AvatarImageField name="avatar" />
+        <div className="my-6 flex gap-8">
+          <FormField
+            name="name"
+            render={(props) => (
+              <TextField {...props} label="Name" className="grow" />
+            )}
+          ></FormField>
+          <FormField
+            name="avatar"
+            render={(props) => <AvatarImageInput {...props} />}
+          />
         </div>
-        {fields && (
+        {/* {fields && (
           <GenericForm
             fields={fields}
             attachMentionsTo={{
               character,
             }}
           />
-        )}
+        )} */}
         <DialogFooter>
           <Button type="submit">Save</Button>
         </DialogFooter>

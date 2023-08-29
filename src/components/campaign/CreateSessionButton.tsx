@@ -8,7 +8,7 @@ export default function CreateSessionButton() {
   const router = useRouter();
   const createSession = trpc.session.create.useMutation({
     onSuccess(data) {
-      router.push(`/app/${data.campaignId}/session/${data.id}`);
+      router.push(`/app/${data.campaignId}/sessions/${data.id}`);
     },
   });
   const campaign = useContext(CampaignContext);

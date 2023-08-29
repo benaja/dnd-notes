@@ -16,7 +16,7 @@ async function characterData(input: CharacterFormValues, ctx: Context) {
     ...input,
     fields: characterFields.map((field) => ({
       name: field.name,
-      value: input.fields[field.name] || "",
+      value: input.fields?.find((f) => f.name === field.name)?.value,
       type: field.type,
       label: field.label,
       width: field.width,

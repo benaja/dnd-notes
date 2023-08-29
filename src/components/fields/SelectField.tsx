@@ -1,5 +1,5 @@
 import useFormField from "~/lib/hooks/useFormField";
-import BaseField from "./_BaseField";
+import BaseField, { BaseFieldProps } from "./_BaseField";
 import { HTMLProps } from "react";
 import { UseControllerProps } from "react-hook-form";
 import SelectInput from "./inputs/SelectInput";
@@ -18,20 +18,10 @@ export default function SelectField({
   type,
   onChange,
   ...props
-}: HTMLProps<HTMLDivElement> & UseControllerProps & SelectProps) {
-  const { field, fieldState } = useFormField(props);
-
+}: HTMLProps<HTMLDivElement> & SelectProps & BaseFieldProps) {
   return (
-    <BaseField
-      label={label}
-      errorMessage={fieldState?.error?.message}
-      {...props}
-    >
-      <SelectInput
-        options={options}
-        value={field.value}
-        onChange={field.onChange}
-      />
+    <BaseField label={label} {...props}>
+      <SelectInput options={options} value={value} onChange={onChange} />
     </BaseField>
   );
 }
