@@ -1,4 +1,4 @@
-import ExampleTheme from "../themes/ExampleTheme";
+import ExampleTheme from "./themes/ExampleTheme";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -62,9 +62,11 @@ export const nodes = [
 ];
 
 export default function Editor({
+  minimal,
   onChange,
   onEvent,
 }: {
+  minimal?: boolean;
   onChange: (state: any) => void;
   onEvent?: (event: EditorEvents, payload: any) => void;
 }) {
@@ -102,7 +104,7 @@ export default function Editor({
     <div className="editor-container relative text-black ">
       <LinkPlugin />
 
-      <ToolbarPlugin />
+      <ToolbarPlugin minimal={minimal} />
       <div className="editor-inner">
         <HistoryPlugin />
         {/* <TreeViewPlugin /> */}

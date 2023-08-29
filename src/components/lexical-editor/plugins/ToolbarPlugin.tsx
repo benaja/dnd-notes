@@ -118,7 +118,7 @@ export function getSelectedNode(selection: RangeSelection) {
   }
 }
 
-export default function ToolbarPlugin() {
+export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
@@ -249,36 +249,41 @@ export default function ToolbarPlugin() {
       className="toolbar sticky top-20 z-50 mb-px flex rounded-t-md bg-white p-1 align-middle"
       ref={toolbarRef}
     >
-      <button
-        disabled={!canUndo}
-        onClick={() => {
-          editor.dispatchCommand(UNDO_COMMAND, undefined);
-        }}
-        className="toolbar-item spaced"
-        aria-label="Undo"
-      >
-        <Icon>undo</Icon>
-      </button>
-      <button
-        disabled={!canRedo}
-        onClick={() => {
-          editor.dispatchCommand(REDO_COMMAND, undefined);
-        }}
-        className="toolbar-item"
-        aria-label="Redo"
-      >
-        <Icon>redo</Icon>
-      </button>
-      <Divider />
+      {!minimal && (
+        <>
+          <button
+            disabled={!canUndo}
+            onClick={() => {
+              editor.dispatchCommand(UNDO_COMMAND, undefined);
+            }}
+            className="toolbar-item spaced"
+            aria-label="Undo"
+          >
+            <Icon>undo</Icon>
+          </button>
+          <button
+            disabled={!canRedo}
+            onClick={() => {
+              editor.dispatchCommand(REDO_COMMAND, undefined);
+            }}
+            className="toolbar-item"
+            aria-label="Redo"
+          >
+            <Icon>redo</Icon>
+          </button>
+          <Divider />
+        </>
+      )}
       {supportedBlockTypes.has(blockType) && (
         <>
-          <Divider />
           <BlockOptionsDropdownList
             editor={editor}
             blockType={blockType}
             toolbarRef={toolbarRef}
             blockTypeToBlockName={blockTypeToBlockName}
           />
+
+          <Divider />
         </>
       )}
       {blockType === "code" ? (
@@ -331,7 +336,7 @@ export default function ToolbarPlugin() {
           >
             <Icon>strikethrough_s</Icon>
           </button>
-          <button
+          {/* <button
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
             }}
@@ -339,7 +344,7 @@ export default function ToolbarPlugin() {
             aria-label="Insert Code"
           >
             <Icon>code</Icon>
-          </button>
+          </button> */}
           <button
             onClick={insertLink}
             className={"toolbar-item spaced " + (isLink ? "active" : "")}
@@ -349,43 +354,48 @@ export default function ToolbarPlugin() {
           </button>
           {isLink &&
             createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
-          <Divider />
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-            }}
-            className="toolbar-item spaced"
-            aria-label="Left Align"
-          >
-            <Icon>format_align_left</Icon>
-          </button>
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-            }}
-            className="toolbar-item spaced"
-            aria-label="Center Align"
-          >
-            <Icon>format_align_center</Icon>
-          </button>
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-            }}
-            className="toolbar-item spaced"
-            aria-label="Right Align"
-          >
-            <Icon>format_align_right</Icon>
-          </button>
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
-            }}
-            className="toolbar-item"
-            aria-label="Justify Align"
-          >
-            <Icon>format_align_justify</Icon>
-          </button>{" "}
+
+          {!minimal && (
+            <>
+              <Divider />
+              <button
+                onClick={() => {
+                  editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+                }}
+                className="toolbar-item spaced"
+                aria-label="Left Align"
+              >
+                <Icon>format_align_left</Icon>
+              </button>
+              <button
+                onClick={() => {
+                  editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+                }}
+                className="toolbar-item spaced"
+                aria-label="Center Align"
+              >
+                <Icon>format_align_center</Icon>
+              </button>
+              <button
+                onClick={() => {
+                  editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+                }}
+                className="toolbar-item spaced"
+                aria-label="Right Align"
+              >
+                <Icon>format_align_right</Icon>
+              </button>
+              <button
+                onClick={() => {
+                  editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+                }}
+                className="toolbar-item"
+                aria-label="Justify Align"
+              >
+                <Icon>format_align_justify</Icon>
+              </button>{" "}
+            </>
+          )}
         </>
       )}
     </div>

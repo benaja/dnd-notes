@@ -1,16 +1,9 @@
+import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
-
-export type FormField = {
-  type: "string" | "number" | "boolean" | "date" | "richText" | "select";
-  label: string;
-  name: string;
-  width: number;
-  options?: string[];
-};
 
 export const settingsRouter = router({
   characterFields: protectedProcedure.query(async ({ ctx }) => {
-    const fields: FormField[] = [
+    const fields: PrismaJson.FormField[] = [
       {
         type: "number",
         label: "Age",

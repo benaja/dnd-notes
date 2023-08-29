@@ -1,6 +1,7 @@
 import { FormField } from "~/server/routers/settingsRouter";
-import TextInput from "./TextInput";
-import SelectInput from "./SelectInput";
+import SelectField from "./SelectField";
+import EditorField from "./EditorField";
+import TextField from "./TextField";
 
 export default function GenericForm({ fields }: { fields: FormField[] }) {
   return (
@@ -11,20 +12,25 @@ export default function GenericForm({ fields }: { fields: FormField[] }) {
         };
 
         let component: JSX.Element;
+        let fieldName = `fields.${field.name}`;
 
         if (field.type === "string") {
-          component = <TextInput name={field.name} label={field.label} />;
+          component = <TextField name={fieldName} label={field.label} />;
         } else if (field.type === "number") {
           component = (
-            <TextInput name={field.name} label={field.label} type="number" />
+            <TextField name={fieldName} label={field.label} type="number" />
           );
         } else if (field.type === "select") {
           component = (
-            <SelectInput
-              name={field.name}
+            <SelectField
+              name={fieldName}
               options={field.options || []}
               label={field.label}
             />
+          );
+        } else if (field.type === "richText") {
+          component = (
+            <EditorField minimal name={fieldName} label={field.label} />
           );
         } else {
           component = <div>Unknown field type: {field.type}</div>;
@@ -34,12 +40,6 @@ export default function GenericForm({ fields }: { fields: FormField[] }) {
             {component}
           </div>
         );
-        // return (
-        //   <div key={field.name} className="flex flex-col">
-        //     <label htmlFor={field.name}>{field.label}</label>
-        //     <input type={field.type} id={field.name} name={field.name} />
-        //   </div>
-        // );
       })}
     </div>
   );

@@ -2,8 +2,9 @@ import { signIn } from "next-auth/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
-import TextInput from "~/components/fields/TextInput";
+import TextInput from "~/components/fields/inputs/TextInput";
 import { trpc } from "~/lib/trpc-client";
+import TextField from "../fields/TextField";
 
 interface RegisterFormValues {
   name: string;
@@ -63,25 +64,25 @@ export const RegisterForm = ({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        {/* {error && (
-          <p className="mb-6 rounded bg-red-300 py-4 text-center">{error}</p>
-        )} */}
-        <div className="mb-6">
-          <TextInput type="text" name="name" label="Name" />
-        </div>
-        <div className="mb-6">
-          <TextInput type="email" name="email" label="Email address" />
-        </div>
-        <div className="mb-6">
-          <TextInput type="password" name="password" label="Password" />
-        </div>
-        <div className="mb-6">
-          <TextInput
-            type="password"
-            name="passwordConfirmation"
-            label="Password Confirmation"
-          />
-        </div>
+        <TextField className="mb-6" type="text" name="name" label="Name" />
+        <TextField
+          className="mb-6"
+          type="email"
+          name="email"
+          label="Email address"
+        />
+        <TextField
+          className="mb-6"
+          type="password"
+          name="password"
+          label="Password"
+        />
+        <TextField
+          className="mb-6"
+          type="password"
+          name="passwordConfirmation"
+          label="Password Confirmation"
+        />
         <button
           type="submit"
           style={{ backgroundColor: `${loading ? "#ccc" : "#3446eb"}` }}

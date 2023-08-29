@@ -4,8 +4,9 @@ import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import TextInput from "~/components/fields/TextInput";
+import TextInput from "~/components/fields/inputs/TextInput";
 import { Button } from "../ui/button";
+import TextField from "../fields/TextField";
 
 export default function CredentialsForm({
   callbackUrl = "/app",
@@ -23,11 +24,12 @@ export default function CredentialsForm({
   });
 
   const onSubmit = async (values: any) => {
+    console.log("onSubmit", values);
     try {
       setLoading(true);
 
       const res = await signIn("credentials", {
-        // redirect: false,
+        redirect: false,
         email: values.email,
         password: values.password,
         callbackUrl,
@@ -49,15 +51,14 @@ export default function CredentialsForm({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <div className="mb-6">
-          <TextInput type="email" name="email" label="Email address" />
-        </div>
-        <TextInput type="password" name="password" label="Password" />
-        {error ? (
-          <p className="leading-4 text-red-600">{error}</p>
-        ) : (
-          <p className="h-4"></p>
-        )}
+        <TextField
+          className="mb-6"
+          type="email"
+          name="email"
+          label="Email address"
+        />
+        <TextField type="password" name="password" label="Password" />
+        <p className="h-4 leading-4 text-red-600">{error || ""}</p>
 
         <Button className="mt-4 w-full" disabled={loading}>
           Sign In

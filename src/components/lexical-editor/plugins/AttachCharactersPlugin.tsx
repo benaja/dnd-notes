@@ -248,16 +248,14 @@ export default function NewMentionsPlugin({
   const campaign = React.useContext(CampaignContext);
 
   const [queryString, setQueryString] = useState<string | null>(null);
-
-  const results = useMentionLookupService(queryString);
-
-  console.log("results", results);
+  const { data: results } = trpc.character.search.useQuery(queryString);
 
   const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
     minLength: 0,
   });
 
   const options = useMemo(() => {
+    if (!results) return [];
     if (results.length === 0) {
       return [
         new MentionTypeaheadOption({

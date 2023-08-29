@@ -14,10 +14,13 @@ import { format } from "date-fns";
 import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
 import useMentions from "~/lib/hooks/useMentions";
-import { EditorEvents } from "~/components/fields/lexical-editor/Editor";
-const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
-  ssr: false,
-});
+import { EditorEvents } from "~/components/lexical-editor/Editor";
+const EditorField = dynamic(
+  () => import("~/components/fields/inputs/EditorInput"),
+  {
+    ssr: false,
+  },
+);
 
 export const CampaignContext = createContext<Campaign | null>(null);
 

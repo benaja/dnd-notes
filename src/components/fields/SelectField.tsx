@@ -1,23 +1,24 @@
 import useFormField from "~/lib/hooks/useFormField";
 import BaseField from "./_BaseField";
-import EditorInput from "./inputs/EditorInput";
 import { HTMLProps } from "react";
 import { UseControllerProps } from "react-hook-form";
+import SelectInput from "./inputs/SelectInput";
 
-type EditorFieldProps = {
+type SelectProps = {
   label?: string | null;
   value?: string | null;
-  minimal?: boolean;
+  options: string[];
   onChange?: (value: string) => void;
 };
 
-export default function EditorField({
+export default function SelectField({
   label,
   value,
-  minimal,
+  options,
+  type,
   onChange,
   ...props
-}: HTMLProps<HTMLDivElement> & UseControllerProps & EditorFieldProps) {
+}: HTMLProps<HTMLDivElement> & UseControllerProps & SelectProps) {
   const { field, fieldState } = useFormField(props);
 
   return (
@@ -26,8 +27,8 @@ export default function EditorField({
       errorMessage={fieldState?.error?.message}
       {...props}
     >
-      <EditorInput
-        minimal={minimal}
+      <SelectInput
+        options={options}
         value={field.value}
         onChange={field.onChange}
       />

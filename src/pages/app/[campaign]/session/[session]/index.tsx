@@ -11,9 +11,12 @@ import useDebounce from "~/lib/hooks/useDebounce";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 
-const EditorField = dynamic(() => import("~/components/fields/EditorField"), {
-  ssr: false,
-});
+const EditorField = dynamic(
+  () => import("~/components/fields/inputs/EditorInput"),
+  {
+    ssr: false,
+  },
+);
 
 const Page: NextPageWithLayout = function Session() {
   const router = useRouter();

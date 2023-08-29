@@ -1,14 +1,24 @@
 export {};
 
+export type FormFieldType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "date"
+  | "richText"
+  | "select";
+
 declare global {
   namespace PrismaJson {
-    type Field = {
-      id: string;
+    type FormField = {
+      type: FormFieldType;
       label: string;
-      type: "string" | "number" | "boolean" | "date" | "richText";
-      value: any;
+      name: string;
+      width: number;
+      options?: string[];
+      required?: boolean;
     };
 
-    type Fields = Array<Field>;
+    type Fields = Array<FormField>;
   }
 }
