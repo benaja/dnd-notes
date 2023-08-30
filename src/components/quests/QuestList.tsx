@@ -1,4 +1,4 @@
-import { PageType } from "~/jsonTypes";
+import { PageType, QuestStatus } from "~/jsonTypes";
 import { PreviewPage } from "../campaign/characters/ListCharacters";
 import CreatePageButton from "../pages/CreatePageButton";
 import Link from "next/link";
@@ -13,12 +13,9 @@ export default function QuestList({ quests }: { quests: PreviewPage[] }) {
   const { data } = trpc.page.filter.useQuery({
     campaignId: campaign?.id || "",
     type: [PageType.Quest],
-    fields: [
-      {
-        name: "date",
-        value: "date",
-      },
-    ],
+    fields: {
+      status: { value: QuestStatus.Completed },
+    },
   });
 
   console.log("data", data);

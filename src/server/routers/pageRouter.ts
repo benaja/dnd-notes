@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
-import { Fields, PageType, PreviewField, PreviewFields } from "~/jsonTypes";
+import {
+  Fields,
+  PageType,
+  PreviewField,
+  PreviewFields,
+  QuestStatus,
+} from "~/jsonTypes";
 import { prisma } from "../prisma";
 import { settingsRouter } from "./settingsRouter";
 
@@ -124,15 +130,11 @@ export const pageRouter = router({
       z.object({
         campaignId: z.string(),
         type: z.array(z.nativeEnum(PageType)).optional().nullable(),
-        fields: z
-          .array(
-            z.object({
-              name: z.string(),
-              value: z.any().optional().nullable(),
-            }),
-          )
-          .optional()
-          .nullable(),
+        fields: z.record(
+          z.object({
+            value: z.any().optional().nullable(),
+          }),
+        ),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -143,18 +145,12 @@ export const pageRouter = router({
             in: input.type || [],
           },
           AND: [
-            {
+            ...Object.keys(input.fields).map((key) => ({
               fields: {
-                path: "$[*].name",
-                array_contains: "status",
+                path: `$.${key}.value`,
+                equals: input.fields[key].value,
               },
-            },
-            {
-              fields: {
-                path: "$[*].value",
-                array_contains: "completed",
-              },
-            },
+            })),
           ],
         },
       });
