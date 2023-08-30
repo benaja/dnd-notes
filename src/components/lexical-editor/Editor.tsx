@@ -21,7 +21,7 @@ import LexicalClickableLinkPlugin from "@lexical/react/LexicalClickableLinkPlugi
 import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 // import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
-import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
+import MentionsPlugin from "./plugins/MentionsPlugin";
 import { MentionNode } from "./nodes/MentionNode";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import { useEffect, useState } from "react";
@@ -117,12 +117,7 @@ export default function Editor({
         <AutoLinkPlugin />
         <ListMaxIndentLevelPlugin maxDepth={7} />
         {/* <MarkdownShortcutPlugin transformers={TRANSFORMERS} /> */}
-        <AttachCharactersPlugin
-          onCharactersChanged={(character) =>
-            onEvent?.(EditorEvents.onCharactersChanged, character)
-          }
-          attachTo={attachMentionsTo}
-        />
+        <MentionsPlugin attachTo={attachMentionsTo} />
         <OnChangePlugin onChange={onChange} />
         <ComponentPickerPlugin />
         {/* <LexicalClickableLinkPlugin /> */}

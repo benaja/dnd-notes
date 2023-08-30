@@ -154,7 +154,7 @@ function MentionsTypeaheadMenuItem({
   );
 }
 
-export default function NewMentionsPlugin({
+export default function MentionsPlugin({
   attachTo,
   onMentionsChanged,
 }: {
