@@ -72,6 +72,18 @@ export const settingsRouter = router({
               value: null,
             },
           ];
+          break;
+        case PageType.Quest:
+          fields = [
+            {
+              type: FormFieldType.select,
+              label: "Status",
+              name: "status",
+              width: 1,
+              options: ["open", "inProgress", "completed", "onHold"],
+              value: "open",
+            },
+          ];
       }
 
       return fields;

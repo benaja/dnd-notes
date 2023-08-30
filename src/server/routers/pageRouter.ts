@@ -101,4 +101,47 @@ export const pageRouter = router({
 
       return page;
     }),
+
+  filter: protectedProcedure
+    .input(
+      z.object({
+        campaignId: z.string(),
+        type: z.array(z.nativeEnum(PageType)).optional().nullable(),
+        fields: z
+          .array(
+            z.object({
+              name: z.string(),
+              value: z.any().optional().nullable(),
+            }),
+          )
+          .optional()
+          .nullable(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const pages = await prisma.page.findMany({
+        where: {
+          campaignId: input.campaignId,
+          type: {
+            in: input.type || [],
+          },
+          AND: [
+            {
+              fields: {
+                path: "$[*].name",
+                array_contains: "status",
+              },
+            },
+            {
+              fields: {
+                path: "$[*].value",
+                array_contains: "completed",
+              },
+            },
+          ],
+        },
+      });
+
+      return pages;
+    }),
 });

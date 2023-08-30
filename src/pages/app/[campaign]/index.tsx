@@ -1,7 +1,7 @@
 import { Campaign, Character } from "@prisma/client";
 import { useRouter } from "next/router";
 import { createContext, useEffect, useMemo, useState } from "react";
-import CreateSessionButton from "~/components/campaign/CreateSessionButton";
+import CreatePageButton from "~/components/pages/CreatePageButton";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
@@ -14,6 +14,7 @@ import { CharacterType, PageType } from "~/jsonTypes";
 import EditorInput from "~/components/fields/inputs/EditorInput";
 import parseISO from "date-fns/parseISO";
 import Link from "next/link";
+import QuestList from "~/components/quests/QuestList";
 
 export const CampaignContext = createContext<Campaign | null>(null);
 
@@ -95,7 +96,7 @@ const Page: NextPageWithLayout = function Campaign() {
 
         <div className="mb-4 mt-8 flex items-start justify-between ">
           <p className="text-lg font-bold">Sessions</p>
-          <CreateSessionButton />
+          <CreatePageButton type={PageType.Session} />
         </div>
         <div>
           {sessions?.length === 0 && (
@@ -122,10 +123,9 @@ const Page: NextPageWithLayout = function Campaign() {
           ))}
         </div>
 
-        <div className="mt-8 flex items-start justify-between">
-          <p className="text-lg font-bold">Quests</p>
-          <CreateSessionButton />
-        </div>
+        <QuestList
+          quests={campaign.pages.filter((p) => p.type === PageType.Quest)}
+        />
       </div>
     </CampaignContext.Provider>
   );
