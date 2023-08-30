@@ -6,7 +6,6 @@
  *
  */
 
-import { Character } from "@prisma/client";
 import type { Spread } from "lexical";
 
 import {
@@ -21,27 +20,27 @@ import {
   TextNode,
 } from "lexical";
 
-type CharacterMention = {
+type Mention = {
   id: string;
-  name: string;
+  title: string;
 };
 
-export type SerializedCharacterMentionNode = Spread<
+export type SerializedMentionNode = Spread<
   {
-    character: CharacterMention;
+    page: Mention;
   },
   SerializedTextNode
 >;
 
-function convertCharacterMentionElement(
+function convertMentionElement(
   domNode: HTMLElement,
 ): DOMConversionOutput | null {
   const textContent = domNode.textContent;
 
   if (textContent !== null) {
-    const node = $createCharacterMentionNode({
+    const node = $createMentionNode({
       id: domNode.getAttribute("data-mention-id") ?? "",
-      name: domNode.getAttribute("data-mention-name") ?? "",
+      title: domNode.getAttribute("data-mention-title") ?? "",
     });
     return {
       node,
@@ -52,20 +51,18 @@ function convertCharacterMentionElement(
 }
 
 const mentionStyle = "background-color: rgba(24, 119, 232, 0.2)";
-export class CharacterMentionNode extends TextNode {
-  __character: CharacterMention;
+export class MentionNode extends TextNode {
+  __page: Mention;
 
   static getType(): string {
     return "mention";
   }
 
-  static clone(node: CharacterMentionNode): CharacterMentionNode {
-    return new CharacterMentionNode(node.__character, node.__key);
+  static clone(node: MentionNode): MentionNode {
+    return new MentionNode(node.__page, node.__key);
   }
-  static importJSON(
-    serializedNode: SerializedCharacterMentionNode,
-  ): CharacterMentionNode {
-    const node = $createCharacterMentionNode(serializedNode.character);
+  static importJSON(serializedNode: SerializedMentionNode): MentionNode {
+    const node = $createMentionNode(serializedNode.page);
     node.setTextContent(serializedNode.text);
     node.setFormat(serializedNode.format);
     node.setDetail(serializedNode.detail);
@@ -74,15 +71,15 @@ export class CharacterMentionNode extends TextNode {
     return node;
   }
 
-  constructor(character: CharacterMention, key?: NodeKey) {
-    super(character.name, key);
-    this.__character = character;
+  constructor(page: Mention, key?: NodeKey) {
+    super(page.title, key);
+    this.__page = page;
   }
 
-  exportJSON(): SerializedCharacterMentionNode {
+  exportJSON(): SerializedMentionNode {
     return {
       ...super.exportJSON(),
-      character: this.__character,
+      page: this.__page,
       type: "mention",
       version: 1,
     };
@@ -92,8 +89,8 @@ export class CharacterMentionNode extends TextNode {
     const dom = super.createDOM(config);
     dom.style.cssText = mentionStyle;
     dom.className = "mention";
-    dom.setAttribute("data-mention-id", this.__character.id);
-    dom.setAttribute("data-mention-name", this.__character.name);
+    dom.setAttribute("data-mention-id", this.__page.id);
+    dom.setAttribute("data-mention-title", this.__page.title);
     return dom;
   }
 
@@ -111,7 +108,7 @@ export class CharacterMentionNode extends TextNode {
           return null;
         }
         return {
-          conversion: convertCharacterMentionElement,
+          conversion: convertMentionElement,
           priority: 1,
         };
       },
@@ -131,16 +128,14 @@ export class CharacterMentionNode extends TextNode {
   }
 }
 
-export function $createCharacterMentionNode(
-  character: CharacterMention,
-): CharacterMentionNode {
-  const mentionNode = new CharacterMentionNode(character);
+export function $createMentionNode(page: Mention): MentionNode {
+  const mentionNode = new MentionNode(page);
   mentionNode.setMode("segmented").toggleDirectionless();
   return $applyNodeReplacement(mentionNode);
 }
 
-export function $isCharacterMentionNode(
+export function $isMentionNode(
   node: LexicalNode | null | undefined,
-): node is CharacterMentionNode {
-  return node instanceof CharacterMentionNode;
+): node is MentionNode {
+  return node instanceof MentionNode;
 }

@@ -19,7 +19,6 @@ export default function EditPageForm({
   page: Page;
   onChange?: (page: PageFormValues) => void;
 }) {
-  // const { data: fields } = trpc.settings.characterFields.useQuery();
   const updatePageMutation = trpc.page.update.useMutation({
     onSuccess(data) {
       updatePageMutation.reset();
@@ -75,7 +74,12 @@ export default function EditPageForm({
           /> */}
         </div>
 
-        <GenericForm fields={page.fields} />
+        <GenericForm
+          fields={page.fields}
+          attachMentionsTo={{
+            source: page,
+          }}
+        />
       </FormProvider>
       {/* <p>Mentions Campaigns</p>
       {mentions?.campaigns.map((campaign) => (

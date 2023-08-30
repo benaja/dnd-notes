@@ -9,6 +9,7 @@ import {
 } from "~/jsonTypes";
 import { prisma } from "../prisma";
 import { settingsRouter } from "./settingsRouter";
+import { pagePreviewFields } from "~/lib/pages";
 
 const fieldsSchema = z.record(
   z.object({
@@ -128,31 +129,49 @@ export const pageRouter = router({
   filter: protectedProcedure
     .input(
       z.object({
+        id: z.string().or(z.array(z.string())).optional().nullable(),
         campaignId: z.string(),
         type: z.array(z.nativeEnum(PageType)).optional().nullable(),
-        fields: z.record(
-          z.object({
-            value: z.any().optional().nullable(),
-          }),
-        ),
+        title: z.string().optional().nullable(),
+        fields: z
+          .record(
+            z.object({
+              value: z.any().optional().nullable(),
+            }),
+          )
+          .optional()
+          .nullable(),
       }),
     )
     .query(async ({ input, ctx }) => {
       const pages = await prisma.page.findMany({
         where: {
+          id: input.id
+            ? {
+                in: Array.isArray(input.id) ? input.id : [input.id],
+              }
+            : undefined,
           campaignId: input.campaignId,
-          type: {
-            in: input.type || [],
-          },
+          title: input.title
+            ? {
+                contains: input.title,
+              }
+            : undefined,
+          type: input.type
+            ? {
+                in: input.type || [],
+              }
+            : undefined,
           AND: [
-            ...Object.keys(input.fields).map((key) => ({
+            ...Object.keys(input.fields || {}).map((key) => ({
               fields: {
                 path: `$.${key}.value`,
-                equals: input.fields[key].value,
+                equals: input.fields?.[key].value,
               },
             })),
           ],
         },
+        select: pagePreviewFields,
       });
 
       return pages;

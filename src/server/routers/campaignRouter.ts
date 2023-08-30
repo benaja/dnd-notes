@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "~/server/trpc";
 import { prisma } from "~/server/prisma";
 import { campaignSchema } from "~/components/campaign/shema";
+import { pagePreviewFields } from "~/lib/pages";
 
 export const campaignRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -27,12 +28,7 @@ export const campaignRouter = router({
         },
         include: {
           pages: {
-            select: {
-              id: true,
-              title: true,
-              type: true,
-              previewFields: true,
-            },
+            select: pagePreviewFields,
           },
           characters: true,
           sessions: {

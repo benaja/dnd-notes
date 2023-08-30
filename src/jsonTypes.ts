@@ -1,4 +1,3 @@
-import { PreviewField } from "./jsonTypes";
 export {};
 
 export enum FormFieldType {

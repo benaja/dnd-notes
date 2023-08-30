@@ -33,7 +33,7 @@ import Icon from "~/components/ui/Icon";
 import BlockOptionsDropdownList from "./toolbar/BlockOptionsDropdownList";
 import FloatingLinkEditor from "./toolbar/FloatingLinkEditor";
 import { $setBlocksType } from "@lexical/selection";
-import { $isCharacterMentionNode } from "../nodes/MentionNode";
+import { $isMentionNode } from "../nodes/MentionNode";
 
 export const LowPriority = 1;
 
@@ -179,7 +179,7 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
         setIsLink(false);
       }
 
-      if ($isCharacterMentionNode(parent) || $isCharacterMentionNode(node)) {
+      if ($isMentionNode(parent) || $isMentionNode(node)) {
         setIsCharacter(true);
       } else {
         setIsCharacter(false);

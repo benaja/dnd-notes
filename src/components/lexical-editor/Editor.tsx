@@ -22,7 +22,7 @@ import ListMaxIndentLevelPlugin from "./plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "./plugins/CodeHighlightPlugin";
 // import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import AttachCharactersPlugin from "./plugins/AttachCharactersPlugin";
-import { CharacterMentionNode } from "./nodes/MentionNode";
+import { MentionNode } from "./nodes/MentionNode";
 import FloatingLinkEditorPlugin from "./plugins/FloatingLinkEditorPlugin";
 import { useEffect, useState } from "react";
 import { CAN_USE_DOM } from "./utils/canUseDOM";
@@ -59,7 +59,7 @@ export const nodes = [
   TableRowNode,
   AutoLinkNode,
   LinkNode,
-  CharacterMentionNode,
+  MentionNode,
 ];
 
 export default function Editor({

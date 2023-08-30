@@ -22,7 +22,6 @@ const Page: NextPageWithLayout = function Character() {
   const { data: character } = trpc.character.getById.useQuery(
     router.query.character as string,
   );
-  const { data: fields } = trpc.settings.characterFields.useQuery();
 
   const { data: mentions } = trpc.mentions.getMentions.useQuery({
     character,

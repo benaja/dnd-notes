@@ -1,71 +1,32 @@
-import { Campaign, CampaignSessions, Character } from "@prisma/client";
+import { Campaign, CampaignSessions, Character, Page } from "@prisma/client";
 import { trpc } from "../trpc-client";
 import { MentionType } from "../types";
+import { PagePreview } from "../pages";
 
 export type AttachToProps = {
-  campaign?: {
+  source?: {
     id: string;
-  } | null;
-  session?: {
-    id: string;
-  } | null;
-  character?: {
-    id: string;
-  } | null;
+  };
+  fieldName?: string;
 };
 
-export default function useMentions({
-  campaign,
-  session,
-  character,
-}: AttachToProps) {
+export default function useMentions({ source, fieldName }: AttachToProps) {
   const applyMentions = trpc.mentions.applyMention.useMutation();
 
-  function getSource(): {
-    id: string;
-    type: MentionType;
-  } | null {
-    if (campaign) {
-      return {
-        id: campaign.id,
-        type: MentionType.campaign,
-      };
-    }
-    if (session) {
-      return {
-        id: session.id,
-        type: MentionType.session,
-      };
-    }
-    if (character) {
-      return {
-        id: character.id,
-        type: MentionType.character,
-      };
-    }
-    return null;
-  }
-
-  function onChange(type: MentionType, ids: string[]) {
-    const source = getSource();
-    if (!source) return;
+  function onChange(ids: string[]) {
+    if (!source || !fieldName) return;
 
     applyMentions.mutate({
-      source,
-      targets: ids.map((id) => ({
-        id: id,
-        type: MentionType.character,
-      })),
+      sourceId: source.id,
+      targetIds: ids,
+      fieldName,
     });
   }
 
-  function onCharacterChange(characters: Character[]) {
-    console.log(characters);
-    onChange(
-      MentionType.character,
-      characters.map((c) => c.id),
-    );
+  function onMentionsChange(pages: PagePreview[]) {
+    console.log(pages);
+    onChange(pages.map((c) => c.id));
   }
 
-  return { onCharacterChange };
+  return { onMentionsChange };
 }

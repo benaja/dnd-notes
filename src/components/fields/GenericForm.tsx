@@ -51,7 +51,10 @@ export default function GenericForm({
               <EditorField
                 name={fieldName}
                 label={field.label}
-                attachMentionsTo={attachMentionsTo}
+                attachMentionsTo={{
+                  source: attachMentionsTo?.source || undefined,
+                  fieldName: key,
+                }}
                 {...props}
               />
             );

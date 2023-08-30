@@ -18,17 +18,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {
-  $createCharacterMentionNode,
-  CharacterMentionNode,
-} from "../nodes/MentionNode";
+import { $createMentionNode, MentionNode } from "../nodes/MentionNode";
 import { trpc } from "~/lib/trpc-client";
-import { Character } from "@prisma/client";
-import AppImage from "~/components/ui/AppImage";
 import classNames from "classnames";
 import { CampaignContext } from "~/pages/app/[campaign]";
 import useMentions, { AttachToProps } from "~/lib/hooks/useMentions";
-import { CharacterType } from "~/jsonTypes";
+import { PageType } from "~/jsonTypes";
+import { PagePreview } from "~/lib/pages";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -97,31 +93,6 @@ const AtSignMentionsRegexAliasRegex = new RegExp(
 // At most, 5 suggestions are shown in the popup.
 const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
-function useMentionLookupService(mentionString: string | null) {
-  // const [results, setResults] = useState<Character[]>([]);
-  const utils = trpc.useContext();
-
-  const { data: results } = trpc.character.search.useQuery(mentionString);
-
-  console.log("results", results);
-
-  // useEffect(() => {
-  //   if (mentionString == null) {
-  //     setResults([]);
-  //     return;
-  //   }
-
-  //   console.log("mentionString", mentionString);
-
-  //   utils.character.search.fetch(mentionString).then((data) => {
-  //     console.log("data", data);
-  //     setResults(data);
-  //   });
-  // }, [mentionString]);
-
-  return results ?? [];
-}
-
 function checkForCapitalizedNameMentions(
   text: string,
   minMatchLength: number,
@@ -176,11 +147,11 @@ function getPossibleQueryMatch(text: string): MenuTextMatch | null {
 }
 
 class MentionTypeaheadOption extends MenuOption {
-  character: Character;
+  page: { id: string | null; title: string };
 
-  constructor(character: Character) {
-    super(character.id);
-    this.character = character;
+  constructor(page: { id: string | null; title: string }) {
+    super(page.id || "create");
+    this.page = page;
   }
 }
 
@@ -218,32 +189,32 @@ function MentionsTypeaheadMenuItem({
       onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
-      {!option.character.id && <span>Create:</span>}
-      <AppImage
-        src={option.character.avatar}
+      {!option.page.id && <span>Create:</span>}
+      {/* <AppImage
+        src={option.page.avatar}
         alt="avatar image"
         className="h-10 w-10 rounded-full object-cover"
         width={64}
         height={64}
-      />
-      <span className="text">{option.character.name}</span>
+      /> */}
+      <span className="text">{option.page.title}</span>
     </li>
   );
 }
 
 export default function NewMentionsPlugin({
   attachTo,
-  onCharactersChanged,
+  onMentionsChanged,
 }: {
   attachTo?: AttachToProps;
-  onCharactersChanged?: (characters: Character[]) => void;
+  onMentionsChanged?: (pages: PagePreview[]) => void;
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const utils = trpc.useContext();
-  const [characterNodes, setCharacterNodes] = useState<
-    Map<NodeKey, CharacterMentionNode>
-  >(new Map());
-  const createCharacter = trpc.character.create.useMutation({
+  // const [mentionNodes, setMentionNodes] = useState<Map<NodeKey, MentionNode>>(
+  //   new Map(),
+  // );
+  const createPage = trpc.page.create.useMutation({
     onSuccess() {
       utils.campaign.getById.invalidate();
     },
@@ -251,21 +222,27 @@ export default function NewMentionsPlugin({
   const campaign = React.useContext(CampaignContext);
 
   const [queryString, setQueryString] = useState<string | null>(null);
-  const { data: results } = trpc.character.search.useQuery(queryString);
+  const { data: results } = trpc.page.filter.useQuery({
+    title: queryString,
+    campaignId: campaign?.id || "",
+  });
+
+  queryString;
+  console.log("search result", queryString, results);
 
   const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
     minLength: 0,
   });
 
-  const { onCharacterChange } = useMentions(attachTo ?? {});
+  const { onMentionsChange } = useMentions(attachTo ?? {});
 
   const options = useMemo(() => {
     if (!results) return [];
     if (results.length === 0) {
       return [
         new MentionTypeaheadOption({
-          id: null,
-          name: queryString,
+          id: "create",
+          title: queryString || "Create new page",
         }),
       ];
     }
@@ -280,18 +257,22 @@ export default function NewMentionsPlugin({
       nodeToReplace: TextNode | null,
       closeMenu: () => void,
     ) => {
-      let character = selectedOption.character;
-      if (!character.id && campaign) {
-        character = await createCharacter.mutateAsync({
-          name: selectedOption.character.name,
+      let page = selectedOption.page;
+      if (!page.id && campaign) {
+        page = await createPage.mutateAsync({
+          title: selectedOption.page.title,
           campaignId: campaign.id,
-          type: CharacterType.NPC,
-          fields: [],
+          type: PageType.NPC,
+          fields: {},
         });
       }
 
       editor.update(async () => {
-        const mentionNode = $createCharacterMentionNode(character);
+        if (!page.id) return;
+        const mentionNode = $createMentionNode({
+          id: page.id,
+          title: page.title,
+        });
         if (nodeToReplace) {
           nodeToReplace.replace(mentionNode);
         }
@@ -299,7 +280,7 @@ export default function NewMentionsPlugin({
         closeMenu();
       });
     },
-    [editor, campaign, createCharacter],
+    [editor, campaign, createPage],
   );
 
   const checkForMentionMatch = useCallback(
@@ -315,17 +296,20 @@ export default function NewMentionsPlugin({
 
   useEffect(() => {
     const removeMutationListener = editor.registerMutationListener(
-      CharacterMentionNode,
+      MentionNode,
       (mutatedNodes) => {
         editor.update(async () => {
-          const characterNodes = $nodesOfType(CharacterMentionNode);
-          const characterIds = characterNodes.map(
-            (node) => node.__character.id,
-          );
-          const characters = await utils.character.getByIds.fetch(characterIds);
+          const mentionNodes = $nodesOfType(MentionNode);
+          const mentionIds = mentionNodes.map((node) => node.__page.id);
+          const pages = await utils.page.filter.fetch({
+            id: mentionIds,
+            campaignId: campaign?.id || "",
+          });
 
-          onCharactersChanged?.(characters);
-          onCharacterChange(characters);
+          console.log("mentioned pages", pages, mentionNodes);
+
+          onMentionsChanged?.(pages);
+          onMentionsChange(pages);
         });
       },
     );
@@ -333,20 +317,14 @@ export default function NewMentionsPlugin({
     return () => {
       removeMutationListener();
     };
-  }, [
-    editor,
-    utils.character.getByIds,
-    characterNodes,
-    onCharactersChanged,
-    onCharacterChange,
-  ]);
+  }, [editor, onMentionsChanged, onMentionsChange]);
 
-  useEffect(() => {
-    editor.update(() => {
-      const nodes = $nodesOfType(CharacterMentionNode);
-      setCharacterNodes(new Map(nodes.map((node) => [node.getKey(), node])));
-    });
-  }, [editor]);
+  // useEffect(() => {
+  //   editor.update(() => {
+  //     const nodes = $nodesOfType(MentionNode);
+  //     setMentionNodes(new Map(nodes.map((node) => [node.getKey(), node])));
+  //   });
+  // }, [editor]);
 
   return (
     <LexicalTypeaheadMenuPlugin<MentionTypeaheadOption>

@@ -89,7 +89,8 @@ const Page: NextPageWithLayout = function Campaign() {
         <EditorInput
           value={campaign.notes}
           attachMentionsTo={{
-            campaign,
+            source: campaign,
+            fieldName: "notes",
           }}
           onChange={(value) => editCampaign("notes", value)}
         />
