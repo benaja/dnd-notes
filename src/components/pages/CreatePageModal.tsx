@@ -18,7 +18,7 @@ export default function CreatePageModal({
   const createPageMutation = trpc.page.create.useMutation({
     onSuccess(data) {
       createPageMutation.reset();
-      utils.campaign.getById.invalidate(campaign?.id);
+      // utils.campaign.getById.invalidate(campaign?.id);
       onCreated?.(data);
     },
   });

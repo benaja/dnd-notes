@@ -18,8 +18,6 @@ export default function QuestList({ quests }: { quests: PreviewPage[] }) {
     },
   });
 
-  console.log("data", data);
-
   return (
     <>
       <div className="mb-4 mt-8 flex items-start justify-between ">

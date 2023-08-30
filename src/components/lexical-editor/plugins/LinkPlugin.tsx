@@ -33,7 +33,6 @@ export default function LinkPlugin({ validateUrl }: Props): null {
       editor.registerCommand(
         TOGGLE_LINK_COMMAND,
         (payload) => {
-          console.log("toggle link");
           if (payload === null) {
             toggleLink(payload);
             return true;

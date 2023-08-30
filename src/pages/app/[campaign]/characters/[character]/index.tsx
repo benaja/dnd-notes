@@ -34,7 +34,6 @@ const Page: NextPageWithLayout = function Character() {
 
   function editCharacter(key: keyof Character, value: any) {
     if (!character) return;
-    console.log("editCharacter", key, value);
     const newCharacter = {
       ...character,
       [key]: value,

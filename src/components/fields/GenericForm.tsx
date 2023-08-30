@@ -5,8 +5,6 @@ import { AttachToProps } from "~/lib/hooks/useMentions";
 import FormField, { FormFieldRenderProps } from "./FormField";
 import { Fields, FormFieldType } from "~/jsonTypes";
 import AvatarImageField from "./AvatarImageField";
-import AvatarImageInput from "./inputs/AvatarImageInput";
-import DateInput from "./inputs/DateInput";
 import DateField from "./DateField";
 import parseISO from "date-fns/parseISO";
 
@@ -17,7 +15,6 @@ export default function GenericForm({
   fields: Fields;
   attachMentionsTo?: AttachToProps;
 }) {
-  console.log("fields", fields);
   return (
     <div className="-mx-4 flex flex-wrap">
       {Object.keys(fields)

@@ -1,13 +1,10 @@
-import { Character, Page } from "@prisma/client";
+import { Page } from "@prisma/client";
 import { trpc } from "~/lib/trpc-client";
-import { CharacterType } from "~/jsonTypes";
 import EditableText from "~/components/fields/EditableText";
-import AvatarImageInput from "~/components/fields/inputs/AvatarImageInput";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import GenericForm from "~/components/fields/GenericForm";
 import FormField from "~/components/fields/FormField";
-import TextField from "~/components/fields/TextField";
 import { useEffect } from "react";
 import useDebounce from "~/lib/hooks/useDebounce";
 import { PageFormValues, PageSchema } from "./CreatePageForm";
@@ -35,7 +32,6 @@ export default function EditPageForm({
   });
 
   const onSubmit = useDebounce((page: Page, values: PageFormValues) => {
-    console.log("submit", values);
     updatePageMutation.mutate({
       ...values,
       id: page.id,

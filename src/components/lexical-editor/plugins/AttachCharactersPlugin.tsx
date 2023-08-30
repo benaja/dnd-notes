@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   LexicalTypeaheadMenuPlugin,
@@ -25,6 +17,7 @@ import { CampaignContext } from "~/pages/app/[campaign]";
 import useMentions, { AttachToProps } from "~/lib/hooks/useMentions";
 import { PageType } from "~/jsonTypes";
 import { PagePreview } from "~/lib/pages";
+import useDebounce from "~/lib/hooks/useDebounce";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -36,7 +29,7 @@ const DocumentMentionsRegex = {
 };
 
 const CapitalizedNameMentionsRegex = new RegExp(
-  "(^|[^#])((?:" + DocumentMentionsRegex.NAME + "{" + 1 + ",})$)",
+  "(^|[^#])((?:" + DocumentMentionsRegex.NAME + "{" + 2 + ",})$)",
 );
 
 const PUNC = DocumentMentionsRegex.PUNCTUATION;
@@ -67,25 +60,8 @@ const AtSignMentionsRegex = new RegExp(
     "((?:" +
     VALID_CHARS +
     VALID_JOINS +
-    "){0," +
+    "){1," +
     LENGTH_LIMIT +
-    "})" +
-    ")$",
-);
-
-// 50 is the longest alias length limit.
-const ALIAS_LENGTH_LIMIT = 50;
-
-// Regex used to match alias.
-const AtSignMentionsRegexAliasRegex = new RegExp(
-  "(^|\\s|\\()(" +
-    "[" +
-    TRIGGERS +
-    "]" +
-    "((?:" +
-    VALID_CHARS +
-    "){0," +
-    ALIAS_LENGTH_LIMIT +
     "})" +
     ")$",
 );
@@ -93,57 +69,33 @@ const AtSignMentionsRegexAliasRegex = new RegExp(
 // At most, 5 suggestions are shown in the popup.
 const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
-function checkForCapitalizedNameMentions(
+function checkForMention(
   text: string,
   minMatchLength: number,
+  regex: RegExp,
 ): MenuTextMatch | null {
-  const match = CapitalizedNameMentionsRegex.exec(text);
-  if (match !== null) {
-    // The strategy ignores leading whitespace but we need to know it's
-    // length to add it to the leadOffset
-    const maybeLeadingWhitespace = match[1];
+  let match = regex.exec(text);
 
-    const matchingString = match[2];
-    if (matchingString != null && matchingString.length >= minMatchLength) {
-      return {
-        leadOffset: match.index + maybeLeadingWhitespace.length,
-        matchingString,
-        replaceableString: matchingString,
-      };
-    }
-  }
-  return null;
-}
+  if (match === null) return null;
 
-function checkForAtSignMentions(
-  text: string,
-  minMatchLength: number,
-): MenuTextMatch | null {
-  let match = AtSignMentionsRegex.exec(text);
+  // The strategy ignores leading whitespace but we need to know it's
+  // length to add it to the leadOffset
+  const maybeLeadingWhitespace = match[1];
+  const matchingString = match[match.length - 1];
 
-  if (match === null) {
-    match = AtSignMentionsRegexAliasRegex.exec(text);
-  }
-  if (match !== null) {
-    // The strategy ignores leading whitespace but we need to know it's
-    // length to add it to the leadOffset
-    const maybeLeadingWhitespace = match[1];
+  if (matchingString.length < minMatchLength) return null;
 
-    const matchingString = match[3];
-    if (matchingString.length >= minMatchLength) {
-      return {
-        leadOffset: match.index + maybeLeadingWhitespace.length,
-        matchingString,
-        replaceableString: match[2],
-      };
-    }
-  }
-  return null;
+  return {
+    leadOffset: match.index + maybeLeadingWhitespace.length,
+    matchingString,
+    replaceableString: match[2],
+  };
 }
 
 function getPossibleQueryMatch(text: string): MenuTextMatch | null {
-  const match = checkForAtSignMentions(text, 1);
-  return match === null ? checkForCapitalizedNameMentions(text, 3) : match;
+  const match = checkForMention(text, 1, AtSignMentionsRegex);
+  if (match) return match;
+  return checkForMention(text, 3, CapitalizedNameMentionsRegex);
 }
 
 class MentionTypeaheadOption extends MenuOption {
@@ -211,24 +163,16 @@ export default function NewMentionsPlugin({
 }): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const utils = trpc.useContext();
-  // const [mentionNodes, setMentionNodes] = useState<Map<NodeKey, MentionNode>>(
-  //   new Map(),
-  // );
-  const createPage = trpc.page.create.useMutation({
-    onSuccess() {
-      utils.campaign.getById.invalidate();
-    },
-  });
   const campaign = React.useContext(CampaignContext);
 
-  const [queryString, setQueryString] = useState<string | null>(null);
-  const { data: results } = trpc.page.filter.useQuery({
-    title: queryString,
-    campaignId: campaign?.id || "",
+  const createPage = trpc.page.create.useMutation({
+    onSuccess() {
+      // utils.campaign.getById.invalidate();
+    },
   });
 
-  queryString;
-  console.log("search result", queryString, results);
+  const [queryString, setQueryString] = useState<string | null>(null);
+  const [results, setResults] = useState<PagePreview[] | null>(null);
 
   const checkForSlashTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
     minLength: 0,
@@ -286,9 +230,8 @@ export default function NewMentionsPlugin({
   const checkForMentionMatch = useCallback(
     (text: string) => {
       const slashMatch = checkForSlashTriggerMatch(text, editor);
-      if (slashMatch !== null) {
-        return null;
-      }
+      // Don't show the menu if we're in a slash command.
+      if (slashMatch) return null;
       return getPossibleQueryMatch(text);
     },
     [checkForSlashTriggerMatch, editor],
@@ -306,8 +249,6 @@ export default function NewMentionsPlugin({
             campaignId: campaign?.id || "",
           });
 
-          console.log("mentioned pages", pages, mentionNodes);
-
           onMentionsChanged?.(pages);
           onMentionsChange(pages);
         });
@@ -317,18 +258,25 @@ export default function NewMentionsPlugin({
     return () => {
       removeMutationListener();
     };
-  }, [editor, onMentionsChanged, onMentionsChange]);
+  }, [editor, onMentionsChanged, onMentionsChange, campaign]);
 
-  // useEffect(() => {
-  //   editor.update(() => {
-  //     const nodes = $nodesOfType(MentionNode);
-  //     setMentionNodes(new Map(nodes.map((node) => [node.getKey(), node])));
-  //   });
-  // }, [editor]);
+  const onQueryChange = useDebounce(async function onQueryChange(
+    query: string | null,
+  ) {
+    if (!campaign) throw new Error("No campaign");
+    if (query === queryString) return;
+
+    const pages = await utils.page.filter.fetch({
+      title: query,
+      campaignId: campaign.id,
+    });
+    setQueryString(query);
+    setResults(pages);
+  });
 
   return (
     <LexicalTypeaheadMenuPlugin<MentionTypeaheadOption>
-      onQueryChange={setQueryString}
+      onQueryChange={onQueryChange}
       onSelectOption={onSelectOption}
       triggerFn={checkForMentionMatch}
       options={options}

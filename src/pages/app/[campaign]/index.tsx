@@ -8,9 +8,8 @@ import AppLayout from "~/components/layouts/AppLayout";
 import { trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 import { format } from "date-fns";
-import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
-import { CharacterType, PageType } from "~/jsonTypes";
+import { PageType } from "~/jsonTypes";
 import EditorInput from "~/components/fields/inputs/EditorInput";
 import parseISO from "date-fns/parseISO";
 import Link from "next/link";
@@ -26,37 +25,39 @@ const Page: NextPageWithLayout = function Campaign() {
     router.query.campaign as string,
   );
 
+  return <></>;
+
   // function onEvent(evnet: EditorEvents, payload: any) {
   //   if (evnet === EditorEvents.onCharactersChanged) {
   //     onCharacterChange(payload as Character[]);
   //   }
   // }
 
-  const updateMutation = trpc.campaign.update.useMutation();
+  // const updateMutation = trpc.campaign.update.useMutation();
 
-  const updateCampaign = useDebounce((value: typeof campaign) => {
-    if (!value) return;
-    updateMutation.mutate(value);
-  });
-  const sessions = useMemo(
-    () => campaign?.pages.filter((p) => p.type === PageType.Session),
-    [campaign?.pages],
-  );
+  // const updateCampaign = useDebounce((value: typeof campaign) => {
+  //   if (!value) return;
+  //   updateMutation.mutate(value);
+  // });
+  // const sessions = useMemo(
+  //   () => campaign?.pages.filter((p) => p.type === PageType.Session),
+  //   [campaign?.pages],
+  // );
 
-  if (!campaign) {
-    return null;
-  }
+  // if (!campaign) {
+  //   return null;
+  // }
 
-  function editCampaign(key: string, value: any) {
-    if (!campaign) return;
-    const newCampaign = {
-      ...campaign,
-      [key]: value,
-    };
+  // function editCampaign(key: string, value: any) {
+  //   if (!campaign) return;
+  //   const newCampaign = {
+  //     ...campaign,
+  //     [key]: value,
+  //   };
 
-    utils.campaign.getById.setData(campaign.id, newCampaign);
-    updateCampaign(newCampaign);
-  }
+  //   utils.campaign.getById.setData(campaign.id, newCampaign);
+  //   updateCampaign(newCampaign);
+  // }
 
   return (
     <CampaignContext.Provider value={campaign}>

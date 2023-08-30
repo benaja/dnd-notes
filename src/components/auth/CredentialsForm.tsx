@@ -24,7 +24,6 @@ export default function CredentialsForm({
   });
 
   const onSubmit = async (values: any) => {
-    console.log("onSubmit", values);
     try {
       setLoading(true);
 

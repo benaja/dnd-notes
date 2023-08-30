@@ -35,8 +35,6 @@ export default async function hanlder(
     return res.status(400).json({ message: "No file uploaded" });
   }
 
-  console.log("files", files);
-
   try {
     files = await Promise.all<string>(
       files.map(async (file: File) => {

@@ -6,6 +6,7 @@
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   serverRuntimeConfig: {
     // Will only be available on the server side
     APP_URL: process.env.APP_URL,

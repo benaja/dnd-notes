@@ -40,8 +40,6 @@ export const RegisterForm = ({
           message: fieldErrors[key]?.[0],
         });
       }
-
-      console.log(registerMutation.error.data.zodError.fieldErrors);
     }
   }, [registerMutation.error, formMethods]);
 

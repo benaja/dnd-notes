@@ -71,12 +71,7 @@ export default function CharacterForm({
     mode: "onBlur",
   });
 
-  formMethods.watch((values) => {
-    console.log(values);
-  });
-
   function afterSubmit(character: Character) {
-    console.log("afterSubmit");
     formMethods.reset();
     formMethods.clearErrors();
     // formMethods.unregister();
@@ -88,7 +83,6 @@ export default function CharacterForm({
       {JSON.stringify(formMethods.formState.errors)}
       <form
         onSubmit={formMethods.handleSubmit((values) => {
-          console.log(values);
           onSubmit?.(values);
         })}
       >

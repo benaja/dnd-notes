@@ -24,10 +24,7 @@ export function FetchButton() {
     });
   }
 
-  useEffect(() => {
-    console.log("secretMessageQuery.data", secretMessageQuery.data);
-  }, [secretMessageQuery.data]);
-
+  useEffect(() => {}, [secretMessageQuery.data]);
 
   return <button onClick={() => doFetch()}>Fetch</button>;
 }

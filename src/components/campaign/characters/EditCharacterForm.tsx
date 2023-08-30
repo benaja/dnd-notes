@@ -38,7 +38,6 @@ export default function EditCharacterForm({
 
   const onSubmit = useDebounce(
     (character: Character, values: CharacterFormValues) => {
-      console.log("submit", values);
       updateCharacterMutation.mutate({
         ...values,
         id: character.id,

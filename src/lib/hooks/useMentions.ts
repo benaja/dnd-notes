@@ -2,6 +2,7 @@ import { Campaign, CampaignSessions, Character, Page } from "@prisma/client";
 import { trpc } from "../trpc-client";
 import { MentionType } from "../types";
 import { PagePreview } from "../pages";
+import { useCallback } from "react";
 
 export type AttachToProps = {
   source?: {
@@ -11,22 +12,27 @@ export type AttachToProps = {
 };
 
 export default function useMentions({ source, fieldName }: AttachToProps) {
-  const applyMentions = trpc.mentions.applyMention.useMutation();
+  const applyMentions = trpc.mentions.applyMention.useMutation().mutate;
 
-  function onChange(ids: string[]) {
-    if (!source || !fieldName) return;
+  const onChange = useCallback(
+    (ids: string[]) => {
+      if (!source || !fieldName) return;
 
-    applyMentions.mutate({
-      sourceId: source.id,
-      targetIds: ids,
-      fieldName,
-    });
-  }
+      applyMentions({
+        sourceId: source.id,
+        targetIds: ids,
+        fieldName,
+      });
+    },
+    [source, fieldName, applyMentions],
+  );
 
-  function onMentionsChange(pages: PagePreview[]) {
-    console.log(pages);
-    onChange(pages.map((c) => c.id));
-  }
+  const onMentionsChange = useCallback(
+    (pages: PagePreview[]) => {
+      onChange(pages.map((c) => c.id));
+    },
+    [onChange],
+  );
 
   return { onMentionsChange };
 }

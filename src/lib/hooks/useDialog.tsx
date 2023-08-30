@@ -59,7 +59,6 @@ export default function useDialog(): [
       getContent: (onClose: () => void) => JSX.Element,
       closeOnClickOutside = false,
     ) => {
-      console.log("showDialog content");
       setDialogContent({
         closeOnClickOutside,
         content: getContent(onClose),

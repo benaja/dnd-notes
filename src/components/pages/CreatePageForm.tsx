@@ -43,7 +43,6 @@ export default function CreatePageForm({
   });
 
   function getTitle() {
-    console.log("type", type);
     switch (type) {
       case PageType.Player:
       case PageType.NPC:
@@ -58,7 +57,6 @@ export default function CreatePageForm({
       {JSON.stringify(formMethods.formState.errors)}
       <form
         onSubmit={formMethods.handleSubmit((values) => {
-          console.log("submit page", values);
           onSubmit?.(values);
         })}
       >
