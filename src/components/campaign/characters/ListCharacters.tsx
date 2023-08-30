@@ -10,18 +10,23 @@ const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
   ssr: false,
 });
 
+export type PreviewPage = Omit<
+  Page,
+  "fields" | "createdAt" | "updatedAt" | "campaignId"
+>;
+
 export default function ListCharacters({
   characters,
   campaignId,
   type,
 }: {
-  characters: Page[];
+  characters: PreviewPage[];
   campaignId: string;
   type: PageType;
 }) {
   const [dialog, showDialog] = useDialog();
 
-  function getAvatar(page: Page) {
+  function getAvatar(page: PreviewPage) {
     return page.previewFields?.find((field) => field.type === "avatar")?.value;
   }
 

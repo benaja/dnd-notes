@@ -13,17 +13,17 @@ import {
 } from "~/components/ui/popover";
 import { useState } from "react";
 
-export default function DatePicker({
+export default function DateInput({
   value,
   onChange,
 }: {
-  value?: Date;
-  onChange?: (date: Date | undefined) => void;
+  value?: Date | null;
+  onChange?: (date?: Date | null) => void;
 }) {
-  const [date, setDate] = useState<Date | undefined>(value);
+  const [date, setDate] = useState<Date | undefined | null>(value);
   const [isOpen, setIsOpen] = useState(false);
 
-  function updateDate(date: Date | undefined) {
+  function updateDate(date: Date | undefined | null) {
     setDate(date);
     onChange?.(date);
     setIsOpen(false);
@@ -46,7 +46,7 @@ export default function DatePicker({
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
+          selected={date || undefined}
           onSelect={(value) => {
             value && updateDate(value);
           }}

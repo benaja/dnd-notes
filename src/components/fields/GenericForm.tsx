@@ -6,6 +6,9 @@ import FormField, { FormFieldRenderProps } from "./FormField";
 import { FormFieldType } from "~/jsonTypes";
 import AvatarImageField from "./AvatarImageField";
 import AvatarImageInput from "./inputs/AvatarImageInput";
+import DateInput from "./inputs/DateInput";
+import DateField from "./DateField";
+import parseISO from "date-fns/parseISO";
 
 export default function GenericForm({
   fields,
@@ -50,7 +53,15 @@ export default function GenericForm({
           );
         } else if (field.type === FormFieldType.avatar) {
           render = (props) => (
-            <AvatarImageInput label={field.label} {...props} />
+            <AvatarImageField label={field.label} {...props} />
+          );
+        } else if (field.type === FormFieldType.date) {
+          render = ({ value, ...props }) => (
+            <DateField
+              label={field.label}
+              value={value ? parseISO(value) : null}
+              {...props}
+            />
           );
         } else {
           render = () => <div>Unknown field type: {field.type}</div>;

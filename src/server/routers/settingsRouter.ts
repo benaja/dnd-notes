@@ -46,6 +46,32 @@ export const settingsRouter = router({
             },
           ];
           break;
+        case PageType.Session:
+          fields = [
+            {
+              type: FormFieldType.date,
+              label: "Date",
+              name: "date",
+              width: 0.5,
+              value: null,
+              showOnCreate: true,
+              showOnPreview: true,
+            },
+            {
+              type: FormFieldType.string,
+              label: "Location",
+              name: "location",
+              width: 0.5,
+              value: null,
+            },
+            {
+              type: FormFieldType.richText,
+              label: "Description",
+              name: "description",
+              width: 1,
+              value: null,
+            },
+          ];
       }
 
       return fields;

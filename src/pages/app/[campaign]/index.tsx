@@ -1,6 +1,6 @@
 import { Campaign, Character } from "@prisma/client";
 import { useRouter } from "next/router";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import CreateSessionButton from "~/components/campaign/CreateSessionButton";
 import ListCharacters from "~/components/campaign/characters/ListCharacters";
 import EditableText from "~/components/fields/EditableText";
@@ -12,6 +12,8 @@ import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
 import { CharacterType, PageType } from "~/jsonTypes";
 import EditorInput from "~/components/fields/inputs/EditorInput";
+import parseISO from "date-fns/parseISO";
+import Link from "next/link";
 
 export const CampaignContext = createContext<Campaign | null>(null);
 
@@ -35,6 +37,10 @@ const Page: NextPageWithLayout = function Campaign() {
     if (!value) return;
     updateMutation.mutate(value);
   });
+  const sessions = useMemo(
+    () => campaign?.pages.filter((p) => p.type === PageType.Session),
+    [campaign?.pages],
+  );
 
   if (!campaign) {
     return null;
@@ -87,23 +93,32 @@ const Page: NextPageWithLayout = function Campaign() {
           onChange={(value) => editCampaign("notes", value)}
         />
 
-        <div className="mt-8 flex items-start justify-between">
+        <div className="mb-4 mt-8 flex items-start justify-between ">
           <p className="text-lg font-bold">Sessions</p>
           <CreateSessionButton />
         </div>
         <div>
-          {campaign.sessions.length === 0 && (
+          {sessions?.length === 0 && (
             <p className="font-light text-gray-500">No sessions created yet</p>
           )}
-          {campaign.sessions.map((session) => (
-            <AppLink
-              href={`/app/${campaign.id}/sessions/${session.id}`}
-              key={session.id}
-              className="block"
-            >
-              {session.title}
-              {format(session.date, "PPP")}
-            </AppLink>
+          {sessions?.map((session) => (
+            <p className="mb-2 p-2 hover:bg-gray-100" key={session.id}>
+              <Link
+                href={`/app/${campaign.id}/pages/${session.id}`}
+                className="block"
+              >
+                <span className="font-bold">{session.title}</span>
+                <span className="ml-4 font-light">
+                  {format(
+                    parseISO(
+                      session.previewFields.find((f) => f.name === "date")
+                        ?.value || new Date().toISOString(),
+                    ),
+                    "dd.MM.yyyy",
+                  )}
+                </span>
+              </Link>
+            </p>
           ))}
         </div>
 

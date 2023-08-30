@@ -20,7 +20,7 @@ export default function EditorField({
   attachMentionsTo,
   onChange,
   ...props
-}: HTMLProps<HTMLDivElement> & EditorFieldProps & BaseFieldProps) {
+}: EditorFieldProps & BaseFieldProps) {
   return (
     <BaseField label={label} {...props}>
       <EditorInput

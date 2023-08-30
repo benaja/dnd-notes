@@ -3,22 +3,21 @@ import BaseField, { BaseFieldProps } from "./_BaseField";
 import TextInput from "./inputs/TextInput";
 import useFormField from "~/lib/hooks/useFormField";
 import { HTMLAttributes, HTMLProps } from "react";
+import DateInput from "./inputs/DateInput";
 
-type InputProps = {
-  value?: string | number | null;
-  type?: string;
-  onChange?: (value: string | number | null) => void;
+type DateFieldProps = {
+  value?: Date | null;
+  onChange?: (value?: Date | null) => void;
 };
 
-export default function TextField({
+export default function DateField({
   value,
   onChange,
-  type,
   ...props
-}: InputProps & BaseFieldProps) {
+}: DateFieldProps & BaseFieldProps) {
   return (
     <BaseField {...props}>
-      <TextInput type={type} value={value} onChange={onChange}></TextInput>
+      <DateInput value={value} onChange={onChange}></DateInput>
     </BaseField>
   );
 }

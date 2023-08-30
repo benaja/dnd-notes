@@ -3,7 +3,7 @@ import debounce from "lodash/debounce";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useCallback, useMemo, useState } from "react";
-import DatePicker from "~/components/fields/DatePicker";
+import DatePicker from "~/components/fields/inputs/DateInput";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
 import useDebounce from "~/lib/hooks/useDebounce";

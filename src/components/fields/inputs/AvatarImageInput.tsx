@@ -7,7 +7,10 @@ import { HTMLProps } from "react";
 import { cn } from "~/lib/utils";
 import useInput from "~/lib/hooks/useInput";
 
-export type AvatarInputProps = Omit<HTMLProps<HTMLDivElement>, "value"> & {
+export type AvatarInputProps = Omit<
+  HTMLProps<HTMLDivElement>,
+  "value" | "onChange"
+> & {
   value?: string | null;
   onChange?: (value: string | null) => void;
   errorMessage?: string | null;

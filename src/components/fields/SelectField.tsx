@@ -5,7 +5,6 @@ import { UseControllerProps } from "react-hook-form";
 import SelectInput from "./inputs/SelectInput";
 
 type SelectProps = {
-  label?: string | null;
   value?: string | null;
   options: string[];
   onChange?: (value: string) => void;
@@ -18,7 +17,7 @@ export default function SelectField({
   type,
   onChange,
   ...props
-}: HTMLProps<HTMLDivElement> & SelectProps & BaseFieldProps) {
+}: SelectProps & BaseFieldProps) {
   return (
     <BaseField label={label} {...props}>
       <SelectInput options={options} value={value} onChange={onChange} />
