@@ -10,7 +10,7 @@ import { NextPageWithLayout } from "~/pages/_app";
 import { format } from "date-fns";
 import AppLink from "~/components/ui/AppLink";
 import useDebounce from "~/lib/hooks/useDebounce";
-import { CharacterType } from "~/jsonTypes";
+import { CharacterType, PageType } from "~/jsonTypes";
 import EditorInput from "~/components/fields/inputs/EditorInput";
 
 export const CampaignContext = createContext<Campaign | null>(null);
@@ -66,20 +66,16 @@ const Page: NextPageWithLayout = function Campaign() {
 
         <p className="mt-4 text-lg font-bold">Players</p>
         <ListCharacters
-          characters={campaign.characters.filter(
-            (c) => c.type === CharacterType.Player,
-          )}
+          characters={campaign.pages.filter((c) => c.type === PageType.Player)}
           campaignId={campaign.id}
-          type={CharacterType.Player}
+          type={PageType.Player}
         />
 
         <p className="mt-4 text-lg font-bold">NPCs</p>
         <ListCharacters
-          characters={campaign.characters.filter(
-            (c) => c.type === CharacterType.NPC,
-          )}
+          characters={campaign.pages.filter((c) => c.type === PageType.NPC)}
           campaignId={campaign.id}
-          type={CharacterType.NPC}
+          type={PageType.NPC}
         />
 
         <p className="mt-4 text-lg font-bold">Campaign Notes</p>
@@ -109,6 +105,11 @@ const Page: NextPageWithLayout = function Campaign() {
               {format(session.date, "PPP")}
             </AppLink>
           ))}
+        </div>
+
+        <div className="mt-8 flex items-start justify-between">
+          <p className="text-lg font-bold">Quests</p>
+          <CreateSessionButton />
         </div>
       </div>
     </CampaignContext.Provider>

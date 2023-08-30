@@ -3,6 +3,9 @@ import EditorField from "./EditorField";
 import TextField from "./TextField";
 import { AttachToProps } from "~/lib/hooks/useMentions";
 import FormField, { FormFieldRenderProps } from "./FormField";
+import { FormFieldType } from "~/jsonTypes";
+import AvatarImageField from "./AvatarImageField";
+import AvatarImageInput from "./inputs/AvatarImageInput";
 
 export default function GenericForm({
   fields,
@@ -44,6 +47,10 @@ export default function GenericForm({
               attachMentionsTo={attachMentionsTo}
               {...props}
             />
+          );
+        } else if (field.type === FormFieldType.avatar) {
+          render = (props) => (
+            <AvatarImageInput label={field.label} {...props} />
           );
         } else {
           render = () => <div>Unknown field type: {field.type}</div>;

@@ -1,9 +1,11 @@
-import { Character } from "@prisma/client";
+import { Character, Page } from "@prisma/client";
 import dynamic from "next/dynamic";
 import AppImage from "~/components/ui/AppImage";
 import useDialog from "~/lib/hooks/useDialog";
-import { CharacterType } from "~/jsonTypes";
+import { CharacterType, PageType } from "~/jsonTypes";
 import Link from "next/link";
+import CreatePageModal from "~/components/pages/CreatePageModal";
+import { useMemo } from "react";
 const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
   ssr: false,
 });
@@ -13,11 +15,15 @@ export default function ListCharacters({
   campaignId,
   type,
 }: {
-  characters: Character[];
+  characters: Page[];
   campaignId: string;
-  type: CharacterType;
+  type: PageType;
 }) {
   const [dialog, showDialog] = useDialog();
+
+  function getAvatar(page: Page) {
+    return page.previewFields?.find((field) => field.type === "avatar")?.value;
+  }
 
   return (
     <div>
@@ -26,13 +32,13 @@ export default function ListCharacters({
         {characters.map((character) => {
           return (
             <Link
-              href={`/app/${campaignId}/characters/${character.id}`}
+              href={`/app/${campaignId}/pages/${character.id}`}
               key={character.id}
               className="relative flex h-12 w-12  items-center justify-center rounded-full bg-gray-700 p-2 hover:opacity-80"
             >
-              {character.avatar && (
+              {getAvatar(character) && (
                 <AppImage
-                  src={character.avatar}
+                  src={getAvatar(character)}
                   className="absolute h-full w-full shrink-0 rounded-full object-cover"
                   alt="avatar image"
                   width={48}
@@ -40,7 +46,7 @@ export default function ListCharacters({
                 />
               )}
               <p className="text-2xl font-bold uppercase leading-[1em] text-white">
-                {character.name?.[0]}
+                {character.title?.[0]}
               </p>
             </Link>
           );
@@ -50,11 +56,7 @@ export default function ListCharacters({
           onClick={() => {
             console.log("showDialog");
             showDialog("Create Character", (onClose) => (
-              <CreateCharacterForm
-                campaignId={campaignId}
-                type={type}
-                onCreated={onClose}
-              />
+              <CreatePageModal type={type} onCreated={onClose} />
             ));
           }}
         >

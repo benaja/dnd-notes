@@ -7,6 +7,7 @@ export enum FormFieldType {
   date = "date",
   richText = "richText",
   select = "select",
+  avatar = "avatar",
 }
 
 export enum CharacterType {
@@ -14,10 +15,28 @@ export enum CharacterType {
   NPC = "npc",
 }
 
+export enum QuestStatus {
+  open = "open",
+  inProgress = "inProgress",
+  completed = "completed",
+  onHold = "onHold",
+}
+
+export enum PageType {
+  Player = "player",
+  NPC = "npc",
+  Quest = "quest",
+  Session = "session",
+  Page = "page",
+  Item = "item",
+}
+
 declare global {
   export namespace PrismaJson {
     type FormField = {
       type: FormFieldType;
+      showOnCreate?: boolean;
+      showOnPreview?: boolean;
       label: string;
       name: string;
       width: number;

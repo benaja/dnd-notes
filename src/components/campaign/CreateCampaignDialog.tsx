@@ -8,6 +8,7 @@ import { campaignSchema } from "./shema";
 import { useRouter } from "next/navigation";
 import useDialog from "~/lib/hooks/useDialog";
 import TextField from "../fields/TextField";
+import FormField from "../fields/FormField";
 type CampaignFormValues = z.infer<typeof campaignSchema>;
 
 function CreateCampaignForm() {
@@ -35,7 +36,10 @@ function CreateCampaignForm() {
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(submit)}>
-        <TextField name="title" label="Title" />
+        <FormField
+          name="title"
+          render={(props) => <TextField {...props} label="Title" />}
+        />
         <DialogFooter>
           <Button type="submit">Create</Button>
         </DialogFooter>

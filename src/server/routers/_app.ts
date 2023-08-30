@@ -6,6 +6,7 @@ import { exampleRouter } from "./example";
 import { mentionsRouter } from "./mentionsRouter";
 import { sessionRouter } from "./sessionRouter";
 import { settingsRouter } from "./settingsRouter";
+import { pageRouter } from "./pageRouter";
 
 /**
  * This is the primary router for your server.
@@ -23,6 +24,7 @@ export const appRouter = router({
   mentions: mentionsRouter,
   session: sessionRouter,
   settings: settingsRouter,
+  page: pageRouter,
 });
 
 // export type definition of API

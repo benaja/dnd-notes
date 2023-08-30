@@ -75,6 +75,8 @@ model Campaign {
   users      CampaignOnUser[]
   sessions   CampaignSessions[]
   characters Character[]
+  quests     Quest[]
+  pages      Page[]
 }
 
 model CampaignOnUser {
@@ -121,6 +123,7 @@ model Character {
 
   sessions CampaignSessions[]
   campaign Campaign           @relation(fields: [campaignId], references: [id])
+  Quest    Quest[]
 }
 
 model Inventory {
@@ -150,10 +153,51 @@ model Mentions {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  sourceId   String
-  targetId   String
-  sourceType String
-  targetType String
+  sourceId String
+  targetId String
 
-  @@index([sourceId, sourceType, targetId, targetType])
+  /// [MentionType]
+  type String @default("text")
+
+  source Page @relation("source", fields: [sourceId], references: [id])
+  target Page @relation("target", fields: [targetId], references: [id])
+}
+
+model Quest {
+  id             String  @id @default(cuid())
+  receivedFromId String?
+  title          String
+
+  /// [Fields]
+  fields Json @default("[]")
+
+  /// [QuestStatus]
+  status     String   @default("open")
+  campaignId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  receivedFrom Character? @relation(fields: [receivedFromId], references: [id])
+  campaign     Campaign   @relation(fields: [campaignId], references: [id])
+}
+
+model Page {
+  id    String @id @default(cuid())
+  title String
+
+  /// [Fields]
+  fields Json @default("[]")
+
+  /// [Fields]
+  previewFields Json @default("[]")
+
+  /// [PageType]
+  type       String
+  campaignId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaign    Campaign   @relation(fields: [campaignId], references: [id])
+  mentions    Mentions[] @relation("source")
+  mentionedAt Mentions[] @relation("target")
 }

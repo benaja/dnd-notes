@@ -26,6 +26,14 @@ export const campaignRouter = router({
           id: input,
         },
         include: {
+          pages: {
+            select: {
+              id: true,
+              title: true,
+              type: true,
+              previewFields: true,
+            },
+          },
           characters: true,
           sessions: {
             orderBy: {
