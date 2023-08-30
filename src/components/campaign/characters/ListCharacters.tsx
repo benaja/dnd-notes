@@ -1,14 +1,9 @@
 import { Character, Page } from "@prisma/client";
-import dynamic from "next/dynamic";
 import AppImage from "~/components/ui/AppImage";
 import useDialog from "~/lib/hooks/useDialog";
-import { CharacterType, PageType } from "~/jsonTypes";
+import { PageType } from "~/jsonTypes";
 import Link from "next/link";
 import CreatePageModal from "~/components/pages/CreatePageModal";
-import { useMemo } from "react";
-const CreateCharacterForm = dynamic(() => import("./CreateCharacterForm"), {
-  ssr: false,
-});
 
 export type PreviewPage = Omit<
   Page,
@@ -27,7 +22,7 @@ export default function ListCharacters({
   const [dialog, showDialog] = useDialog();
 
   function getAvatar(page: PreviewPage) {
-    return page.previewFields?.find((field) => field.type === "avatar")?.value;
+    return page.previewFields.avatar?.value;
   }
 
   return (

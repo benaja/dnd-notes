@@ -18,7 +18,6 @@ function getEndingLink(ctx: NextPageContext | undefined) {
     return httpBatchLink({
       url: `${publicRuntimeConfig.APP_URL}/api/trpc`,
       headers() {
-        console.log("getEndingLink", ctx?.req?.headers.cookie);
         if (!ctx?.req?.headers) {
           return {};
         }

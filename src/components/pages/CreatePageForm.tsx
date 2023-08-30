@@ -5,20 +5,21 @@ import TextField from "~/components/fields/TextField";
 import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";
 import { z } from "zod";
-import { CharacterType, FormFieldType, PageType } from "~/jsonTypes";
+import { Fields, FormFieldType, PageType } from "~/jsonTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Character } from "@prisma/client";
 import AvatarImageField from "~/components/fields/AvatarImageField";
 import FormField from "~/components/fields/FormField";
 
+const fieldsSchema = z.record(
+  z.object({
+    value: z.any().optional().nullable(),
+  }),
+);
+
 export const PageSchema = z.object({
   title: z.string().max(255).min(1, "Page title is required"),
-  fields: z.array(
-    z.object({
-      name: z.string(),
-      value: z.any(),
-    }),
-  ),
+  fields: fieldsSchema,
 });
 
 export type PageFormValues = z.infer<typeof PageSchema>;
@@ -28,17 +29,14 @@ export default function CreatePageForm({
   type,
   onSubmit,
 }: {
-  fields: PrismaJson.FormField[];
+  fields: Fields;
   type: PageType;
   onSubmit?: (values: PageFormValues) => void;
 }) {
   const formMethods = useForm({
     defaultValues: {
       title: "",
-      fields: fields.map((field) => ({
-        name: field.name,
-        value: field.value,
-      })),
+      fields,
     },
     resolver: zodResolver(PageSchema),
     mode: "onBlur",
@@ -74,7 +72,15 @@ export default function CreatePageForm({
         </div>
         {fields && (
           <GenericForm
-            fields={fields.filter((field) => field.showOnCreate)}
+            fields={Object.keys(fields)
+              .filter((key) => fields[key].showOnCreate)
+              .reduce(
+                (obj, key) => ({
+                  ...obj,
+                  [key]: fields[key],
+                }),
+                {},
+              )}
             // attachMentionsTo={{
             //   character,
             // }}

@@ -1,6 +1,6 @@
 import { trpc } from "~/lib/trpc-client";
-import { Character, Page } from "@prisma/client";
-import { CharacterType, PageType } from "~/jsonTypes";
+import { Page } from "@prisma/client";
+import { PageType } from "~/jsonTypes";
 import { useContext } from "react";
 import { CampaignContext } from "~/pages/app/[campaign]";
 import CreatePageForm, { PageFormValues } from "./CreatePageForm";

@@ -1,7 +1,6 @@
 import { router, publicProcedure } from "~/server/trpc";
 import { userRouter } from "./userRouter";
 import { campaignRouter } from "./campaignRouter";
-import { characterRouter } from "./characterRouter";
 import { exampleRouter } from "./example";
 import { mentionsRouter } from "./mentionsRouter";
 import { sessionRouter } from "./sessionRouter";
@@ -20,7 +19,6 @@ export const appRouter = router({
 
   user: userRouter,
   campaign: campaignRouter,
-  character: characterRouter,
   mentions: mentionsRouter,
   session: sessionRouter,
   settings: settingsRouter,

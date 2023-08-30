@@ -1,133 +1,94 @@
 import { Character } from "@prisma/client";
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
-import { FormFieldType, PageType } from "~/jsonTypes";
+import { Fields, FormFieldType, PageType } from "~/jsonTypes";
 
 export const settingsRouter = router({
   fields: protectedProcedure
     .input(z.nativeEnum(PageType))
     .query(async ({ input, ctx }) => {
-      let fields: PrismaJson.FormField[] = [];
+      let fields: Fields = {};
 
       switch (input) {
         case PageType.Player:
         case PageType.NPC:
-          fields = [
-            {
-              type: FormFieldType.avatar,
+          fields = {
+            avatar: {
+              type: FormFieldType.Avatar,
               label: "Avatar",
-              name: "avatar",
               width: 1,
               value: null,
               showOnCreate: true,
               showOnPreview: true,
             },
-            {
-              type: FormFieldType.number,
+            age: {
+              type: FormFieldType.Number,
               label: "Age",
-              name: "age",
               width: 0.5,
               value: null,
             },
-            {
-              type: FormFieldType.select,
+            gender: {
+              type: FormFieldType.Select,
               label: "Gender",
-              name: "gender",
               width: 0.5,
               options: ["Male", "Female", "Unknown"],
               value: null,
             },
-            {
-              type: FormFieldType.richText,
+            description: {
+              type: FormFieldType.RichText,
               label: "Description",
-              name: "description",
               width: 1,
               value: null,
             },
-          ];
+          };
           break;
         case PageType.Session:
-          fields = [
-            {
-              type: FormFieldType.date,
+          fields = {
+            date: {
+              type: FormFieldType.Date,
               label: "Date",
-              name: "date",
               width: 0.5,
               value: null,
               showOnCreate: true,
               showOnPreview: true,
             },
-            {
-              type: FormFieldType.string,
+            location: {
+              type: FormFieldType.String,
               label: "Location",
-              name: "location",
               width: 0.5,
               value: null,
             },
-            {
-              type: FormFieldType.richText,
+            description: {
+              type: FormFieldType.RichText,
               label: "Description",
-              name: "description",
               width: 1,
               value: null,
             },
-          ];
+          };
           break;
         case PageType.Quest:
-          fields = [
-            {
-              type: FormFieldType.select,
+          fields = {
+            status: {
+              type: FormFieldType.Select,
               label: "Status",
-              name: "status",
               width: 1,
               options: ["open", "inProgress", "completed", "onHold"],
               value: "open",
             },
-          ];
+          };
       }
+
+      fields = Object.keys(fields).reduce(
+        (obj, key, index) => ({
+          ...obj,
+          [key]: {
+            ...fields[key],
+            position: index,
+          },
+        }),
+        {},
+      );
 
       return fields;
     }),
-  characterFields: protectedProcedure.query(async ({ ctx }) => {
-    const fields: PrismaJson.FormField[] = [
-      {
-        type: FormFieldType.number,
-        label: "Age",
-        name: "age",
-        width: 0.5,
-        value: null,
-      },
-      {
-        type: FormFieldType.select,
-        label: "Gender",
-        name: "gender",
-        width: 0.5,
-        options: ["Male", "Female", "Unknown"],
-        value: null,
-      },
-      {
-        type: FormFieldType.richText,
-        label: "Description",
-        name: "description",
-        width: 1,
-        value: null,
-      },
-    ];
-
-    return fields;
-  }),
-
-  questFields: protectedProcedure.query(async ({ ctx }) => {
-    const fields: PrismaJson.FormField[] = [
-      {
-        type: FormFieldType.richText,
-        label: "Description",
-        name: "description",
-        width: 1,
-        value: null,
-      },
-    ];
-
-    return fields;
-  }),
 });

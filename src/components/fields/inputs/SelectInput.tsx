@@ -15,11 +15,19 @@ export default function SelectInput({
   onChange,
 }: {
   value?: string | null;
-  options: string[];
+  options: string[] | { label: string; value: string }[];
   label?: string;
   onChange?: (value: string) => void;
 }) {
   const { internalValue, onInput } = useInput(value ?? "", onChange);
+
+  const optionsWithLabels = options.map((option) => {
+    if (typeof option === "string") {
+      return { label: option, value: option };
+    }
+
+    return option;
+  });
 
   return (
     <Select defaultValue={internalValue} onValueChange={onInput}>
@@ -27,9 +35,9 @@ export default function SelectInput({
         <SelectValue placeholder="Theme" />
       </SelectTrigger>
       <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option} value={option}>
-            {option}
+        {optionsWithLabels.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
           </SelectItem>
         ))}
       </SelectContent>

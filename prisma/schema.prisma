@@ -156,7 +156,7 @@ model Mentions {
   sourceId String
   targetId String
 
-  /// [MentionType]
+  /// [MentionTypeField]
   type String @default("text")
 
   source Page @relation("source", fields: [sourceId], references: [id])
@@ -168,7 +168,7 @@ model Quest {
   receivedFromId String?
   title          String
 
-  /// [Fields]
+  /// [FieldsField]
   fields Json @default("[]")
 
   /// [QuestStatus]
@@ -185,13 +185,13 @@ model Page {
   id    String @id @default(cuid())
   title String
 
-  /// [Fields]
+  /// [FieldsField]
   fields Json @default("[]")
 
-  /// [Fields]
+  /// [PreviewFieldsField]
   previewFields Json @default("[]")
 
-  /// [PageType]
+  /// [PageTypeField]
   type       String
   campaignId String
   createdAt  DateTime @default(now())

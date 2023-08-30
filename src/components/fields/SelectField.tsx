@@ -6,7 +6,7 @@ import SelectInput from "./inputs/SelectInput";
 
 type SelectProps = {
   value?: string | null;
-  options: string[];
+  options: string[] | { label: string; value: string }[];
   onChange?: (value: string) => void;
 };
 

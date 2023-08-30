@@ -112,8 +112,8 @@ const Page: NextPageWithLayout = function Campaign() {
                 <span className="ml-4 font-light">
                   {format(
                     parseISO(
-                      session.previewFields.find((f) => f.name === "date")
-                        ?.value || new Date().toISOString(),
+                      session.previewFields.avatar?.value ||
+                        new Date().toISOString(),
                     ),
                     "dd.MM.yyyy",
                   )}

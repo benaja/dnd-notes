@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";
 import { characterSchema } from "../shema";
 import { z } from "zod";
-import { CharacterType, FormFieldType } from "~/jsonTypes";
+import { Fields, FormFieldType, PageType } from "~/jsonTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Character } from "@prisma/client";
 import AvatarImageField from "~/components/fields/AvatarImageField";
@@ -41,7 +41,7 @@ export default function CharacterForm({
 }: {
   character?: Character;
   values?: CharacterFormValues;
-  fields: PrismaJson.FormField[];
+  fields: Fields;
   onSubmit?: (values: CharacterFormValues) => void;
   onChange?: (values: CharacterFormValues) => void;
 }) {
@@ -64,7 +64,7 @@ export default function CharacterForm({
   const formMethods = useForm({
     defaultValues: values || {
       name: "",
-      type: CharacterType.NPC,
+      type: PageType.NPC,
       avatar: "",
     },
     resolver: zodResolver(schema),

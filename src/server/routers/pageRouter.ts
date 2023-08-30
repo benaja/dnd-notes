@@ -1,32 +1,50 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
-import { PageType } from "~/jsonTypes";
+import { Fields, PageType, PreviewField, PreviewFields } from "~/jsonTypes";
 import { prisma } from "../prisma";
 import { settingsRouter } from "./settingsRouter";
 
-const fieldsSchema = z.array(
+const fieldsSchema = z.record(
   z.object({
-    name: z.string(),
     value: z.any().optional().nullable(),
   }),
 );
+export type FieldInput = z.infer<typeof fieldsSchema>;
 
-type FieldInput = z.infer<typeof fieldsSchema>;
+function getFields(fields: Fields, input: FieldInput): Fields {
+  return Object.keys(fields).reduce(
+    (obj, key) => ({
+      ...obj,
+      [key]: {
+        value: input[key]?.value ?? fields[key].value,
+        type: fields[key].type,
+        label: fields[key].label,
+        width: fields[key].width,
+        options: fields[key].options,
+        position: fields[key].position,
+        showOnPreview: fields[key].showOnPreview,
+        showOnCreate: fields[key].showOnCreate,
+      },
+    }),
+    {},
+  );
+}
 
-function getFields(
-  fields: PrismaJson.FormField[],
-  input: FieldInput,
-): PrismaJson.FormField[] {
-  return fields.map((field) => ({
-    name: field.name,
-    value: input.find((f) => f.name === field.name)?.value,
-    type: field.type,
-    label: field.label,
-    width: field.width,
-    options: field.options,
-    showOnPreview: field.showOnPreview,
-    showOnCreate: field.showOnCreate,
-  }));
+function getPreviewFields(fields: Fields, input: any): PreviewFields {
+  return Object.keys(fields).reduce((obj, key) => {
+    {
+      if (!fields[key].showOnPreview) return obj;
+
+      return {
+        ...obj,
+        [key]: {
+          value: input[key]?.value ?? fields[key].value,
+          type: fields[key].type,
+          label: fields[key].label,
+        },
+      };
+    }
+  }, {});
 }
 
 export const pageRouter = router({
@@ -48,7 +66,7 @@ export const pageRouter = router({
           title: input.title,
           type: input.type,
           fields: fieldValues,
-          previewFields: fieldValues.filter((f) => f.showOnPreview),
+          previewFields: getPreviewFields(fields, input.fields),
           campaign: {
             connect: {
               id: input.campaignId,
@@ -67,10 +85,9 @@ export const pageRouter = router({
         where: {
           id: input,
         },
-        // include: {
-        //   fields: true,
-        // },
       });
+
+      page?.type === "item";
 
       return page;
     }),
@@ -95,7 +112,7 @@ export const pageRouter = router({
         data: {
           title: input.title,
           fields: fieldValues,
-          previewFields: fieldValues.filter((f) => f.showOnPreview),
+          previewFields: getPreviewFields(fields, input.fields),
         },
       });
 

@@ -3,7 +3,7 @@ import EditorField from "./EditorField";
 import TextField from "./TextField";
 import { AttachToProps } from "~/lib/hooks/useMentions";
 import FormField, { FormFieldRenderProps } from "./FormField";
-import { FormFieldType } from "~/jsonTypes";
+import { Fields, FormFieldType } from "~/jsonTypes";
 import AvatarImageField from "./AvatarImageField";
 import AvatarImageInput from "./inputs/AvatarImageInput";
 import DateInput from "./inputs/DateInput";
@@ -14,64 +14,68 @@ export default function GenericForm({
   fields,
   attachMentionsTo,
 }: {
-  fields: PrismaJson.FormField[];
+  fields: Fields;
   attachMentionsTo?: AttachToProps;
 }) {
+  console.log("fields", fields);
   return (
     <div className="-mx-4 flex flex-wrap">
-      {fields.map((field, index) => {
-        const style = {
-          width: field.width * 100 + "%",
-        };
+      {Object.keys(fields)
+        .sort((a, b) => (fields[a].position || 0) - (fields[b].position || 0))
+        .map((key) => {
+          const field = fields[key];
+          const style = {
+            width: field.width * 100 + "%",
+          };
 
-        let render: (props: FormFieldRenderProps) => React.ReactNode;
-        let fieldName = `fields.${index}.value`;
+          let render: (props: FormFieldRenderProps) => React.ReactNode;
+          let fieldName = `fields.${key}.value`;
 
-        if (field.type === "string") {
-          render = (props) => <TextField label={field.label} {...props} />;
-        } else if (field.type === "number") {
-          render = (props) => (
-            <TextField label={field.label} type="number" {...props} />
+          if (field.type === "string") {
+            render = (props) => <TextField label={field.label} {...props} />;
+          } else if (field.type === FormFieldType.Number) {
+            render = (props) => (
+              <TextField label={field.label} type="number" {...props} />
+            );
+          } else if (field.type === FormFieldType.Select) {
+            render = (props) => (
+              <SelectField
+                name={fieldName}
+                options={field.options || []}
+                label={field.label}
+                {...props}
+              />
+            );
+          } else if (field.type === FormFieldType.RichText) {
+            render = (props) => (
+              <EditorField
+                name={fieldName}
+                label={field.label}
+                attachMentionsTo={attachMentionsTo}
+                {...props}
+              />
+            );
+          } else if (field.type === FormFieldType.Avatar) {
+            render = (props) => (
+              <AvatarImageField label={field.label} {...props} />
+            );
+          } else if (field.type === FormFieldType.Date) {
+            render = ({ value, ...props }) => (
+              <DateField
+                label={field.label}
+                value={value ? parseISO(value) : null}
+                {...props}
+              />
+            );
+          } else {
+            render = () => <div>Unknown field type: {field.type}</div>;
+          }
+          return (
+            <div key={key} style={style} className="p-4">
+              <FormField name={fieldName} render={render} />
+            </div>
           );
-        } else if (field.type === "select") {
-          render = (props) => (
-            <SelectField
-              name={fieldName}
-              options={field.options || []}
-              label={field.label}
-              {...props}
-            />
-          );
-        } else if (field.type === "richText") {
-          render = (props) => (
-            <EditorField
-              name={fieldName}
-              label={field.label}
-              attachMentionsTo={attachMentionsTo}
-              {...props}
-            />
-          );
-        } else if (field.type === FormFieldType.avatar) {
-          render = (props) => (
-            <AvatarImageField label={field.label} {...props} />
-          );
-        } else if (field.type === FormFieldType.date) {
-          render = ({ value, ...props }) => (
-            <DateField
-              label={field.label}
-              value={value ? parseISO(value) : null}
-              {...props}
-            />
-          );
-        } else {
-          render = () => <div>Unknown field type: {field.type}</div>;
-        }
-        return (
-          <div key={field.name} style={style} className="p-4">
-            <FormField name={fieldName} render={render} />
-          </div>
-        );
-      })}
+        })}
     </div>
   );
 }
