@@ -76,6 +76,16 @@ export const settingsRouter = router({
               value: "open",
             },
           };
+          break;
+        case PageType.CampaignLandingPage:
+          fields = {
+            notes: {
+              type: FormFieldType.RichText,
+              label: "Notes",
+              width: 1,
+              value: "",
+            },
+          };
       }
 
       fields = Object.keys(fields).reduce(

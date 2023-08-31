@@ -24,6 +24,8 @@ export enum PageType {
   Session = "session",
   Page = "page",
   Item = "item",
+  CampaignLandingPage = "campaignLandingPage",
+  Location = "location",
 }
 
 export type FormField = {

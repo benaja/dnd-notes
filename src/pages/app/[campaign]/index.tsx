@@ -14,6 +14,8 @@ import EditorInput from "~/components/fields/inputs/EditorInput";
 import parseISO from "date-fns/parseISO";
 import Link from "next/link";
 import QuestList from "~/components/quests/QuestList";
+import GenericForm from "~/components/fields/GenericForm";
+import EditPageForm from "~/components/pages/EditPageForm";
 
 export const CampaignContext = createContext<Campaign | null>(null);
 
@@ -25,39 +27,31 @@ const Page: NextPageWithLayout = function Campaign() {
     router.query.campaign as string,
   );
 
-  return <></>;
+  const updateMutation = trpc.campaign.update.useMutation();
 
-  // function onEvent(evnet: EditorEvents, payload: any) {
-  //   if (evnet === EditorEvents.onCharactersChanged) {
-  //     onCharacterChange(payload as Character[]);
-  //   }
-  // }
+  const updateCampaign = useDebounce((value: typeof campaign) => {
+    if (!value) return;
+    updateMutation.mutate(value);
+  });
+  const sessions = useMemo(
+    () => campaign?.pages.filter((p) => p.type === PageType.Session),
+    [campaign?.pages],
+  );
 
-  // const updateMutation = trpc.campaign.update.useMutation();
+  if (!campaign) {
+    return null;
+  }
 
-  // const updateCampaign = useDebounce((value: typeof campaign) => {
-  //   if (!value) return;
-  //   updateMutation.mutate(value);
-  // });
-  // const sessions = useMemo(
-  //   () => campaign?.pages.filter((p) => p.type === PageType.Session),
-  //   [campaign?.pages],
-  // );
+  function editCampaign(key: string, value: any) {
+    if (!campaign) return;
+    const newCampaign = {
+      ...campaign,
+      [key]: value,
+    };
 
-  // if (!campaign) {
-  //   return null;
-  // }
-
-  // function editCampaign(key: string, value: any) {
-  //   if (!campaign) return;
-  //   const newCampaign = {
-  //     ...campaign,
-  //     [key]: value,
-  //   };
-
-  //   utils.campaign.getById.setData(campaign.id, newCampaign);
-  //   updateCampaign(newCampaign);
-  // }
+    utils.campaign.getById.setData(campaign.id, newCampaign);
+    updateCampaign(newCampaign);
+  }
 
   return (
     <CampaignContext.Provider value={campaign}>
@@ -65,7 +59,9 @@ const Page: NextPageWithLayout = function Campaign() {
         <EditableText
           value={campaign.title}
           className="text-3xl"
-          onInput={(value) => editCampaign("title", value)}
+          onChange={(value: string) => {
+            editCampaign("title", value);
+          }}
         >
           {({ value, ...props }) => {
             return <h1 {...props}>{value}</h1>;
@@ -86,15 +82,7 @@ const Page: NextPageWithLayout = function Campaign() {
           type={PageType.NPC}
         />
 
-        <p className="mt-4 text-lg font-bold">Campaign Notes</p>
-        <EditorInput
-          value={campaign.notes}
-          attachMentionsTo={{
-            source: campaign,
-            fieldName: "notes",
-          }}
-          onChange={(value) => editCampaign("notes", value)}
-        />
+        <EditPageForm page={campaign.landingPage} hideTitle />
 
         <div className="mb-4 mt-8 flex items-start justify-between ">
           <p className="text-lg font-bold">Sessions</p>

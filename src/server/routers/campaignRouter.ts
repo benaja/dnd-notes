@@ -3,6 +3,8 @@ import { router, protectedProcedure } from "~/server/trpc";
 import { prisma } from "~/server/prisma";
 import { campaignSchema } from "~/components/campaign/shema";
 import { pagePreviewFields } from "~/lib/pages";
+import { PageType } from "~/jsonTypes";
+import { settingsRouter } from "./settingsRouter";
 
 export const campaignRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -39,15 +41,47 @@ export const campaignRouter = router({
         },
       });
 
-      return campaign;
+      if (!campaign) {
+        throw new Error("Campaign not found");
+      }
+
+      const landingPage = await prisma.page.findFirst({
+        where: {
+          campaignId: input,
+          type: PageType.CampaignLandingPage,
+        },
+      });
+
+      if (!landingPage) {
+        throw new Error("Campaign landing page not found");
+      }
+
+      return {
+        ...campaign,
+        landingPage,
+      };
     }),
 
   create: protectedProcedure
     .input(campaignSchema)
     .mutation(async ({ input, ctx }) => {
+      const caller = settingsRouter.createCaller(ctx);
+      const landingPageFields = await caller.fields(
+        PageType.CampaignLandingPage,
+      );
+
       const campaign = await prisma.campaign.create({
         data: {
           ...input,
+          pages: {
+            create: [
+              {
+                title: input.title,
+                type: PageType.CampaignLandingPage,
+                fields: landingPageFields,
+              },
+            ],
+          },
           users: {
             create: [
               {

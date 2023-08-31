@@ -11,9 +11,11 @@ import { PageFormValues, PageSchema } from "./CreatePageForm";
 
 export default function EditPageForm({
   page,
+  hideTitle,
   onChange,
 }: {
   page: Page;
+  hideTitle?: boolean;
   onChange?: (page: PageFormValues) => void;
 }) {
   const updatePageMutation = trpc.page.update.useMutation({
@@ -52,23 +54,25 @@ export default function EditPageForm({
   return (
     <>
       <FormProvider {...formMethods}>
-        <div className="flex items-center gap-8">
-          <FormField
-            name="title"
-            render={(props) => (
-              <EditableText {...props} className="grow text-3xl">
-                {({ value, ...props }) => {
-                  return <h1 {...props}>{value}</h1>;
-                }}
-              </EditableText>
-            )}
-          />
+        {!hideTitle && (
+          <div className="flex items-center gap-8">
+            <FormField
+              name="title"
+              render={(props) => (
+                <EditableText {...props} className="grow text-3xl">
+                  {({ value, ...props }) => {
+                    return <h1 {...props}>{value}</h1>;
+                  }}
+                </EditableText>
+              )}
+            />
 
-          {/* <FormField
+            {/* <FormField
             name="avatar"
             render={(props) => <AvatarImageInput {...props} />}
           /> */}
-        </div>
+          </div>
+        )}
 
         <GenericForm
           fields={page.fields}

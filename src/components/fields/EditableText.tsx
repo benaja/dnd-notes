@@ -6,7 +6,6 @@ export default function EditableText(
   {
     value,
     onChange,
-    display,
     children,
     className,
     onBlur,
@@ -14,7 +13,6 @@ export default function EditableText(
     value?: string | null;
     onChange?: (value: string) => void;
     onBlur?: (value: string) => void;
-    display?: React.ReactNode;
     children?: (props: {
       value?: string | null;
       onClick: () => void;
@@ -23,7 +21,6 @@ export default function EditableText(
     className?: string;
   } = {
     value: "",
-    display: <p></p>,
   },
 ) {
   const [internalValue, setInternalValue] = useState(value);
