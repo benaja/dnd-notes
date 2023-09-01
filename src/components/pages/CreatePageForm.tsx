@@ -11,14 +11,21 @@ import { Character } from "@prisma/client";
 import AvatarImageField from "~/components/fields/AvatarImageField";
 import FormField from "~/components/fields/FormField";
 
-const fieldsSchema = z.record(
-  z.object({
-    value: z.any().optional().nullable(),
-  }),
-);
+const fieldsSchema = z
+  .tuple([
+    z.object({
+      name: z.literal("title"),
+      value: z.string().min(1, "Title is required"),
+    }),
+  ])
+  .rest(
+    z.object({
+      name: z.string(),
+      value: z.any().optional().nullable(),
+    }),
+  );
 
 export const PageSchema = z.object({
-  title: z.string().max(255).min(1, "Page title is required"),
   fields: fieldsSchema,
 });
 
@@ -35,7 +42,6 @@ export default function CreatePageForm({
 }) {
   const formMethods = useForm({
     defaultValues: {
-      title: "",
       fields,
     },
     resolver: zodResolver(PageSchema),
@@ -60,25 +66,17 @@ export default function CreatePageForm({
           onSubmit?.(values);
         })}
       >
-        <div className="my-6 flex gap-8">
+        {/* <div className="my-6 flex gap-8">
           <FormField
             name="title"
             render={(props) => (
               <TextField {...props} label={getTitle()} className="grow" />
             )}
           ></FormField>
-        </div>
+        </div> */}
         {fields && (
           <GenericForm
-            fields={Object.keys(fields)
-              .filter((key) => fields[key].showOnCreate)
-              .reduce(
-                (obj, key) => ({
-                  ...obj,
-                  [key]: fields[key],
-                }),
-                {},
-              )}
+            fields={fields.filter((field) => field.showOnCreate)}
             // attachMentionsTo={{
             //   character,
             // }}

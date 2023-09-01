@@ -11,54 +11,55 @@ import { prisma } from "../prisma";
 import { settingsRouter } from "./settingsRouter";
 import { pagePreviewFields } from "~/lib/pages";
 
-const fieldsSchema = z.record(
+const fieldsSchema = z.array(
   z.object({
+    name: z.string(),
     value: z.any().optional().nullable(),
   }),
 );
 export type FieldInput = z.infer<typeof fieldsSchema>;
 
 function getFields(fields: Fields, input: FieldInput): Fields {
-  return Object.keys(fields).reduce(
-    (obj, key) => ({
-      ...obj,
-      [key]: {
-        value: input[key]?.value ?? fields[key].value,
-        type: fields[key].type,
-        label: fields[key].label,
-        width: fields[key].width,
-        options: fields[key].options,
-        position: fields[key].position,
-        showOnPreview: fields[key].showOnPreview,
-        showOnCreate: fields[key].showOnCreate,
-      },
-    }),
-    {},
-  );
+  return fields.map((field) => ({
+    ...field,
+    value: input.find((f) => f.name === field.name)?.value ?? field.value,
+  }));
 }
 
-function getPreviewFields(fields: Fields, input: any): PreviewFields {
-  return Object.keys(fields).reduce((obj, key) => {
-    {
-      if (!fields[key].showOnPreview) return obj;
+function getPreviewFields(fields: Fields, input: FieldInput): PreviewFields {
+  return fields
+    .filter((field) => field.showOnPreview)
+    .map((field) => ({
+      type: field.type,
+      name: field.name,
+      label: field.label,
+      value: input.find((f) => f.name === field.name)?.value ?? field.value,
+    }));
+}
 
-      return {
-        ...obj,
-        [key]: {
-          value: input[key]?.value ?? fields[key].value,
-          type: fields[key].type,
-          label: fields[key].label,
-        },
-      };
-    }
-  }, {});
+function getTitle(fields: Fields): string {
+  const titleField = fields.find(
+    (field) => field.name === "title" && field.type === "text",
+  );
+
+  if (!titleField) {
+    throw new Error("Title field not found");
+  }
+  if (typeof titleField.value !== "string") {
+    throw new Error("Title field is not a string");
+  }
+  if (titleField.value.length === 0) {
+    throw new Error("Title field is empty");
+  }
+
+  return titleField.value;
 }
 
 export const pageRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        title: z.string().min(1, "Title is required").max(255),
+        // title: z.string().min(1, "Title is required").max(255),
         type: z.nativeEnum(PageType),
         campaignId: z.string(),
         fields: fieldsSchema,
@@ -70,7 +71,7 @@ export const pageRouter = router({
       const fieldValues = getFields(fields, input.fields);
       const page = await prisma.page.create({
         data: {
-          title: input.title,
+          title: getTitle(fieldValues),
           type: input.type,
           fields: fieldValues,
           previewFields: getPreviewFields(fields, input.fields),
@@ -103,7 +104,6 @@ export const pageRouter = router({
     .input(
       z.object({
         id: z.string(),
-        title: z.string().min(1, "Title is required").max(255),
         type: z.nativeEnum(PageType),
         fields: fieldsSchema,
       }),
@@ -117,7 +117,7 @@ export const pageRouter = router({
           id: input.id,
         },
         data: {
-          title: input.title,
+          title: getTitle(fieldValues),
           fields: fieldValues,
           previewFields: getPreviewFields(fields, input.fields),
         },

@@ -38,7 +38,7 @@ import { AttachToProps } from "~/lib/hooks/useMentions";
 function Placeholder() {
   return (
     <div className="pointer-events-none absolute left-3 top-4 inline-block select-none overflow-hidden text-ellipsis text-gray-500">
-      Enter some rich text...
+      Enter some text...
     </div>
   );
 }

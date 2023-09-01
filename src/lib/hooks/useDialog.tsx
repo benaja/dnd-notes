@@ -43,7 +43,7 @@ export default function useDialog(): [
             +
           </button>
         </DialogTrigger> */}
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="w-[800px] max-w-full">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
           </DialogHeader>

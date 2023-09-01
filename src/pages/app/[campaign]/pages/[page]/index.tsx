@@ -18,7 +18,6 @@ const Page: NextPageWithLayout = function Page() {
 
   if (!page || !campaign) return <></>;
 
-  console.log("page", page.id);
   return (
     <CampaignContext.Provider value={campaign}>
       <div>

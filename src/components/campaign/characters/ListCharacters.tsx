@@ -54,9 +54,10 @@ export default function ListCharacters({
         <button
           className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-100 text-2xl hover:bg-gray-200"
           onClick={() => {
-            showDialog("Create Character", (onClose) => (
-              <CreatePageModal type={type} onCreated={onClose} />
-            ));
+            showDialog(
+              type === PageType.NPC ? "Create NPC" : "Create Player",
+              (onClose) => <CreatePageModal type={type} onCreated={onClose} />,
+            );
           }}
         >
           +

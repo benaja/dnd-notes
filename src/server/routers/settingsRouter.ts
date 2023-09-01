@@ -1,103 +1,117 @@
-import { Character } from "@prisma/client";
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
-import { Fields, FormFieldType, PageType } from "~/jsonTypes";
+import { Fields, PageType } from "~/jsonTypes";
+import {
+  DateField,
+  PageField,
+  RichTextField,
+  SelectField,
+  TextField,
+} from "~/lib/form-fields";
 
 export const settingsRouter = router({
   fields: protectedProcedure
     .input(z.nativeEnum(PageType))
     .query(async ({ input, ctx }) => {
-      let fields: Fields = {};
+      let fields: Fields = [
+        new TextField({
+          showOnCreate: true,
+          showOnPreview: true,
+          name: "title",
+          label: [PageType.Player, PageType.NPC].includes(input)
+            ? "Name"
+            : "Title",
+        }),
+      ];
 
       switch (input) {
         case PageType.Player:
         case PageType.NPC:
-          fields = {
-            avatar: {
-              type: FormFieldType.Avatar,
+          fields.push(
+            new TextField({
               label: "Avatar",
-              width: 1,
-              value: null,
+              name: "avatar",
               showOnCreate: true,
               showOnPreview: true,
-            },
-            age: {
-              type: FormFieldType.Number,
+            }),
+            new TextField({
               label: "Age",
               width: 0.5,
-              value: null,
-            },
-            gender: {
-              type: FormFieldType.Select,
+              name: "age",
+              options: {
+                type: "number",
+              },
+            }),
+            new SelectField({
               label: "Gender",
+              name: "gender",
               width: 0.5,
-              options: ["Male", "Female", "Unknown"],
-              value: null,
-            },
-            description: {
-              type: FormFieldType.RichText,
-              label: "Description",
-              width: 1,
-              value: null,
-            },
-          };
+              options: { items: ["Male", "Female", "Unknown"] },
+            }),
+            new RichTextField({
+              label: "Notes",
+              name: "notes",
+            }),
+          );
           break;
         case PageType.Session:
-          fields = {
-            date: {
-              type: FormFieldType.Date,
-              label: "Date",
-              width: 0.5,
-              value: null,
+          fields = [
+            new TextField({
+              name: "title",
+              label: "Title",
+              className: "sm:w-2/3",
               showOnCreate: true,
               showOnPreview: true,
-            },
-            location: {
-              type: FormFieldType.String,
+            }),
+            new DateField({
+              label: "Date",
+              name: "date",
+              className: "sm:w-1/3",
+              value: new Date(),
+              showOnCreate: true,
+              showOnPreview: true,
+            }),
+            new PageField({
+              name: "location",
               label: "Location",
               width: 0.5,
-              value: null,
-            },
-            description: {
-              type: FormFieldType.RichText,
+            }),
+            new RichTextField({
               label: "Description",
-              width: 1,
-              value: null,
-            },
-          };
+              name: "description",
+            }),
+          ];
           break;
         case PageType.Quest:
-          fields = {
-            status: {
-              type: FormFieldType.Select,
+          fields.push(
+            new SelectField({
               label: "Status",
-              width: 1,
-              options: ["open", "inProgress", "completed", "onHold"],
+              name: "status",
+              options: { items: ["open", "inProgress", "completed", "onHold"] },
               value: "open",
-            },
-          };
+            }),
+          );
           break;
         case PageType.CampaignLandingPage:
-          fields = {
-            notes: {
-              type: FormFieldType.RichText,
+          fields.push(
+            new RichTextField({
               label: "Notes",
-              width: 1,
-              value: "",
-            },
-          };
+              name: "notes",
+            }),
+          );
+          break;
       }
 
-      fields = Object.keys(fields).reduce(
-        (obj, key, index) => ({
-          ...obj,
-          [key]: {
-            ...fields[key],
-            position: index,
-          },
-        }),
-        {},
-      );
+      // fields = Object.keys(fields).reduce(
+      //   (obj, key, index) => ({
+      //     ...obj,
+      //     [key]: {
+      //       ...fields[key],
+      //       position: index,
+      //     },
+      //   }),
+      //   {},
+      // );
 
       return fields;
     }),
