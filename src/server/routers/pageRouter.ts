@@ -133,6 +133,7 @@ export const pageRouter = router({
         campaignId: z.string(),
         type: z.array(z.nativeEnum(PageType)).optional().nullable(),
         title: z.string().optional().nullable(),
+        limit: z.number().optional().nullable(),
         fields: z
           .record(
             z.object({
@@ -172,6 +173,7 @@ export const pageRouter = router({
           ],
         },
         select: pagePreviewFields,
+        take: input.limit || 100,
       });
 
       return pages;

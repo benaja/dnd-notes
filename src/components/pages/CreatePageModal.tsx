@@ -5,6 +5,25 @@ import { useContext } from "react";
 import { CampaignContext } from "~/pages/app/[campaign]";
 import CreatePageForm, { PageFormValues } from "./CreatePageForm";
 
+function getDialogTitleByType(type: PageType) {
+  switch (type) {
+    case PageType.Session:
+      return "Create session";
+    case PageType.Quest:
+      return "Create quest";
+    case PageType.NPC:
+      return "Create NPC";
+    case PageType.Player:
+      return "Create player";
+    case PageType.Location:
+      return "Create location";
+    case PageType.Item:
+      return "Create item";
+    default:
+      return "Create page";
+  }
+}
+
 export default function CreatePageModal({
   type,
   onCreated,

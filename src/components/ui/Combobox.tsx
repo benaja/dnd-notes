@@ -14,7 +14,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Icon from "./Icon";
 
 export type ComboboxItem = {
   value: string;
@@ -27,6 +28,7 @@ export function Combobox({
   returnObject,
   selectText,
   searchText,
+  customCammands,
   onChange,
   onSearch,
 }: {
@@ -35,6 +37,7 @@ export function Combobox({
   returnObject?: boolean;
   selectText?: string;
   searchText?: string;
+  customCammands?: React.ReactNode;
   onChange?: (value: string | ComboboxItem | null) => void;
   onSearch?: (value: string | null) => void;
 }) {
@@ -74,6 +77,10 @@ export function Combobox({
     onSearch?.(value);
   }
 
+  useEffect(() => {
+    setInternalValue(value);
+  }, [value]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -90,6 +97,7 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
+        {customCammands}
         <Command>
           <CommandInput
             value={search}
@@ -97,8 +105,9 @@ export function Combobox({
             onFocus={() => updateSearch("")}
             placeholder={searchText || "Search..."}
           />
+
           <CommandEmpty>No results</CommandEmpty>
-          <CommandGroup>
+          <CommandGroup heading="Search results">
             {internalItems.map((item) => (
               <CommandItem
                 key={item.value}

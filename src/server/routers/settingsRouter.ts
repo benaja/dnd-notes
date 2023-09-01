@@ -3,6 +3,7 @@ import { protectedProcedure, router } from "../trpc";
 import { Fields, PageType } from "~/jsonTypes";
 import {
   DateField,
+  ImageField,
   PageField,
   RichTextField,
   SelectField,
@@ -28,11 +29,14 @@ export const settingsRouter = router({
         case PageType.Player:
         case PageType.NPC:
           fields.push(
-            new TextField({
+            new ImageField({
               label: "Avatar",
               name: "avatar",
               showOnCreate: true,
               showOnPreview: true,
+              options: {
+                type: "round",
+              },
             }),
             new TextField({
               label: "Age",
