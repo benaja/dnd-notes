@@ -80,7 +80,7 @@ export interface IPageField extends IFormField {
   type: FormFieldType.PageSelector;
   value: string | ComboboxItem | null;
   options: {
-    type: PageType[];
+    types: PageType[];
   };
 }
 

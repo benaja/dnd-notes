@@ -94,7 +94,7 @@ export class PageField extends FormField implements IPageField {
   type: IPageField["type"] = FormFieldType.PageSelector;
   value: IPageField["value"] = null;
   options: IPageField["options"] = {
-    type: [],
+    types: [],
   };
 
   constructor(

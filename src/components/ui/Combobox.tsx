@@ -16,6 +16,12 @@ import {
 } from "~/components/ui/popover";
 import { useEffect, useMemo, useState } from "react";
 import Icon from "./Icon";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
 
 export type ComboboxItem = {
   value: string;
@@ -50,7 +56,7 @@ export function Combobox({
     if (!internalValue || typeof internalValue === "string") return items;
 
     const selectedItem = items.find((item) => item.value === valueString);
-    if (selectedItem) return items;
+    if (selectedItem || search) return items;
 
     return [
       {
@@ -59,7 +65,7 @@ export function Combobox({
       },
       ...items,
     ];
-  }, [items, internalValue, valueString]);
+  }, [items, internalValue, valueString, search]);
 
   function updateValue(value: string | null) {
     let newValue: string | ComboboxItem | null;
@@ -82,55 +88,58 @@ export function Combobox({
   }, [value]);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-full max-w-md justify-between"
         >
           {internalValue
             ? internalItems.find((item) => item.value === valueString)?.label
             : selectText || "Select..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[300px] p-0" align="start">
         {customCammands}
-        <Command>
-          <CommandInput
-            value={search}
-            onValueChange={updateSearch}
-            onFocus={() => updateSearch("")}
-            placeholder={searchText || "Search..."}
-          />
+        <DropdownMenuGroup>
+          <Command shouldFilter={false}>
+            <CommandInput
+              autoFocus
+              value={search}
+              onValueChange={updateSearch}
+              onFocus={() => updateSearch("")}
+              placeholder={searchText || "Search..."}
+            />
 
-          <CommandEmpty>No results</CommandEmpty>
-          <CommandGroup heading="Search results">
-            {internalItems.map((item) => (
-              <CommandItem
-                key={item.value}
-                value={item.value}
-                onSelect={(currentValue) => {
-                  updateValue(
-                    currentValue === valueString ? null : currentValue,
-                  );
-                  setOpen(false);
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    valueString === item.value ? "opacity-100" : "opacity-0",
-                  )}
-                />
-                {item.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+            <CommandGroup heading="Search results">
+              <CommandEmpty>No results</CommandEmpty>
+              {internalItems.map((item) => (
+                <CommandItem
+                  key={item.value}
+                  value={item.value}
+                  onSelect={(currentValue) => {
+                    updateValue(
+                      currentValue === valueString ? null : currentValue,
+                    );
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      valueString === item.value ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {item.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

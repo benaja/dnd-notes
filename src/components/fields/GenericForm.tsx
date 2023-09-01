@@ -114,7 +114,11 @@ export default function GenericForm({
           );
         } else if (field instanceof PageField) {
           render = (props) => (
-            <PageFieldComponent label={field.label} {...props} />
+            <PageFieldComponent
+              types={field.options.types}
+              label={field.label}
+              {...props}
+            />
           );
         } else {
           render = () => <div>Unknown field type</div>;

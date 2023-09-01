@@ -79,6 +79,7 @@ export const settingsRouter = router({
               name: "location",
               label: "Location",
               width: 0.5,
+              options: { types: [PageType.Location] },
             }),
             new RichTextField({
               label: "Description",
