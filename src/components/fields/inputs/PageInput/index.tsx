@@ -20,10 +20,16 @@ import { Separator } from "~/components/ui/separator";
 export type PageInputProps = {
   types: PageType[];
   value?: string | null;
+  readOnly?: boolean;
   onChange?: (value: string | ComboboxItem | null) => void;
 };
 
-export default function PageInput({ value, types, onChange }: PageInputProps) {
+export default function PageInput({
+  value,
+  types,
+  onChange,
+  readOnly,
+}: PageInputProps) {
   const utils = trpc.useContext();
   const campaign = useContext(CampaignContext);
   const [items, setItems] = useState<ComboboxItem[]>([]);
@@ -79,6 +85,7 @@ export default function PageInput({ value, types, onChange }: PageInputProps) {
       <Combobox
         value={value}
         items={items}
+        readOnly={readOnly}
         returnObject
         onChange={onChange}
         onSearch={search}

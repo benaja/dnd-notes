@@ -13,12 +13,14 @@ export default memo(
     value,
     minimal,
     attachMentionsTo,
+    readOnly,
     onChange,
     onEvent,
   }: {
     value?: string;
     minimal?: boolean;
     attachMentionsTo?: AttachToProps;
+    readOnly?: boolean;
     onChange?: (value: string) => void;
     onEvent?: (event: EditorEvents, payload: string) => void;
   }) {
@@ -30,6 +32,7 @@ export default memo(
         throw error;
       },
       nodes,
+      editable: !readOnly,
     };
 
     return (
@@ -41,6 +44,7 @@ export default memo(
           onEvent={onEvent}
           minimal={minimal}
           attachMentionsTo={attachMentionsTo}
+          readOnly={readOnly}
         />
       </LexicalComposer>
     );

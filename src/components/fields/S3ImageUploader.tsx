@@ -8,10 +8,12 @@ import useUpload from "~/lib/hooks/useUpload";
 export default function S3ImageUploader({
   multiple = false,
   value = null,
+  readOnly = false,
   onChange,
 }: {
   multiple?: boolean;
   value?: string | string[] | null;
+  readOnly?: boolean;
   onChange?: (value: string | string[] | null) => void;
 }) {
   const { getRootProps, getInputProps, isUploading, files } = useUpload({
@@ -24,7 +26,7 @@ export default function S3ImageUploader({
       {...getRootProps()}
       className="flex h-40 items-center justify-center bg-gray-50 "
     >
-      <input {...getInputProps()} />
+      <input readOnly={readOnly} {...getInputProps()} />
 
       {isUploading && (
         <p className="text-blue-600">

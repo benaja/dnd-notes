@@ -18,6 +18,7 @@ export default function AvatarImageField({
     <BaseField {...props}>
       <AvatarImageInput
         value={value}
+        readOnly={props.readOnly}
         onChange={onChange}
         {...props}
       ></AvatarImageInput>

@@ -18,6 +18,8 @@ import useMentions, { AttachToProps } from "~/lib/hooks/useMentions";
 import { PageType } from "~/jsonTypes";
 import { PagePreview } from "~/lib/pages";
 import useDebounce from "~/lib/hooks/useDebounce";
+import Icon from "~/components/ui/Icon";
+import { getIconForPage } from "~/components/layouts/AppLayout";
 
 const PUNCTUATION =
   "\\.,\\+\\*\\?\\$\\@\\|#{}\\(\\)\\^\\-\\[\\]\\\\/!%'\"~=<>_:;";
@@ -99,9 +101,9 @@ function getPossibleQueryMatch(text: string): MenuTextMatch | null {
 }
 
 class MentionTypeaheadOption extends MenuOption {
-  page: { id: string | null; title: string };
+  page: { id: string | null; title: string; type: PageType };
 
-  constructor(page: { id: string | null; title: string }) {
+  constructor(page: { id: string | null; title: string; type: PageType }) {
     super(page.id || "create");
     this.page = page;
   }
@@ -132,7 +134,7 @@ function MentionsTypeaheadMenuItem({
         {
           "bg-gray-100": isSelected,
         },
-        "flex items-center gap-4",
+        "flex items-center gap-4 px-2 py-1",
       )}
       ref={option.setRefElement}
       role="option"
@@ -141,6 +143,7 @@ function MentionsTypeaheadMenuItem({
       onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
+      <Icon>{getIconForPage(option.page.type)}</Icon>
       {!option.page.id && <span>Create:</span>}
       {/* <AppImage
         src={option.page.avatar}
@@ -182,18 +185,11 @@ export default function MentionsPlugin({
 
   const options = useMemo(() => {
     if (!results) return [];
-    if (results.length === 0) {
-      return [
-        new MentionTypeaheadOption({
-          id: "create",
-          title: queryString || "Create new page",
-        }),
-      ];
-    }
+
     return results
       .map((result) => new MentionTypeaheadOption(result))
       .slice(0, SUGGESTION_LIST_LENGTH_LIMIT);
-  }, [results, queryString]);
+  }, [results]);
 
   const onSelectOption = useCallback(
     async (
@@ -207,7 +203,7 @@ export default function MentionsPlugin({
           title: selectedOption.page.title,
           campaignId: campaign.id,
           type: PageType.NPC,
-          fields: {},
+          fields: [],
         });
       }
 
@@ -247,6 +243,14 @@ export default function MentionsPlugin({
           const pages = await utils.page.filter.fetch({
             id: mentionIds,
             campaignId: campaign?.id || "",
+            type: [
+              PageType.NPC,
+              PageType.Player,
+              PageType.Item,
+              PageType.Quest,
+              PageType.Location,
+              PageType.Session,
+            ],
           });
 
           onMentionsChanged?.(pages);
@@ -269,6 +273,14 @@ export default function MentionsPlugin({
     const pages = await utils.page.filter.fetch({
       title: query,
       campaignId: campaign.id,
+      type: [
+        PageType.NPC,
+        PageType.Player,
+        PageType.Item,
+        PageType.Quest,
+        PageType.Location,
+        PageType.Session,
+      ],
     });
     setQueryString(query);
     setResults(pages);
@@ -287,7 +299,7 @@ export default function MentionsPlugin({
       ) =>
         anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
-              <div className="mt-8 w-80 rounded bg-white p-4 shadow">
+              <div className="mt-8 w-80 rounded bg-white shadow">
                 <ul>
                   {options.map((option, i: number) => (
                     <MentionsTypeaheadMenuItem

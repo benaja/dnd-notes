@@ -10,6 +10,7 @@ export default function ImageInput({
 }: {
   label?: string;
   value?: string | null;
+  readOnly?: boolean;
   onChange?: (value: string) => void;
 } & UseControllerProps) {
   const { field, fieldState } = useController(props);
@@ -19,6 +20,7 @@ export default function ImageInput({
       {label && <label className="font-medium">{label}</label>}
       <S3ImageUploader
         value={field.value}
+        readOnly={props.readOnly}
         onChange={(value) => {
           field.onChange(value);
         }}

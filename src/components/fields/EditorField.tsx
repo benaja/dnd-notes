@@ -9,6 +9,7 @@ type EditorFieldProps = {
   label?: string | null;
   value?: string | null;
   minimal?: boolean;
+  readOnly?: boolean;
   attachMentionsTo?: AttachToProps;
   onChange?: (value: string) => void;
 };
@@ -18,6 +19,7 @@ export default function EditorField({
   value,
   minimal,
   attachMentionsTo,
+  readOnly,
   onChange,
   ...props
 }: EditorFieldProps & BaseFieldProps) {
@@ -25,8 +27,9 @@ export default function EditorField({
     <BaseField label={label} {...props}>
       <EditorInput
         minimal={minimal}
-        value={value}
+        value={value || ""}
         attachMentionsTo={attachMentionsTo}
+        readOnly={readOnly}
         onChange={onChange}
       />
     </BaseField>

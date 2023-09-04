@@ -20,7 +20,12 @@ export default function SelectField({
 }: SelectProps & BaseFieldProps) {
   return (
     <BaseField label={label} {...props}>
-      <SelectInput options={options} value={value} onChange={onChange} />
+      <SelectInput
+        readOnly={props.readOnly}
+        options={options}
+        value={value}
+        onChange={onChange}
+      />
     </BaseField>
   );
 }

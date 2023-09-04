@@ -15,7 +15,12 @@ export default function TextField({
 }: InputProps & BaseFieldProps) {
   return (
     <BaseField {...props}>
-      <TextInput type={type} value={value} onChange={onChange}></TextInput>
+      <TextInput
+        readOnly={props.readOnly}
+        type={type}
+        value={value}
+        onChange={onChange}
+      ></TextInput>
     </BaseField>
   );
 }

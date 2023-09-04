@@ -29,6 +29,7 @@ export function Combobox({
   selectText,
   searchText,
   customCammands,
+  readOnly,
   onChange,
   onSearch,
 }: {
@@ -38,6 +39,7 @@ export function Combobox({
   selectText?: string;
   searchText?: string;
   customCammands?: React.ReactNode;
+  readOnly?: boolean;
   onChange?: (value: string | ComboboxItem | null) => void;
   onSearch?: (value: string | null) => void;
 }) {
@@ -82,7 +84,10 @@ export function Combobox({
   }, [value]);
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu
+      open={open}
+      onOpenChange={(value) => !readOnly && setOpen(value)}
+    >
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"

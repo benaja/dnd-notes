@@ -34,6 +34,7 @@ import BlockOptionsDropdownList from "./toolbar/BlockOptionsDropdownList";
 import FloatingLinkEditor from "./toolbar/FloatingLinkEditor";
 import { $setBlocksType } from "@lexical/selection";
 import { $isMentionNode } from "../nodes/MentionNode";
+import FloatingMentionViewer from "./toolbar/FloatingMentionViewer";
 
 export const LowPriority = 1;
 
@@ -129,7 +130,7 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
   const [codeLanguage, setCodeLanguage] = useState("");
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
-  const [isCharacter, setIsCharacter] = useState(false);
+  const [isMention, setIsMention] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -138,54 +139,61 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
-    if ($isRangeSelection(selection)) {
-      const anchorNode = selection.anchor.getNode();
-      const element =
-        anchorNode.getKey() === "root"
-          ? anchorNode
-          : anchorNode.getTopLevelElementOrThrow();
-      const elementKey = element.getKey();
-      const elementDOM = editor.getElementByKey(elementKey);
-      if (elementDOM !== null) {
-        setSelectedElementKey(elementKey);
-        if ($isListNode(element)) {
-          const parentList = $getNearestNodeOfType(anchorNode, ListNode);
-          const type = parentList ? parentList.getTag() : element.getTag();
-          setBlockType(type);
-        } else {
-          const type = $isHeadingNode(element)
-            ? element.getTag()
-            : element.getType();
-          setBlockType(type);
-          if ($isCodeNode(element)) {
-            setCodeLanguage(element.getLanguage() || getDefaultCodeLanguage());
-          }
+    if (!$isRangeSelection(selection)) return;
+
+    console.log("selection", selection);
+    const anchorNode = selection.anchor.getNode();
+    const element =
+      anchorNode.getKey() === "root"
+        ? anchorNode
+        : anchorNode.getTopLevelElementOrThrow();
+    const elementKey = element.getKey();
+    const elementDOM = editor.getElementByKey(elementKey);
+    if (elementDOM !== null) {
+      setSelectedElementKey(elementKey);
+      if ($isListNode(element)) {
+        const parentList = $getNearestNodeOfType(anchorNode, ListNode);
+        const type = parentList ? parentList.getTag() : element.getTag();
+        setBlockType(type);
+      } else {
+        const type = $isHeadingNode(element)
+          ? element.getTag()
+          : element.getType();
+        setBlockType(type);
+        if ($isCodeNode(element)) {
+          setCodeLanguage(element.getLanguage() || getDefaultCodeLanguage());
         }
       }
-      // Update text format
-      setIsBold(selection.hasFormat("bold"));
-      setIsItalic(selection.hasFormat("italic"));
-      setIsUnderline(selection.hasFormat("underline"));
-      setIsStrikethrough(selection.hasFormat("strikethrough"));
-      setIsCode(selection.hasFormat("code"));
-      setIsRTL($isParentElementRTL(selection));
+    }
+    // Update text format
+    setIsBold(selection.hasFormat("bold"));
+    setIsItalic(selection.hasFormat("italic"));
+    setIsUnderline(selection.hasFormat("underline"));
+    setIsStrikethrough(selection.hasFormat("strikethrough"));
+    setIsCode(selection.hasFormat("code"));
+    setIsRTL($isParentElementRTL(selection));
 
-      // Update links
-      const node = getSelectedNode(selection);
-      const parent = node.getParent();
-      if ($isLinkNode(parent) || $isLinkNode(node)) {
-        setIsLink(true);
-      } else {
-        setIsLink(false);
-      }
+    // Update links
+    const node = getSelectedNode(selection);
+    const parent = node.getParent();
+    if ($isLinkNode(parent) || $isLinkNode(node)) {
+      setIsLink(true);
+    } else {
+      setIsLink(false);
+    }
+    console.log(
+      "isMentionNode",
+      $isMentionNode(parent) || $isMentionNode(node),
+    );
 
-      if ($isMentionNode(parent) || $isMentionNode(node)) {
-        setIsCharacter(true);
-      } else {
-        setIsCharacter(false);
-      }
+    if ($isMentionNode(parent) || $isMentionNode(node)) {
+      setIsMention(true);
+    } else {
+      setIsMention(false);
     }
   }, [editor]);
+
+  console.log("isMention", isMention);
 
   useEffect(() => {
     return mergeRegister(
@@ -354,6 +362,12 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
           </button>
           {isLink &&
             createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
+
+          {isMention &&
+            createPortal(
+              <FloatingMentionViewer editor={editor} />,
+              document.body,
+            )}
 
           {!minimal && (
             <>

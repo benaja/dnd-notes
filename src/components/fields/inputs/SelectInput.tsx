@@ -12,11 +12,13 @@ export default function SelectInput({
   options,
   label,
   value,
+  readOnly,
   onChange,
 }: {
   value?: string | null;
   options: string[] | { label: string; value: string }[];
   label?: string;
+  readOnly?: boolean;
   onChange?: (value: string) => void;
 }) {
   const { internalValue, onInput } = useInput(value ?? "", onChange);
@@ -30,7 +32,11 @@ export default function SelectInput({
   });
 
   return (
-    <Select defaultValue={internalValue} onValueChange={onInput}>
+    <Select
+      defaultValue={internalValue}
+      onValueChange={onInput}
+      disabled={readOnly}
+    >
       <SelectTrigger>
         <SelectValue placeholder="Theme" />
       </SelectTrigger>

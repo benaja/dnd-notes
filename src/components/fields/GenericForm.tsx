@@ -42,9 +42,11 @@ function createField(field: FormFields) {
 export default function GenericForm({
   fields,
   attachMentionsTo,
+  readonly,
 }: {
   fields: Fields;
   attachMentionsTo?: AttachToProps;
+  readonly?: boolean;
 }) {
   const form = useFormContext();
 
@@ -58,7 +60,9 @@ export default function GenericForm({
           );
         }
 
-        let render: (props: FormFieldRenderProps) => React.ReactNode;
+        let render: (
+          props: FormFieldRenderProps & { readOnly?: boolean },
+        ) => React.ReactNode;
         let fieldName = `fields.${index}.value`;
 
         form.register(`fields.${index}.name`, { value: field.name });
@@ -124,8 +128,19 @@ export default function GenericForm({
           render = () => <div>Unknown field type</div>;
         }
         return (
-          <div key={field.name} className={cn("w-full p-4", field.className)}>
-            <FormField name={fieldName} render={render} />
+          <div
+            key={field.name}
+            className={cn("w-full min-w-[250px] p-4", field.className)}
+          >
+            {readonly ? (
+              render({
+                value: fieldObj.value,
+                onChange: () => {},
+                readOnly: readonly,
+              })
+            ) : (
+              <FormField name={fieldName} render={render} />
+            )}
           </div>
         );
       })}

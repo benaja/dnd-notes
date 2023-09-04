@@ -65,11 +65,13 @@ export const nodes = [
 export default function Editor({
   minimal,
   attachMentionsTo,
+  readOnly,
   onChange,
   onEvent,
 }: {
   minimal?: boolean;
   attachMentionsTo?: AttachToProps;
+  readOnly?: boolean;
   onChange: (state: any) => void;
   onEvent?: (event: EditorEvents, payload: any) => void;
 }) {
@@ -107,7 +109,7 @@ export default function Editor({
     <div className="editor-container relative text-black ">
       <LinkPlugin />
 
-      <ToolbarPlugin minimal={minimal} />
+      {!readOnly && <ToolbarPlugin minimal={minimal} />}
       <div className="editor-inner">
         <HistoryPlugin />
         {/* <TreeViewPlugin /> */}

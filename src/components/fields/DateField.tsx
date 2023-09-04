@@ -17,7 +17,11 @@ export default function DateField({
 }: DateFieldProps & BaseFieldProps) {
   return (
     <BaseField {...props}>
-      <DateInput value={value} onChange={onChange}></DateInput>
+      <DateInput
+        readOnly={props.readOnly}
+        value={value}
+        onChange={onChange}
+      ></DateInput>
     </BaseField>
   );
 }

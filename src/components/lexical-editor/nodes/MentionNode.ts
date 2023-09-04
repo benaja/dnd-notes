@@ -20,7 +20,7 @@ import {
   TextNode,
 } from "lexical";
 
-type Mention = {
+export type Mention = {
   id: string;
   title: string;
 };
@@ -91,6 +91,9 @@ export class MentionNode extends TextNode {
     dom.className = "mention";
     dom.setAttribute("data-mention-id", this.__page.id);
     dom.setAttribute("data-mention-title", this.__page.title);
+    dom.addEventListener("click", () => {
+      console.log("clicked", this.__page.id);
+    });
     return dom;
   }
 
@@ -137,5 +140,6 @@ export function $createMentionNode(page: Mention): MentionNode {
 export function $isMentionNode(
   node: LexicalNode | null | undefined,
 ): node is MentionNode {
+  return node?.getType() === MentionNode.getType();
   return node instanceof MentionNode;
 }

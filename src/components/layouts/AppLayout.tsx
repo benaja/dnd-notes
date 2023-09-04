@@ -1,5 +1,3 @@
-"use client";
-
 import classNames from "classnames";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,6 +8,21 @@ import { useRouter } from "next/router";
 import { trpc } from "~/lib/trpc-client";
 import { CampaignContext } from "~/pages/app/[campaign]";
 import { PageType } from "~/jsonTypes";
+
+export function getIconForPage(page: PageType) {
+  switch (page) {
+    case PageType.Session:
+      return "calendar_month";
+    case PageType.Player:
+      return "group";
+    case PageType.NPC:
+      return "groups";
+    case PageType.Quest:
+      return "task_alt";
+    case PageType.Location:
+      return "map";
+  }
+}
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [isActive, setIsActive] = useState(false);
@@ -31,27 +44,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       link: basePath,
     },
     {
-      icon: "calendar_month",
+      icon: getIconForPage(PageType.Session),
       text: "Sessions",
       link: `${basePath}/pages?type=${PageType.Session}`,
     },
     {
-      icon: "group",
+      icon: getIconForPage(PageType.Player),
       text: "Players",
       link: `${basePath}/pages?type=${PageType.Player}`,
     },
     {
-      icon: "groups",
+      icon: getIconForPage(PageType.NPC),
       text: "NPCs",
       link: `${basePath}/pages?type=${PageType.NPC}`,
     },
     {
-      icon: "task_alt",
+      icon: getIconForPage(PageType.Quest),
       text: "Quests",
       link: `${basePath}/pages?type=${PageType.Quest}`,
     },
     {
-      icon: "map",
+      icon: getIconForPage(PageType.Location),
       text: "Locations",
       link: `${basePath}/pages?type=${PageType.Location}`,
     },

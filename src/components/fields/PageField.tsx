@@ -9,7 +9,12 @@ export default function PageField({
 }: PageInputProps & BaseFieldProps) {
   return (
     <BaseField {...props}>
-      <PageInput types={types} value={value} onChange={onChange} />
+      <PageInput
+        readOnly={props.readOnly}
+        types={types}
+        value={value}
+        onChange={onChange}
+      />
     </BaseField>
   );
 }

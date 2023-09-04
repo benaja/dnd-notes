@@ -43,7 +43,7 @@ export default function AvatarImageInput({
         props.className,
       )}
     >
-      <input {...getInputProps()} />
+      <input readOnly={props.readOnly} {...getInputProps()} />
 
       {isUploading && (
         <p className="text-blue-600">
