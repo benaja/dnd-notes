@@ -187,6 +187,9 @@ export const pageRouter = router({
         },
         select: pagePreviewFields,
         take: input.limit || 100,
+        orderBy: {
+          createdAt: input.type?.includes(PageType.Session) ? "desc" : "asc",
+        },
       });
 
       return pages;

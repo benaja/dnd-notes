@@ -1,11 +1,13 @@
 import { Campaign, Character } from "@prisma/client";
 import { useRouter } from "next/router";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import CreatePageButton from "~/components/pages/CreatePageButton";
-import ListCharacters from "~/components/campaign/characters/ListCharacters";
+import ListCharacters, {
+  PreviewPage,
+} from "~/components/campaign/characters/ListCharacters";
 import EditableText from "~/components/fields/EditableText";
 import AppLayout from "~/components/layouts/AppLayout";
-import { trpc } from "~/lib/trpc-client";
+import { RouterOutput, trpc } from "~/lib/trpc-client";
 import { NextPageWithLayout } from "~/pages/_app";
 import { format } from "date-fns";
 import useDebounce from "~/lib/hooks/useDebounce";
@@ -17,15 +19,13 @@ import QuestList from "~/components/quests/QuestList";
 import GenericForm from "~/components/fields/GenericForm";
 import EditPageForm from "~/components/pages/EditPageForm";
 
-export const CampaignContext = createContext<Campaign | null>(null);
+export const CampaignContext = createContext<
+  RouterOutput["campaign"]["getById"] | null
+>(null);
 
 const Page: NextPageWithLayout = function Campaign() {
-  const router = useRouter();
+  const campaign = useContext(CampaignContext);
   const utils = trpc.useContext();
-
-  const { data: campaign } = trpc.campaign.getById.useQuery(
-    router.query.campaign as string,
-  );
 
   const updateMutation = trpc.campaign.update.useMutation();
 
