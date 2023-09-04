@@ -12,7 +12,12 @@ import FormField from "../fields/FormField";
 type CampaignFormValues = z.infer<typeof campaignSchema>;
 
 function CreateCampaignForm() {
-  const createCampaignMutation = trpc.campaign.create.useMutation();
+  const createCampaignMutation = trpc.campaign.create.useMutation({
+    onSuccess(data) {
+      createCampaignMutation.reset();
+      router.push(`/app/${data.id}`);
+    },
+  });
   const router = useRouter();
 
   const formMethods = useForm({
@@ -23,11 +28,6 @@ function CreateCampaignForm() {
     resolver: zodResolver(campaignSchema),
     mode: "onBlur",
   });
-
-  if (createCampaignMutation.status === "success") {
-    createCampaignMutation.reset();
-    router.refresh();
-  }
 
   async function submit(values: CampaignFormValues) {
     createCampaignMutation.mutate(values);
@@ -56,7 +56,6 @@ export default function CreateCampaignDialog() {
       {dialog}
 
       <Button
-        variant="outline"
         onClick={() =>
           showDialog("Create Campaign", () => <CreateCampaignForm />)
         }

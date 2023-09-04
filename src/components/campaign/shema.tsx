@@ -3,7 +3,6 @@ import { z } from "zod";
 export const campaignSchema = z.object({
   id: z.string().optional(),
   title: z.string().max(255).min(1, "Campaign title is required"),
-  notes: z.string().optional().nullable(),
 });
 
 // export const characterSchema = z.object({

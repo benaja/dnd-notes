@@ -122,4 +122,23 @@ export const campaignRouter = router({
 
       return campaign;
     }),
+
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      await isAllowedToAccessCampaign(ctx, input);
+      await prisma.page.deleteMany({
+        where: {
+          campaignId: input,
+        },
+      });
+
+      await prisma.campaign.delete({
+        where: {
+          id: input,
+        },
+      });
+
+      return true;
+    }),
 });
