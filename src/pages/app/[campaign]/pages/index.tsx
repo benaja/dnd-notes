@@ -25,7 +25,7 @@ const Page: NextPageWithLayout = function Page() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-medium">{pageTypeTitle(pageType)}s</h1>
 
-        <CreatePageButton type={pageType} />
+        <CreatePageButton type={pageType} openAfterCreate />
       </div>
       <div className="mt-4 flex gap-4 rounded bg-white px-2 py-2 text-gray-400">
         <Icon>search</Icon>

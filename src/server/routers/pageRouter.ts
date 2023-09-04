@@ -63,7 +63,7 @@ export const pageRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        // title: z.string().min(1, "Title is required").max(255),
+        title: z.string().min(1, "Title is required").max(255),
         type: z.nativeEnum(PageType),
         campaignId: z.string(),
         fields: fieldsSchema,
@@ -77,7 +77,7 @@ export const pageRouter = router({
       const fieldValues = getFields(fields, input.fields);
       const page = await prisma.page.create({
         data: {
-          title: getTitle(fieldValues),
+          title: input.title,
           type: input.type,
           fields: fieldValues,
           previewFields: getPreviewFields(fields, input.fields),
@@ -115,6 +115,7 @@ export const pageRouter = router({
       z.object({
         id: z.string(),
         type: z.nativeEnum(PageType),
+        title: z.string().min(1, "Title is required").max(255),
         fields: fieldsSchema,
       }),
     )
@@ -128,7 +129,7 @@ export const pageRouter = router({
           id: input.id,
         },
         data: {
-          title: getTitle(fieldValues),
+          title: input.title,
           fields: fieldValues,
           previewFields: getPreviewFields(fields, input.fields),
         },
@@ -188,7 +189,7 @@ export const pageRouter = router({
         select: pagePreviewFields,
         take: input.limit || 100,
         orderBy: {
-          createdAt: input.type?.includes(PageType.Session) ? "desc" : "asc",
+          createdAt: input.type?.includes(PageType.Sess) ? "desc" : "asc",
         },
       });
 

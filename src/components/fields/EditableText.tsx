@@ -1,31 +1,26 @@
 "use client";
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "~/lib/utils";
 
 export default function EditableText(
   {
     value,
     onChange,
-    children,
     className,
-    onBlur,
+    tag = "p",
   }: {
     value?: string | null;
     onChange?: (value: string) => void;
-    onBlur?: (value: string) => void;
-    children?: (props: {
-      value?: string | null;
-      onClick: () => void;
-      className?: string;
-    }) => React.ReactNode;
     className?: string;
+    tag?: "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   } = {
     value: "",
   },
 ) {
-  const [internalValue, setInternalValue] = useState(value);
-  const [isEditing, setIsEditing] = useState(false);
+  const internalValue = useRef(value);
   const input = useRef<HTMLInputElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (input.current) {
@@ -33,40 +28,27 @@ export default function EditableText(
     }
   });
 
-  function onContentClick() {
-    setIsEditing(true);
-  }
-
   function updateValue(value: string) {
-    setInternalValue(value);
+    internalValue.current = value;
     onChange?.(value);
   }
 
-  if (isEditing) {
-    return (
-      <div className={className}>
-        <input
-          ref={input}
-          type="text"
-          className={classNames("-m-1 w-full bg-transparent p-1")}
-          value={internalValue || ""}
-          onInput={(e) => updateValue((e.target as HTMLInputElement).value)}
-          onBlur={(e) => {
-            setIsEditing(false);
-            onBlur?.((e.target as HTMLInputElement).value);
-          }}
-        />
-      </div>
-    );
-  }
+  const Comp = tag;
 
-  if (!children) {
-    return (
-      <p onClick={onContentClick} className={className}>
-        {internalValue}
-      </p>
-    );
-  }
+  useEffect(() => {
+    if (input.current) {
+      input.current.textContent = value || "";
+    }
+  }, [value]);
 
-  return children({ value: internalValue, onClick: onContentClick, className });
+  return (
+    <Comp
+      ref={input}
+      contentEditable={isEditing}
+      onClick={() => setIsEditing(true)}
+      onBlur={() => setIsEditing(false)}
+      onInput={(e) => updateValue(e.currentTarget.textContent || "")}
+      className={cn("focus-visible:outline-none", className)}
+    />
+  );
 }

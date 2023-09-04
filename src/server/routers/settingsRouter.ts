@@ -14,16 +14,7 @@ export const settingsRouter = router({
   fields: protectedProcedure
     .input(z.nativeEnum(PageType))
     .query(async ({ input, ctx }) => {
-      let fields: Fields = [
-        new TextField({
-          showOnCreate: true,
-          showOnPreview: true,
-          name: "title",
-          label: [PageType.Player, PageType.NPC].includes(input)
-            ? "Name"
-            : "Title",
-        }),
-      ];
+      let fields: Fields = [];
 
       switch (input) {
         case PageType.Player:
@@ -60,13 +51,6 @@ export const settingsRouter = router({
           break;
         case PageType.Session:
           fields = [
-            new TextField({
-              name: "title",
-              label: "Title",
-              className: "sm:w-2/3",
-              showOnCreate: true,
-              showOnPreview: true,
-            }),
             new DateField({
               label: "Date",
               name: "date",
@@ -78,12 +62,12 @@ export const settingsRouter = router({
             new PageField({
               name: "location",
               label: "Location",
-              width: 0.5,
+              className: "sm:w-1/3",
               options: { types: [PageType.Location] },
             }),
             new RichTextField({
-              label: "Description",
-              name: "description",
+              label: "Notes",
+              name: "notes",
             }),
           ];
           break;

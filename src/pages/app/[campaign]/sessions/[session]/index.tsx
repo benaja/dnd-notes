@@ -50,12 +50,12 @@ const Page: NextPageWithLayout = function Session() {
         <EditableText
           value={session.title}
           className="h-[1em] grow text-3xl"
-          onInput={(value) => editSession("title", value)}
-        >
-          {({ value, ...props }) => {
+          onChange={(value) => editSession("title", value)}
+          tag="h1"
+        />
+        {/* {({ value, ...props }) => {
             return <h1 {...props}>{value}</h1>;
-          }}
-        </EditableText>
+          }} */}
 
         <DatePicker
           value={session.date}

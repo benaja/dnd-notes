@@ -7,8 +7,15 @@ import useDialog from "~/lib/hooks/useDialog";
 import CreatePageModal, { pageTypeTitle } from "./CreatePageModal";
 import { PageType } from "~/jsonTypes";
 
-export default function CreatePageButton({ type }: { type: PageType }) {
+export default function CreatePageButton({
+  type,
+  openAfterCreate,
+}: {
+  type: PageType;
+  openAfterCreate?: boolean;
+}) {
   const [dialog, showDialog] = useDialog();
+  const router = useRouter();
 
   const title = `Create ${pageTypeTitle(type)}`;
 
@@ -18,7 +25,15 @@ export default function CreatePageButton({ type }: { type: PageType }) {
       <Button
         onClick={() => {
           showDialog(title, (onClose) => (
-            <CreatePageModal type={type} onCreated={onClose} />
+            <CreatePageModal
+              type={type}
+              onCreated={(page) => {
+                onClose();
+                if (openAfterCreate) {
+                  router.push(`/app/${router.query.campaign}/pages/${page.id}`);
+                }
+              }}
+            />
           ));
         }}
       >

@@ -16,7 +16,7 @@ export default function TopNavigation({
     <>
       <div className="fixed left-0 top-0 z-40 flex h-14 w-full items-center justify-between bg-white sm:h-20">
         <div className="flex h-full flex-row-reverse items-center justify-end gap-x-4 px-4 sm:w-80 sm:flex-row sm:justify-between">
-          <Link href="/admin-portal" className="flex items-center gap-4">
+          <Link href="/app" className="flex items-center gap-4">
             <Image src={logo} alt="logo" className="h-8 w-8" />
             <span className="hidden font-medium tracking-widest sm:inline">
               RPG Notes

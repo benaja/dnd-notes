@@ -50,7 +50,6 @@ export default function EditPageForm({
     return () => subscription.unsubscribe();
   }, [formMethods, onChange, page, onSubmit]);
 
-  // if (!fields) return <></>;
   return (
     <>
       <FormProvider {...formMethods}>
@@ -59,18 +58,9 @@ export default function EditPageForm({
             <FormField
               name="title"
               render={(props) => (
-                <EditableText {...props} className="grow text-3xl">
-                  {({ value, ...props }) => {
-                    return <h1 {...props}>{value}</h1>;
-                  }}
-                </EditableText>
+                <EditableText {...props} className="grow text-3xl" tag="h1" />
               )}
             />
-
-            {/* <FormField
-            name="avatar"
-            render={(props) => <AvatarImageInput {...props} />}
-          /> */}
           </div>
         )}
 

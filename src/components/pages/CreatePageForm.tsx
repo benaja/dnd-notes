@@ -1,31 +1,22 @@
 import { FormProvider, useForm } from "react-hook-form";
-import AvatarImageInput from "~/components/fields/inputs/AvatarImageInput";
 import GenericForm from "~/components/fields/GenericForm";
-import TextField from "~/components/fields/TextField";
 import { Button } from "~/components/ui/button";
 import { DialogFooter } from "~/components/ui/dialog";
 import { z } from "zod";
-import { Fields, FormFieldType, PageType } from "~/jsonTypes";
+import { Fields, PageType } from "~/jsonTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Character } from "@prisma/client";
-import AvatarImageField from "~/components/fields/AvatarImageField";
-import FormField from "~/components/fields/FormField";
+import FormField from "../fields/FormField";
+import TextField from "../fields/TextField";
 
-const fieldsSchema = z
-  .tuple([
-    z.object({
-      name: z.literal("title"),
-      value: z.string().min(1, "Title is required"),
-    }),
-  ])
-  .rest(
-    z.object({
-      name: z.string(),
-      value: z.any().optional().nullable(),
-    }),
-  );
+const fieldsSchema = z.array(
+  z.object({
+    name: z.string(),
+    value: z.any().optional().nullable(),
+  }),
+);
 
 export const PageSchema = z.object({
+  title: z.string().min(1, "Title is required"),
   fields: fieldsSchema,
 });
 
@@ -60,20 +51,19 @@ export default function CreatePageForm({
 
   return (
     <FormProvider {...formMethods}>
-      {JSON.stringify(formMethods.formState.errors)}
       <form
         onSubmit={formMethods.handleSubmit((values) => {
           onSubmit?.(values);
         })}
       >
-        {/* <div className="my-6 flex gap-8">
+        <div className="my-6 flex gap-8">
           <FormField
             name="title"
             render={(props) => (
               <TextField {...props} label={getTitle()} className="grow" />
             )}
           ></FormField>
-        </div> */}
+        </div>
         {fields && (
           <GenericForm
             fields={fields.filter((field) => field.showOnCreate)}
