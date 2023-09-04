@@ -4,7 +4,7 @@ import classNames from "classnames";
 import Link from "next/link";
 import { useState } from "react";
 import Icon from "~/components/ui/Icon";
-import TopNavigation from "~/components/ui/TopNavigation";
+import TopNavigation from "~/components/layouts/navigation/TopNavigation";
 import { Transition } from "react-transition-group";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

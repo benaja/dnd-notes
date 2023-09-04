@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import TextInput from "~/components/fields/inputs/TextInput";
 import { Button } from "../ui/button";
 import TextField from "../fields/TextField";
+import FormField from "../fields/FormField";
 
 export default function CredentialsForm({
   callbackUrl = "/app",
@@ -50,13 +51,25 @@ export default function CredentialsForm({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <TextField
-          className="mb-6"
-          type="email"
+        <FormField
           name="email"
-          label="Email address"
+          render={(props) => (
+            <TextField
+              className="mb-6"
+              type="email"
+              label="Email address"
+              {...props}
+            />
+          )}
         />
-        <TextField type="password" name="password" label="Password" />
+
+        <FormField
+          name="password"
+          render={(props) => (
+            <TextField type="password" label="Password" {...props} />
+          )}
+        />
+
         <p className="h-4 leading-4 text-red-600">{error || ""}</p>
 
         <Button className="mt-4 w-full" disabled={loading}>

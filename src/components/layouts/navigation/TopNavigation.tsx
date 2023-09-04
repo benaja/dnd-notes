@@ -2,7 +2,8 @@ import { log } from "console";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "~/assets/images/rpg_notes_logo.png";
-import Icon from "./Icon";
+import Icon from "../../ui/Icon";
+import ProfilePopup from "./ProfilePopup";
 
 export default function TopNavigation({
   persist,
@@ -32,7 +33,7 @@ export default function TopNavigation({
         </div>
 
         <div className="flex items-center gap-6 pr-4">
-          {/* <ProfilePopup /> */}
+          <ProfilePopup />
         </div>
       </div>
     </>

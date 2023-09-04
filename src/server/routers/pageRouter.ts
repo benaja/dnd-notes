@@ -10,6 +10,10 @@ import {
 import { prisma } from "../prisma";
 import { settingsRouter } from "./settingsRouter";
 import { pagePreviewFields } from "~/lib/pages";
+import {
+  isAllowedToAccessCampaign,
+  isAllowedToAccessPage,
+} from "../auth/guards";
 
 const fieldsSchema = z.array(
   z.object({
@@ -66,6 +70,8 @@ export const pageRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await isAllowedToAccessCampaign(ctx, input.campaignId);
+
       const caller = settingsRouter.createCaller(ctx);
       const fields = await caller.fields(input.type);
       const fieldValues = getFields(fields, input.fields);
@@ -94,6 +100,10 @@ export const pageRouter = router({
           id: input,
         },
       });
+      if (!page) {
+        throw new Error("Page not found");
+      }
+      await isAllowedToAccessCampaign(ctx, page.campaignId);
 
       page?.type === "item";
 
@@ -109,6 +119,7 @@ export const pageRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      await isAllowedToAccessPage(ctx, input.id);
       const caller = settingsRouter.createCaller(ctx);
       const fields = await caller.fields(input.type);
       const fieldValues = getFields(fields, input.fields);
@@ -145,6 +156,8 @@ export const pageRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
+      await isAllowedToAccessCampaign(ctx, input.campaignId);
+
       const pages = await prisma.page.findMany({
         where: {
           id: input.id

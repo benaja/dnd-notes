@@ -5,6 +5,8 @@ import { z } from "zod";
 import TextInput from "~/components/fields/inputs/TextInput";
 import { trpc } from "~/lib/trpc-client";
 import TextField from "../fields/TextField";
+import { Button } from "../ui/button";
+import FormField from "../fields/FormField";
 
 interface RegisterFormValues {
   name: string;
@@ -33,6 +35,7 @@ export const RegisterForm = ({
     if (registerMutation.error?.data?.zodError) {
       const fieldErrors = registerMutation.error.data.zodError.fieldErrors;
       formMethods.clearErrors();
+      console.log(fieldErrors);
 
       for (let key of Object.keys(fieldErrors)) {
         formMethods.setError(key as keyof RegisterFormValues, {
@@ -44,6 +47,7 @@ export const RegisterForm = ({
   }, [registerMutation.error, formMethods]);
 
   const onSubmit = async (values: RegisterFormValues) => {
+    console.log(values);
     setLoading(true);
 
     try {
@@ -62,33 +66,57 @@ export const RegisterForm = ({
   return (
     <FormProvider {...formMethods}>
       <form onSubmit={formMethods.handleSubmit(onSubmit)}>
-        <TextField className="mb-6" type="text" name="name" label="Name" />
-        <TextField
-          className="mb-6"
-          type="email"
+        <FormField
+          name="name"
+          render={(props) => (
+            <TextField className="mb-6" label="Name" {...props} />
+          )}
+        />
+
+        <FormField
           name="email"
-          label="Email address"
+          render={(props) => (
+            <TextField
+              className="mb-6"
+              type="email"
+              label="Email address"
+              {...props}
+            />
+          )}
         />
-        <TextField
-          className="mb-6"
-          type="password"
+
+        <FormField
           name="password"
-          label="Password"
+          render={(props) => (
+            <TextField
+              className="mb-6"
+              type="password"
+              label="Password"
+              {...props}
+            />
+          )}
         />
-        <TextField
-          className="mb-6"
-          type="password"
+
+        <FormField
           name="passwordConfirmation"
-          label="Password Confirmation"
+          render={(props) => (
+            <TextField
+              className="mb-6"
+              type="password"
+              label="Password Confirmation"
+              {...props}
+            />
+          )}
         />
-        <button
+
+        <Button
           type="submit"
           style={{ backgroundColor: `${loading ? "#ccc" : "#3446eb"}` }}
-          className="inline-block w-full rounded bg-blue-600 px-7 py-4 text-sm font-medium uppercase leading-snug text-white shadow-md transition duration-150 ease-in-out hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg"
           disabled={loading}
+          className="w-full"
         >
           {loading ? "loading..." : "Sign Up"}
-        </button>
+        </Button>
       </form>
     </FormProvider>
   );

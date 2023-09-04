@@ -5,6 +5,7 @@ import { campaignSchema } from "~/components/campaign/shema";
 import { pagePreviewFields } from "~/lib/pages";
 import { PageType } from "~/jsonTypes";
 import { settingsRouter } from "./settingsRouter";
+import { isAllowedToAccessCampaign } from "../auth/guards";
 
 export const campaignRouter = router({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -24,6 +25,8 @@ export const campaignRouter = router({
   getById: protectedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
+      await isAllowedToAccessCampaign(ctx, input);
+
       const campaign = await prisma.campaign.findUnique({
         where: {
           id: input,
@@ -101,8 +104,13 @@ export const campaignRouter = router({
     }),
 
   update: protectedProcedure
-    .input(campaignSchema)
+    .input(
+      campaignSchema.extend({
+        id: z.string(),
+      }),
+    )
     .mutation(async ({ input, ctx }) => {
+      await isAllowedToAccessCampaign(ctx, input.id);
       const campaign = await prisma.campaign.update({
         where: {
           id: input.id,
