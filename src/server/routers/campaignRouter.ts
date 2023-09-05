@@ -35,12 +35,6 @@ export const campaignRouter = router({
           pages: {
             select: pagePreviewFields,
           },
-          characters: true,
-          sessions: {
-            orderBy: {
-              date: "desc",
-            },
-          },
         },
       });
 

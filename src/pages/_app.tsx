@@ -6,10 +6,7 @@ import { trpc } from "~/lib/trpc-client";
 import { SessionProvider } from "next-auth/react";
 import { NextPage } from "next";
 import { ReactElement, ReactNode } from "react";
-import Link from "next/link";
-import Head from "next/head";
 import "~/components/lexical-editor/themes/styles.css";
-import { useRouter } from "next/router";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
