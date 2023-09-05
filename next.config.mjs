@@ -6,6 +6,7 @@
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactStrictMode: true,
   serverRuntimeConfig: {
     // Will only be available on the server side
