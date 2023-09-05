@@ -209,8 +209,8 @@ devDependencies:
     specifier: ^5.0.0
     version: 5.0.0
   prisma-json-types-generator:
-    specifier: ^2.5.0
-    version: 2.5.0(prisma@5.0.0)
+    specifier: ^3.0.0
+    version: 3.0.0(prisma@5.0.0)(typescript@5.2.2)
   tailwindcss:
     specifier: ^3.3.3
     version: 3.3.3(ts-node@10.9.1)
@@ -991,8 +991,8 @@ packages:
       prisma: 5.0.0
     dev: false
 
-  /@prisma/debug@4.16.0:
-    resolution: {integrity: sha512-9xKz+5BXjnHDgPKtjTEbP6vNPeYMOqId2IIHCxfpouhSpSUHOA3FVzCRpZ0er/RV6y/MZUPLQbltVUvPncBDlg==}
+  /@prisma/debug@5.2.0:
+    resolution: {integrity: sha512-dOrNOA8B65l3dCp2r3gn5A5dbMXNbEixO3JAaMWiS2q03qMU3/R9oNv86H2c1i3GSwQglH5gjwpkA9olp/+h1A==}
     dependencies:
       '@types/debug': 4.1.8
       debug: 4.3.4
@@ -1009,10 +1009,10 @@ packages:
     resolution: {integrity: sha512-kyT/8fd0OpWmhAU5YnY7eP31brW1q1YrTGoblWrhQJDiN/1K+Z8S1kylcmtjqx5wsUGcP1HBWutayA/jtyt+sg==}
     requiresBuild: true
 
-  /@prisma/generator-helper@4.16.0:
-    resolution: {integrity: sha512-4rDLzQPpCz2FbYjW07j7BDkKVs4MiPbyxAeYoLheQj0Ubj7ihoK1hecrIEocULxjMwVJOLt8mj575bguNQ4DWA==}
+  /@prisma/generator-helper@5.2.0:
+    resolution: {integrity: sha512-jju+nGe8IgwDhs412sx6PSk5efkuoBqHOJSqbRBb9Y/fMfeDRGLVdwia8Hj+PKmd/YXrqFgBd4NDeFxeCcVVqw==}
     dependencies:
-      '@prisma/debug': 4.16.0
+      '@prisma/debug': 5.2.0
       '@types/cross-spawn': 6.0.2
       cross-spawn: 7.0.3
       kleur: 4.1.5
@@ -4655,16 +4655,18 @@ packages:
     resolution: {integrity: sha512-WuxUnVtlWL1OfZFQFuqvnvs6MiAGk9UNsBostyBOB0Is9wb5uRESevA6rnl/rkksXaGX3GzZhPup5d6Vp1nFew==}
     dev: false
 
-  /prisma-json-types-generator@2.5.0(prisma@5.0.0):
-    resolution: {integrity: sha512-jVaaIhHNceWba1LPnS6j1Q+HZLZnrTjwxGANfCvHxFtywSEP9iM25cs233m90TpC7E+ABFJcWgBpXob2ms+3gw==}
+  /prisma-json-types-generator@3.0.0(prisma@5.0.0)(typescript@5.2.2):
+    resolution: {integrity: sha512-y4YnYci/zJsjoaxPjSv5w0qBGR7O5dYWJRNz69sVALrJ+lZN4t1OlHeNVgmlaWv57HMXpUCbVC217JanQFrIeQ==}
     engines: {node: '>=14.0'}
     hasBin: true
     peerDependencies:
-      prisma: ^4.16.0
+      prisma: ^5.1
+      typescript: ^5.1
     dependencies:
-      '@prisma/generator-helper': 4.16.0
+      '@prisma/generator-helper': 5.2.0
       prisma: 5.0.0
-      tslib: 2.5.3
+      tslib: 2.6.2
+      typescript: 5.2.2
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5420,12 +5422,12 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
-  /tslib@2.5.3:
-    resolution: {integrity: sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==}
-    dev: true
-
   /tslib@2.6.1:
     resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: true
 
   /tsutils@3.21.0(typescript@5.2.2):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
