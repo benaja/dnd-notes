@@ -28,7 +28,7 @@ export default memo(
       theme: exampleTheme,
       namespace: "example",
       editorState: value ? value : undefined,
-      onError(error) {
+      onError(error: any) {
         throw error;
       },
       nodes,

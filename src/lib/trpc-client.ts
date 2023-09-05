@@ -29,14 +29,14 @@ function getEndingLink(ctx: NextPageContext | undefined) {
   });
   // }
 
-  const clinet = createClient;
+  // const clinet = createClient;
 
-  const client = createWSClient({
-    url: publicRuntimeConfig.WS_URL,
-  });
-  return wsLink<AppRouter>({
-    client,
-  });
+  // const client = createWSClient({
+  //   url: publicRuntimeConfig.WS_URL,
+  // });
+  // return wsLink<AppRouter>({
+  //   client,
+  // });
 }
 
 /**

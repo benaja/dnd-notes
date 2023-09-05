@@ -55,5 +55,6 @@ export default function useUpload({
     getRootProps,
     getInputProps,
     isUploading,
+    files: [],
   };
 }

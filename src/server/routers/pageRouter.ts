@@ -168,6 +168,7 @@ export const pageRouter = router({
           type: input.type
             ? {
                 in: input.type || [],
+                not: PageType.CampaignLandingPage,
               }
             : undefined,
           AND: [
@@ -192,7 +193,7 @@ export const pageRouter = router({
         select: pagePreviewFields,
         take: input.limit || 100,
         orderBy: {
-          createdAt: input.type?.includes(PageType.Sess) ? "desc" : "asc",
+          createdAt: input.type?.includes(PageType.Session) ? "desc" : "asc",
         },
       });
 

@@ -33,6 +33,7 @@ export default function CreatePageForm({
 }) {
   const formMethods = useForm({
     defaultValues: {
+      title: "",
       fields,
     },
     resolver: zodResolver(PageSchema),

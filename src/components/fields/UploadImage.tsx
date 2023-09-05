@@ -12,7 +12,7 @@ const generatePermittedFileTypes = (config?: any) => {
   const fileTypes = config ? Object.keys(config) : [];
 
   const maxFileCount = config
-    ? Object.values(config).map((v) => v.maxFileCount)
+    ? Object.values(config).map((v: any) => v && v.maxFileCount)
     : [];
 
   return { fileTypes, multiple: maxFileCount.some((v) => v && v > 1) };

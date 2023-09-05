@@ -7,7 +7,7 @@ import SelectInput from "./inputs/SelectInput";
 type SelectProps = {
   value?: string | null;
   options: string[] | { label: string; value: string }[];
-  onChange?: (value: string) => void;
+  onChange?: (value: string | null) => void;
 };
 
 export default function SelectField({

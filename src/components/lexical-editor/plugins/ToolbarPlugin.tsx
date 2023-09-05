@@ -126,7 +126,7 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
   const [canRedo, setCanRedo] = useState(false);
   const [blockType, setBlockType] =
     useState<keyof typeof blockTypeToBlockName>("paragraph");
-  const [selectedElementKey, setSelectedElementKey] = useState(null);
+  const [selectedElementKey, setSelectedElementKey] = useState<string | null>(null);
   const [codeLanguage, setCodeLanguage] = useState("");
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
@@ -159,7 +159,7 @@ export default function ToolbarPlugin({ minimal }: { minimal?: boolean }) {
         const type = $isHeadingNode(element)
           ? element.getTag()
           : element.getType();
-        setBlockType(type);
+        setBlockType(type as keyof typeof blockTypeToBlockName);
         if ($isCodeNode(element)) {
           setCodeLanguage(element.getLanguage() || getDefaultCodeLanguage());
         }

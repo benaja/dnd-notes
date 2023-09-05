@@ -18,7 +18,11 @@ export const createContext = async (
 ) => {
   let session = null;
   if (type === "http") {
-    session = await getServerSession(opts.req, opts.res, authOptions);
+    session = await getServerSession(
+      opts.req as any,
+      opts.res as any,
+      authOptions,
+    );
   } else {
     session = await getSession({ req: opts.req });
   }

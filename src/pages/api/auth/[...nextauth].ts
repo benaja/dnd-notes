@@ -12,7 +12,7 @@ import { authOptions } from "~/server/authOptions";
 
 export default NextAuth({
   // adapter cant be in authOptions otherwise the websocket trpc client will fail
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as any,
   ...authOptions,
 });
 

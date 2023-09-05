@@ -1,4 +1,4 @@
-import { Character, Page } from "@prisma/client";
+import { Page } from "@prisma/client";
 import AppImage from "~/components/ui/AppImage";
 import useDialog from "~/lib/hooks/useDialog";
 import { PageType } from "~/jsonTypes";

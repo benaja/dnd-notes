@@ -30,7 +30,6 @@ import { mergeRegister } from "@lexical/utils";
 import LinkPlugin from "./plugins/LinkPlugin";
 import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { Character } from "@prisma/client";
 import { $nodesOfType, NodeKey } from "lexical";
 import ComponentPickerPlugin from "./plugins/ComponentPickerPlugin";
 import { AttachToProps } from "~/lib/hooks/useMentions";

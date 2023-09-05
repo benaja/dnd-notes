@@ -1,5 +1,3 @@
-import { Campaign, Character } from "@prisma/client";
-import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import CreatePageButton from "~/components/pages/CreatePageButton";
 import ListCharacters, {
@@ -62,11 +60,8 @@ const Page: NextPageWithLayout = function Campaign() {
           onChange={(value: string) => {
             editCampaign("title", value);
           }}
-        >
-          {({ value, ...props }) => {
-            return <h1 {...props}>{value}</h1>;
-          }}
-        </EditableText>
+          tag="h1"
+        ></EditableText>
 
         <p className="mt-4 text-lg font-bold">Players</p>
         <ListCharacters
@@ -102,8 +97,8 @@ const Page: NextPageWithLayout = function Campaign() {
                 <span className="ml-4 font-light">
                   {format(
                     parseISO(
-                      session.previewFields.avatar?.value ||
-                        new Date().toISOString(),
+                      session.previewFields.find((f) => f.name === "avatar")
+                        ?.value || new Date().toISOString(),
                     ),
                     "dd.MM.yyyy",
                   )}
