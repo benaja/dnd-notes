@@ -14,20 +14,23 @@ const { publicRuntimeConfig } = getConfig();
 // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-8.html#type-only-imports-and-export
 
 function getEndingLink(ctx: NextPageContext | undefined) {
-  if (typeof window === "undefined") {
-    return httpBatchLink({
-      url: `${publicRuntimeConfig.APP_URL}/api/trpc`,
-      headers() {
-        if (!ctx?.req?.headers) {
-          return {};
-        }
-        // on ssr, forward client's headers to the server
-        return {
-          cookie: ctx.req.headers.cookie,
-        };
-      },
-    });
-  }
+  // if (typeof window === "undefined") {
+  return httpBatchLink({
+    url: `${publicRuntimeConfig.APP_URL}/api/trpc`,
+    headers() {
+      if (!ctx?.req?.headers) {
+        return {};
+      }
+      // on ssr, forward client's headers to the server
+      return {
+        cookie: ctx.req.headers.cookie,
+      };
+    },
+  });
+  // }
+
+  const clinet = createClient;
+
   const client = createWSClient({
     url: publicRuntimeConfig.WS_URL,
   });
