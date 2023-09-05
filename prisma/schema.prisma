@@ -137,3 +137,10 @@ model Page {
 
   @@index([campaignId])
 }
+
+model Test {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
