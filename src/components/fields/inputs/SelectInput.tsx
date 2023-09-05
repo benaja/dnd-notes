@@ -16,12 +16,15 @@ export default function SelectInput({
   onChange,
 }: {
   value?: string | null;
-  options: string[] | { label: string; value: string }[];
+  options: string[] | { label: string; value: string | null }[];
   label?: string;
   readOnly?: boolean;
-  onChange?: (value: string) => void;
+  onChange?: (value: string | null) => void;
 }) {
-  const { internalValue, onInput } = useInput(value ?? "", onChange);
+  const { internalValue, onInput } = useInput<string | null>(
+    value || null,
+    onChange,
+  );
 
   const optionsWithLabels = options.map((option) => {
     if (typeof option === "string") {
@@ -33,8 +36,8 @@ export default function SelectInput({
 
   return (
     <Select
-      defaultValue={internalValue}
-      onValueChange={onInput}
+      defaultValue={internalValue || ""}
+      onValueChange={(value) => onInput(value || null)}
       disabled={readOnly}
     >
       <SelectTrigger>
@@ -42,7 +45,7 @@ export default function SelectInput({
       </SelectTrigger>
       <SelectContent>
         {optionsWithLabels.map((option) => (
-          <SelectItem key={option.value} value={option.value}>
+          <SelectItem key={option.value} value={option.value || ""}>
             {option.label}
           </SelectItem>
         ))}

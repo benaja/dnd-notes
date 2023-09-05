@@ -9,7 +9,7 @@ import {
   CommandInput,
   CommandItem,
 } from "~/components/ui/command";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,7 +93,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full max-w-md justify-between"
+          className="w-full  justify-between"
         >
           {internalValue
             ? internalItems.find((item) => item.value === valueString)?.label

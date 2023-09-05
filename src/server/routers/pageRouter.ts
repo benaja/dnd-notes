@@ -146,14 +146,7 @@ export const pageRouter = router({
         type: z.array(z.nativeEnum(PageType)).optional().nullable(),
         title: z.string().optional().nullable(),
         limit: z.number().optional().nullable(),
-        fields: z
-          .record(
-            z.object({
-              value: z.any().optional().nullable(),
-            }),
-          )
-          .optional()
-          .nullable(),
+        fields: z.record(z.any().optional().nullable()).optional().nullable(),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -178,12 +171,22 @@ export const pageRouter = router({
               }
             : undefined,
           AND: [
-            ...Object.keys(input.fields || {}).map((key) => ({
-              fields: {
-                path: `$.${key}.value`,
-                equals: input.fields?.[key].value,
-              },
-            })),
+            ...Object.keys(input.fields || {})
+              .filter((key) => input.fields?.[key])
+              .flatMap((key) => [
+                {
+                  fields: {
+                    path: `$[*].name`,
+                    array_contains: key,
+                  },
+                },
+                {
+                  fields: {
+                    path: `$[*].value`,
+                    array_contains: input.fields?.[key],
+                  },
+                },
+              ]),
           ],
         },
         select: pagePreviewFields,

@@ -28,7 +28,7 @@ export default function useMentions({ source, fieldName }: AttachToProps) {
   );
 
   const onMentionsChange = useCallback(
-    (pages: PagePreview[]) => {
+    (pages: { id: string }[]) => {
       onChange(pages.map((c) => c.id));
     },
     [onChange],

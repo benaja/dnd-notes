@@ -121,6 +121,10 @@ export default function GenericForm({
             <PageFieldComponent
               types={field.options.types}
               label={field.label}
+              attachTo={{
+                source: attachMentionsTo?.source || undefined,
+                fieldName: field.name,
+              }}
               {...props}
             />
           );

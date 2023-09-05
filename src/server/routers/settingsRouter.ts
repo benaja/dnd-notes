@@ -73,11 +73,48 @@ export const settingsRouter = router({
           break;
         case PageType.Quest:
           fields.push(
+            new TextField({
+              label: "Goal",
+              name: "goal",
+              options: {
+                type: "textarea",
+              },
+              className: "sm:w-1/2",
+            }),
+            new TextField({
+              label: "Reward",
+              name: "reward",
+              options: {
+                type: "textarea",
+              },
+              className: "sm:w-1/2",
+            }),
             new SelectField({
               label: "Status",
               name: "status",
-              options: { items: ["open", "inProgress", "completed", "onHold"] },
+              options: {
+                items: [
+                  { value: "open", label: "Open" },
+                  { value: "inProgress", label: "In Progress" },
+                  { value: "completed", label: "Completed" },
+                  { value: "onHold", label: "On Hold" },
+                ],
+              },
+              className: "sm:w-1/2",
               value: "open",
+              showOnPreview: true,
+            }),
+            new PageField({
+              label: "Given By",
+              name: "givenBy",
+              className: "sm:w-1/2",
+              options: {
+                types: [PageType.NPC, PageType.Player],
+              },
+            }),
+            new RichTextField({
+              label: "Notes",
+              name: "notes",
             }),
           );
           break;

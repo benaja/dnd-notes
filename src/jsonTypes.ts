@@ -45,7 +45,7 @@ export interface ITextField extends IFormField {
   type: FormFieldType.Text;
   value: string | number | null;
   options: {
-    type: "text" | "number";
+    type: "text" | "number" | "textarea";
   };
 }
 export interface ISelectField extends IFormField {

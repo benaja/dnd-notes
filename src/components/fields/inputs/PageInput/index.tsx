@@ -16,24 +16,28 @@ import { cn } from "~/lib/utils";
 import { CampaignContext } from "~/pages/app/[campaign]";
 import CreatePage from "./CreatePage";
 import { Separator } from "~/components/ui/separator";
+import useMentions, { AttachToProps } from "~/lib/hooks/useMentions";
 
 export type PageInputProps = {
   types: PageType[];
   value?: string | null;
   readOnly?: boolean;
+  attachTo?: AttachToProps;
   onChange?: (value: string | ComboboxItem | null) => void;
 };
 
 export default function PageInput({
   value,
   types,
-  onChange,
+  attachTo,
   readOnly,
+  onChange,
 }: PageInputProps) {
   const utils = trpc.useContext();
   const campaign = useContext(CampaignContext);
   const [items, setItems] = useState<ComboboxItem[]>([]);
   const [dialog, showDialog] = useDialog();
+  const { onMentionsChange } = useMentions(attachTo ?? {});
 
   async function search(value: string | null) {
     if (!campaign) throw new Error("No campaign provided");
@@ -53,8 +57,22 @@ export default function PageInput({
     );
   }
 
+  function onUpdate(value: string | ComboboxItem | null) {
+    onChange?.(value);
+
+    if (!value) {
+      onMentionsChange?.([]);
+      return;
+    }
+    onMentionsChange?.([
+      {
+        id: typeof value === "object" ? value.value : value,
+      },
+    ]);
+  }
+
   function onPageCreated(page: Page) {
-    onChange?.({
+    onUpdate?.({
       value: page.id,
       label: page.title,
     });
@@ -87,7 +105,7 @@ export default function PageInput({
         items={items}
         readOnly={readOnly}
         returnObject
-        onChange={onChange}
+        onChange={onUpdate}
         onSearch={search}
         customCammands={
           <>
