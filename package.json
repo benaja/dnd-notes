@@ -2,6 +2,7 @@
   "name": "dnd-notes",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@8.4.0",
   "scripts": {
     "dev:wss": "cross-env PORT=3001 tsx watch src/server/wssDevServer.ts --tsconfig tsconfig.server.json ",
     "dev:next": "next dev",
