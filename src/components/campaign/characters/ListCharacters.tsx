@@ -22,7 +22,7 @@ export default function ListCharacters({
   const [dialog, showDialog] = useDialog();
 
   function getAvatar(page: PreviewPage) {
-    return page.previewFields.avatar?.value;
+    return page.previewFields.filter((f) => f.name === "avatar")[0]?.value;
   }
 
   return (

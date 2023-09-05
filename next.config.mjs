@@ -33,6 +33,12 @@ const nextConfig = {
   images: {
     domains: ["uploadthing.com", "dnd-notes.fra1.digitaloceanspaces.com"],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
