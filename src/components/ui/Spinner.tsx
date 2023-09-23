@@ -1,10 +1,16 @@
-export default function Spinner() {
+import { cn } from "~/lib/utils"
+
+export default function Spinner({
+  className,
+  ...props
+}: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      className="ut-animate-spin ut-h-5 ut-w-5"
+      className={cn("ut-animate-spin ut-h-5 ut-w-5", className)}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 576 512"
+      {...props}
     >
       <path
         fill="currentColor"
